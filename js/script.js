@@ -96,20 +96,20 @@ function drawHeatmap(svg, dataset, label) {
 
     // Add x-axis labels (alcoholDays)
     svg.selectAll(".label-x")
-    .data(xAxisValues)
-    .enter()
-    .append("text")
-    .attr("x", (d, i) => i * cellSize + cellSize / 2 + margin.left)
-    .attr("y", yAxisValues.length * cellSize + margin.top + 20)
-    .text(d => d)
-    .attr("text-anchor", "start")
-    .attr("transform", (d, i) => {
-        const x = i * cellSize + cellSize / 2 + margin.left;
-        const y = height + 20;
-        return `rotate(45, ${x}, ${y})`;
-    })
-    .style("font-size", "12px")
-    .attr("class", "axis-label");
+        .data(xAxisValues)
+        .enter()
+        .append("text")
+        .attr("x", (d, i) => i * cellSize + cellSize / 2 + margin.left)
+        .attr("y", yAxisValues.length * cellSize + margin.top + 20)
+        .text(d => d)
+        .attr("text-anchor", "start")
+        .attr("transform", (d, i) => {
+            const x = i * cellSize + cellSize / 2 + margin.left;
+            const y = height + 20;
+            return `rotate(45, ${x}, ${y})`;
+        })
+        .style("font-size", "12px")
+        .attr("class", "axis-label");
 
 
     // Add y-axis labels (timesArrested)
@@ -127,22 +127,162 @@ function drawHeatmap(svg, dataset, label) {
 
 
     // Define a linear gradient for the legend
-const defs = svg.append("defs");
-const gradient = defs.append("linearGradient")
-    .attr("id", `legend-gradient-${label}`)
-    .attr("x1", "0%").attr("y1", "0%")
-    .attr("x2", "100%").attr("y2", "0%");
+    const defs = svg.append("defs");
+    const gradient = defs.append("linearGradient")
+        .attr("id", `legend-gradient-${label}`)
+        .attr("x1", "0%").attr("y1", "0%")
+        .attr("x2", "100%").attr("y2", "0%");
 
-// Interpolate colors for gradient
-const minVal = d3.min(correlations, d => d.value);
-const maxVal = d3.max(correlations, d => d.value);
-const steps = 10;
-for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    gradient.append("stop")
-        .attr("offset", `${t * 100}%`)
-        .attr("stop-color", colorScale(minVal + t * (maxVal - minVal)));
+    // Interpolate colors for gradient
+    const minVal = d3.min(correlations, d => d.value);
+    const maxVal = d3.max(correlations, d => d.value);
+    const steps = 10;
+    for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        gradient.append("stop")
+            .attr("offset", `${t * 100}%`)
+            .attr("stop-color", colorScale(minVal + t * (maxVal - minVal)));
+    }
 }
 
+////////  Spiral Graph  /////////
+const svgAlcohol = d3.select('#spiral-alcohol')
+    .append('svg')
+    .attr('width', 600)
+    .attr('height', 600)
+    .append('g')
+    .attr('transform', `translate(${600/2},${600/2})`);
 
+const svgMarijuana = d3.select('#spiral-mj')
+    .append('svg')
+    .attr('width', 600)
+    .attr('height', 600)
+    .append('g')
+    .attr('transform', `translate(${600/2},${600/2})`);
+
+const spiralArc = (fromRadius, toRadius, width, fromAngle, toAngle) => {
+    const x1 = fromRadius * Math.sin(fromAngle);
+    const y1 = fromRadius * -Math.cos(fromAngle);
+    const x2 = (fromRadius + width) * Math.sin(fromAngle);
+    const y2 = (fromRadius + width) * -Math.cos(fromAngle);
+    const x3 = toRadius * Math.sin(toAngle);
+    const y3 = toRadius * -Math.cos(toAngle);
+    const x4 = (toRadius + width) * Math.sin(toAngle);
+    const y4 = (toRadius + width) * -Math.cos(toAngle);
+    return `
+          M ${x1},${y1} 
+          L ${x2},${y2} 
+          A ${fromRadius},${fromRadius} 1 0 1 ${x4},${y4} 
+          L ${x3},${y3}
+          A ${fromRadius},${fromRadius} 0 0 0 ${x1},${y1}`;
+};
+
+function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
+    const BASE_RADIUS = 30;
+    const numSpins = 2;
+    const segments = 30;
+    const totalAngle = numSpins * Math.PI * 2;
+    const radiusGrowthPerRad = 15;
+
+    for (let day = 1; day <= 30; day++) {
+        const angle = (day / segments) * totalAngle;
+        const dayWidth = totalAngle / segments;
+
+        const fromAngleM = angle - dayWidth/4;
+        const toAngleM = angle;
+        const fromAngleF = angle;
+        const toAngleF = angle + dayWidth/4;
+
+        const baseRadius = BASE_RADIUS + radiusGrowthPerRad * angle;
+
+        // Male
+        const heightM = caseScale(maleCounts[day]);
+        const pathM = spiralArc(baseRadius, baseRadius, heightM, fromAngleM, toAngleM);
+
+        svg.append('path')
+            .attr('d', pathM)
+            .style('fill', "steelblue")
+            .style('opacity', 0.8)
+            .on('mouseover', function(event) {
+                d3.select("#tooltip")
+                    .style("display", "block")
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px")
+                    .html(`<strong>${labelPrefix} - Male</strong><br><strong># Days Used:</strong> ${day}<br><strong>People:</strong> ${maleCounts[day]}`);
+            })
+            .on('mousemove', function(event) {
+                d3.select("#tooltip")
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on('mouseout', function() {
+                d3.select("#tooltip").style("display", "none");
+            });
+
+        // Female
+        const heightF = caseScale(femaleCounts[day]);
+        const pathF = spiralArc(baseRadius, baseRadius, heightF, fromAngleF, toAngleF);
+
+        svg.append('path')
+            .attr('d', pathF)
+            .style('fill', "palevioletred")
+            .style('opacity', 0.8)
+            .on('mouseover', function(event) {
+                d3.select("#tooltip")
+                    .style("display", "block")
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px")
+                    .html(`<strong>${labelPrefix} - Female</strong><br><strong>Day:</strong> ${day}<br><strong>People:</strong> ${femaleCounts[day]}`);
+            })
+            .on('mousemove', function(event) {
+                d3.select("#tooltip")
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on('mouseout', function() {
+                d3.select("#tooltip").style("display", "none");
+            });
+    }
 }
+
+function init() {
+    d3.tsv("data/spiral_clean.tsv", d => ({
+        day: +d.day,
+        gender: +d.GENDER_R,
+        alcoholUse: +d.ALCDAYS,
+        marijuanaUse: +d.MJDAY30A
+    })).then(data => {
+        const maleAlcohol = Array(31).fill(0);
+        const femaleAlcohol = Array(31).fill(0);
+        const maleMJ = Array(31).fill(0);
+        const femaleMJ = Array(31).fill(0);
+
+        data.forEach(d => {
+            if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
+                if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
+                else femaleAlcohol[d.alcoholUse]++;
+            }
+            if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
+                if (d.gender === 1) maleMJ[d.marijuanaUse]++;
+                else femaleMJ[d.marijuanaUse]++;
+            }
+        });
+
+        // Find shared max value
+        const sharedMax = d3.max([
+            d3.max(maleAlcohol.slice(1)),
+            d3.max(femaleAlcohol.slice(1)),
+            d3.max(maleMJ.slice(1)),
+            d3.max(femaleMJ.slice(1))
+        ]);
+
+        const caseScale = d3.scaleLinear()
+            .domain([0, sharedMax])
+            .range([0, 80]);
+
+        createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
+        createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
+    });
+}
+
+window.addEventListener('load', init);
