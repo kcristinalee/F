@@ -151,14 +151,14 @@ const svgAlcohol = d3.select('#spiral-alcohol')
     .attr('width', 600)
     .attr('height', 600)
     .append('g')
-    .attr('transform', `translate(${600/2},${600/2})`);
+    .attr('transform', `translate(${600 / 2},${600 / 2})`);
 
 const svgMarijuana = d3.select('#spiral-mj')
     .append('svg')
     .attr('width', 600)
     .attr('height', 600)
     .append('g')
-    .attr('transform', `translate(${600/2},${600/2})`);
+    .attr('transform', `translate(${600 / 2},${600 / 2})`);
 
 const spiralArc = (fromRadius, toRadius, width, fromAngle, toAngle) => {
     const x1 = fromRadius * Math.sin(fromAngle);
@@ -188,10 +188,10 @@ function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
         const angle = (day / segments) * totalAngle;
         const dayWidth = totalAngle / segments;
 
-        const fromAngleM = angle - dayWidth/4;
+        const fromAngleM = angle - dayWidth / 4;
         const toAngleM = angle;
         const fromAngleF = angle;
-        const toAngleF = angle + dayWidth/4;
+        const toAngleF = angle + dayWidth / 4;
 
         const baseRadius = BASE_RADIUS + radiusGrowthPerRad * angle;
 
@@ -203,19 +203,19 @@ function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
             .attr('d', pathM)
             .style('fill', "steelblue")
             .style('opacity', 0.8)
-            .on('mouseover', function(event) {
+            .on('mouseover', function (event) {
                 d3.select("#tooltip")
                     .style("display", "block")
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px")
                     .html(`<strong>${labelPrefix} - Male</strong><br><strong># Days Used:</strong> ${day}<br><strong>People:</strong> ${maleCounts[day]}`);
             })
-            .on('mousemove', function(event) {
+            .on('mousemove', function (event) {
                 d3.select("#tooltip")
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px");
             })
-            .on('mouseout', function() {
+            .on('mouseout', function () {
                 d3.select("#tooltip").style("display", "none");
             });
 
@@ -227,23 +227,152 @@ function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
             .attr('d', pathF)
             .style('fill', "palevioletred")
             .style('opacity', 0.8)
-            .on('mouseover', function(event) {
+            .on('mouseover', function (event) {
                 d3.select("#tooltip")
                     .style("display", "block")
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px")
                     .html(`<strong>${labelPrefix} - Female</strong><br><strong>Day:</strong> ${day}<br><strong>People:</strong> ${femaleCounts[day]}`);
             })
-            .on('mousemove', function(event) {
+            .on('mousemove', function (event) {
                 d3.select("#tooltip")
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px");
             })
-            .on('mouseout', function() {
+            .on('mouseout', function () {
                 d3.select("#tooltip").style("display", "none");
             });
     }
 }
+
+
+// Bar Chart: Justice Involvement by Drug Use
+function drawBarGraph(data) {
+    const drugs = [
+        { name: "Cocaine", field: "COCEVER" },
+        { name: "Crack", field: "CRKEVER" },
+        { name: "Heroin", field: "HEREVER" },
+        { name: "LSD", field: "LSD" },
+        { name: "PCP", field: "PCP" },
+        { name: "Ecstasy", field: "ECSTASY" }
+    ];
+
+    const results = [];
+
+    drugs.forEach(drug => {
+        const users = data.filter(d => +d[drug.field] === 1);
+        const nonUsers = data.filter(d => +d[drug.field] === 0);
+
+        const justiceInvolvement = d => (+d.BOOKED === 1 || +d.PROBATON === 1 || +d.PAROLREL === 1);
+
+        const usersWithJustice = users.filter(justiceInvolvement);
+        const nonUsersWithJustice = nonUsers.filter(justiceInvolvement);
+
+        results.push({
+            drug: drug.name,
+            userJusticeRate: (usersWithJustice.length / users.length) * 100,
+            nonUserJusticeRate: (nonUsersWithJustice.length / nonUsers.length) * 100
+        });
+    });
+
+    const svg = d3.select("#vis")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x0 = d3.scaleBand()
+        .domain(results.map(d => d.drug))
+        .range([0, width])
+        .paddingInner(0.2);
+
+    const x1 = d3.scaleBand()
+        .domain(["Users", "Non-Users"])
+        .range([0, x0.bandwidth()])
+        .padding(0.1);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(results, d => Math.max(d.userJusticeRate, d.nonUserJusticeRate)) * 1.1])
+        .range([height, 0]);
+
+    const color = d3.scaleOrdinal()
+        .domain(["Users", "Non-Users"])
+        .range(["firebrick", "lightblue"]);
+
+    svg.append("g")
+        .selectAll("g")
+        .data(results)
+        .enter()
+        .append("g")
+        .attr("transform", d => `translate(${x0(d.drug)},0)`)
+        .selectAll("rect")
+        .data(d => [
+            { key: "Users", value: d.userJusticeRate },
+            { key: "Non-Users", value: d.nonUserJusticeRate }
+        ])
+        .enter()
+        .append("rect")
+        .attr("x", d => x1(d.key))
+        .attr("y", d => y(d.value))
+        .attr("width", x1.bandwidth())
+        .attr("height", d => height - y(d.value))
+        .attr("fill", d => color(d.key));
+
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x0))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-0.8em")
+        .attr("dy", "-0.15em")
+        .attr("transform", "rotate(-45)");
+
+    // X axis label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + margin.bottom - 10)  // Push below x-axis
+        .text("Drug")
+        .style("font-size", "16px");
+
+    // Y axis label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -margin.left + 20)  // Push to left side
+        .text("Justice System Involvement (%)")
+        .style("font-size", "16px");
+
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(y));
+
+    const legend = svg.append("g")
+        .attr("transform", `translate(${width - 120},0)`);
+
+    legend.selectAll("rect")
+        .data(["Used at least once in their lifetime", "Never used"])
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", (d, i) => i * 20)
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", d => color(d));
+
+    legend.selectAll("text")
+        .data(["Used at least once in their lifetime", "Never used"])
+        .enter()
+        .append("text")
+        .attr("x", 20)
+        .attr("y", (d, i) => i * 20 + 12)
+        .text(d => d)
+        .style("font-size", "12px");
+}
+
 
 function init() {
     d3.tsv("data/spiral_clean.tsv", d => ({
@@ -283,6 +412,8 @@ function init() {
         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
     });
+
+    d3.tsv("data/arrest_drug_clean.tsv").then(drawBarGraph);
 }
 
 window.addEventListener('load', init);
