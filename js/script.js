@@ -243,134 +243,199 @@ function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
                 d3.select("#tooltip").style("display", "none");
             });
     }
+    // Add day labels around the spiral
+    for (let day = 1; day <= 30; day += 2) {
+        const angle = (day / segments) * totalAngle;
+        const radius = BASE_RADIUS + radiusGrowthPerRad * angle + 30; // Slightly outside spiral
+
+        const x = radius * Math.sin(angle);
+        const y = radius * -Math.cos(angle);
+
+        svg.append('text')
+            .attr('x', x)
+            .attr('y', y)
+            .text(day)
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .style('font-size', '12px')
+            .style('font-weight', 'bold')
+            .style('fill', 'black');
+
+    }
+
 }
 
 
-// Bar Chart: Justice Involvement by Drug Use
-function drawBarGraph(data) {
+////////////// Bar Chart: Justice Involvement by Drug Use //////////
+function drawMovingBarGraph(data) {
     const drugs = [
+        { name: "Heroin", field: "HEREVER" },
         { name: "Cocaine", field: "COCEVER" },
         { name: "Crack", field: "CRKEVER" },
-        { name: "Heroin", field: "HEREVER" },
         { name: "LSD", field: "LSD" },
         { name: "PCP", field: "PCP" },
         { name: "Ecstasy", field: "ECSTASY" }
     ];
 
-    const results = [];
-
-    drugs.forEach(drug => {
+    const results = drugs.map(drug => {
         const users = data.filter(d => +d[drug.field] === 1);
         const nonUsers = data.filter(d => +d[drug.field] === 0);
-
         const justiceInvolvement = d => (+d.BOOKED === 1 || +d.PROBATON === 1 || +d.PAROLREL === 1);
 
-        const usersWithJustice = users.filter(justiceInvolvement);
-        const nonUsersWithJustice = nonUsers.filter(justiceInvolvement);
-
-        results.push({
+        return {
             drug: drug.name,
-            userJusticeRate: (usersWithJustice.length / users.length) * 100,
-            nonUserJusticeRate: (nonUsersWithJustice.length / nonUsers.length) * 100
-        });
+            userJusticeRate: users.length ? (users.filter(justiceInvolvement).length / users.length) * 100 : 0,
+            nonUserJusticeRate: nonUsers.length ? (nonUsers.filter(justiceInvolvement).length / nonUsers.length) * 100 : 0
+        };
     });
 
-    const svg = d3.select("#vis")
+    const svg = d3.select("#vis-moving")
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", 800)
+        .attr("height", 400)
         .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    const x0 = d3.scaleBand()
-        .domain(results.map(d => d.drug))
-        .range([0, width])
-        .paddingInner(0.2);
-
-    const x1 = d3.scaleBand()
-        .domain(["Users", "Non-Users"])
-        .range([0, x0.bandwidth()])
-        .padding(0.1);
+        .attr("transform", "translate(150,50)");
 
     const y = d3.scaleLinear()
-        .domain([0, d3.max(results, d => Math.max(d.userJusticeRate, d.nonUserJusticeRate)) * 1.1])
-        .range([height, 0]);
+        .domain([0, 100])
+        .range([300, 0]);
+
+    const x = d3.scaleBand()
+        .domain(["Never Used", "Used"])
+        .range([0, 300])
+        .padding(0.4);
 
     const color = d3.scaleOrdinal()
-        .domain(["Users", "Non-Users"])
-        .range(["firebrick", "lightblue"]);
+        .domain(["Never Used", "Used"])
+        .range(["lightblue", "firebrick"]);
 
     svg.append("g")
-        .selectAll("g")
-        .data(results)
-        .enter()
-        .append("g")
-        .attr("transform", d => `translate(${x0(d.drug)},0)`)
-        .selectAll("rect")
-        .data(d => [
-            { key: "Users", value: d.userJusticeRate },
-            { key: "Non-Users", value: d.nonUserJusticeRate }
-        ])
-        .enter()
-        .append("rect")
-        .attr("x", d => x1(d.key))
-        .attr("y", d => y(d.value))
-        .attr("width", x1.bandwidth())
-        .attr("height", d => height - y(d.value))
-        .attr("fill", d => color(d.key));
-
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x0))
+        .attr("transform", "translate(0,300)")
+        .call(d3.axisBottom(x))
         .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-0.8em")
-        .attr("dy", "-0.15em")
-        .attr("transform", "rotate(-45)");
+        .style("font-size", "13px")
+        .style("font-weight", "bold");
 
-    // X axis label
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("x", width / 2)
-        .attr("y", height + margin.bottom - 10)  // Push below x-axis
-        .text("Drug")
-        .style("font-size", "16px");
 
-    // Y axis label
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
-        .attr("y", -margin.left + 20)  // Push to left side
-        .text("Justice System Involvement (%)")
-        .style("font-size", "16px");
-
-    svg.append("g")
-        .attr("class", "y-axis")
-        .call(d3.axisLeft(y));
+        .attr("x", -150)
+        .attr("y", -40)
+        .text("Arrested / Probation / Parole (%)")
+        .style("font-size", "14px")
+        .style("font-weight", "bold")
+        .style("fill", "black");
 
     const legend = svg.append("g")
-        .attr("transform", `translate(${width - 120},0)`);
+        .attr("transform", "translate(350, 10)"); // move right
 
-    legend.selectAll("rect")
-        .data(["Used at least once in their lifetime", "Never used"])
-        .enter()
-        .append("rect")
+    // First legend item (Never Used)
+    legend.append("rect")
         .attr("x", 0)
-        .attr("y", (d, i) => i * 20)
+        .attr("y", 0)
         .attr("width", 15)
         .attr("height", 15)
-        .attr("fill", d => color(d));
+        .attr("fill", "lightblue");
 
-    legend.selectAll("text")
-        .data(["Used at least once in their lifetime", "Never used"])
-        .enter()
-        .append("text")
+    legend.append("text")
         .attr("x", 20)
-        .attr("y", (d, i) => i * 20 + 12)
-        .text(d => d)
-        .style("font-size", "12px");
+        .attr("y", 12) // align with rectangle
+        .text("Never used this substance in their life")
+        .style("font-size", "12px")
+        .style("font-weight", "bold");
+
+    // Second legend item (Used)
+    legend.append("rect")
+        .attr("x", 0)
+        .attr("y", 30) // move down
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", "firebrick");
+
+    legend.append("text")
+        .attr("x", 20)
+        .attr("y", 42) // align with second rectangle
+        .text("Used substance at least once in their lifetime")
+        .style("font-size", "12px")
+        .style("font-weight", "bold");
+
+
+    const drugTitle = svg.append("text")
+        .attr("x", 150)
+        .attr("y", 10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .text("");
+
+    let currentIndex = 0;
+
+    function update() {
+        const drug = results[currentIndex];
+
+        drugTitle.text(drug.drug);
+
+        const barData = [
+            { group: "Never Used", value: drug.nonUserJusticeRate },
+            { group: "Used", value: drug.userJusticeRate }
+        ];
+
+        const bars = svg.selectAll(".bar")
+            .data(barData, d => d.group);
+
+        bars.enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d.group))
+            .attr("width", x.bandwidth())
+            .attr("y", y(0))
+            .attr("height", d => 300 - y(0))
+            .attr("fill", d => color(d.group))
+            .merge(bars)
+            .transition()
+            .duration(1000)
+            .attr("y", d => y(d.value))
+            .attr("height", d => 300 - y(d.value));
+
+        bars.exit().remove();
+
+        const labels = svg.selectAll(".bar-label")
+            .data(barData, d => d.group);
+
+        labels.enter()
+            .append("text")
+            .attr("class", "bar-label")
+            .attr("x", d => x(d.group) + x.bandwidth() / 2)
+            .attr("y", y(0) - 5)
+            .text(d => `${d.value.toFixed(1)}%`)
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
+            .style("fill", "black")
+            .merge(labels)
+            .transition()
+            .duration(1000)
+            .attr("y", d => y(d.value) - 5)
+            .tween("text", function (d) {
+                const that = d3.select(this);
+                const i = d3.interpolateNumber(parseFloat(that.text()), d.value);
+                return function (t) {
+                    that.text(i(t).toFixed(1) + "%");
+                };
+            });
+
+        labels.exit().remove();
+    }
+
+    update(); // Initial call
+
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % results.length;
+        update();
+    }, 3000);
 }
 
 
@@ -413,7 +478,8 @@ function init() {
         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
     });
 
-    d3.tsv("data/arrest_drug_clean.tsv").then(drawBarGraph);
+    // d3.tsv("data/arrest_drug_clean.tsv").then(drawBarGraph);
+    d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
 }
 
 window.addEventListener('load', init);
