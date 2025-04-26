@@ -297,7 +297,7 @@ function drawMovingBarGraph(data) {
 
     const svg = d3.select("#vis-moving")
         .append("svg")
-        .attr("width", 800)
+        .attr("width", 900)
         .attr("height", 400)
         .append("g")
         .attr("transform", "translate(150,50)");
@@ -337,7 +337,7 @@ function drawMovingBarGraph(data) {
         .style("fill", "black");
 
     const legend = svg.append("g")
-        .attr("transform", "translate(350, 10)"); // move right
+        .attr("transform", "translate(350, 30)"); // move right
 
     // First legend item (Never Used)
     legend.append("rect")
@@ -782,7 +782,7 @@ function drawMovingBarGraph(data) {
     legend.append("text")
         .attr("x", 20)
         .attr("y", 42) // align with second rectangle
-        .text("Used substance at least once in their lifetime")
+        .text("Used this substance at least once in their life")
         .style("font-size", "12px")
         .style("font-weight", "bold");
 
