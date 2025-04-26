@@ -8,41 +8,15 @@ h1 {
   text-align: center;
 }
 
-/* code adapted from Professor's US Election map project */
-
-.map-container {
-  max-width: 720px;
-  margin: 2rem auto;
-  font-family: Arial, sans-serif;
-}
-
-/* Everything below is scoped so it can’t touch other SVGs */
-.map-container a          { color: rgb(122,159,77); text-decoration:none; }
-.map-container svg        { margin:1rem 0; border:1px solid #ccc; }
-
-.map-container .map-x-axis path,
-.map-container .map-y-axis path,
-.map-container .map-x-axis line,
-.map-container .map-y-axis line {
-  stroke:#333; stroke-width:1; shape-rendering:crispEdges;
-}
-
-.map-container .map-x-axis text,
-.map-container .map-y-axis text { font-size:12px; }
-
-#map-tooltip {
-  position:absolute; padding:5px 15px;
-  background:#fff; color:#000; border:1px solid #ddd; border-radius:5px;
-  pointer-events:none; font-size:12px; line-height:1; display:none;
-  box-shadow:0 2px 5px rgba(0,0,0,.2);
-}
-.map-labels {
-  paint-order:stroke; stroke:#ffffffaa; stroke-width:3;
-  stroke-linecap:round; stroke-linejoin:round;
-}
-
-.map-state-label {
-  paint-order:stroke; stroke:#ffffffaa; stroke-width:5;
-  stroke-linecap:round; stroke-linejoin:round;
-  fill:#666; font-weight:400; font-size:14px;
+#tooltip {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  pointer-events: none;
+  display: none;
+  color: black;
+  box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
 }
