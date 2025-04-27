@@ -318,6 +318,7 @@ function drawMovingBarGraph(data) {
     svg.append("g")
         .attr("transform", "translate(0,300)")
         .call(d3.axisBottom(x))
+        // .call(d3.axisBottom(x).tickFormat(''))
         .selectAll("text")
         .style("font-size", "13px")
         .style("font-weight", "bold");
@@ -735,7 +736,8 @@ function drawMovingBarGraph(data) {
 
     svg.append("g")
         .attr("transform", "translate(0,300)")
-        .call(d3.axisBottom(x))
+        // .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).tickFormat(''))
         .selectAll("text")
         .style("font-size", "13px")
         .style("font-weight", "bold");
@@ -748,7 +750,7 @@ function drawMovingBarGraph(data) {
         .attr("transform", "rotate(-90)")
         .attr("x", -150)
         .attr("y", -40)
-        .text("(%) Arrested / Probation / Parole")
+        .text("% With Criminal History")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("fill", "black");
