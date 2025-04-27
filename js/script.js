@@ -331,7 +331,7 @@ function drawMovingBarGraph(data) {
         .attr("transform", "rotate(-90)")
         .attr("x", -150)
         .attr("y", -40)
-        .text("Arrested / Probation / Parole (%)")
+        .text("(%) Who Have Been Arrested / Probation / Parole")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("fill", "black");
@@ -748,7 +748,7 @@ function drawMovingBarGraph(data) {
         .attr("transform", "rotate(-90)")
         .attr("x", -150)
         .attr("y", -40)
-        .text("Arrested / Probation / Parole (%)")
+        .text("(%) Arrested / Probation / Parole")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("fill", "black");
