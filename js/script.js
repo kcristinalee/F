@@ -11,6 +11,7 @@ const svgMale = d3.select("#male-heatmap")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+////////  Heat Maps /////////
 const svgFemale = d3.select("#female-heatmap")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -23,12 +24,22 @@ const svgFemale = d3.select("#female-heatmap")
 d3.tsv("data/merged_clean.tsv").then(data => {
     console.log("Raw data loaded:", data.slice(0, 5));
 
-    const renamedData = data.map(d => ({
-        gender: +d.GENDER_R,
-        timesArrested: +d.NOBOOKY2,
-        alcoholDays: +d.ALCDAYS,
-        depressionFrequency: +d.DSTDEPRS
-    }));
+    const renamedData = data.map(d => {
+        let alcoholDays = +d.ALCDAYS;
+        if (alcoholDays === 91) {
+            alcoholDays = 0;
+        } else if ([93, 94, 97, 98, 99].includes(alcoholDays)) {
+            alcoholDays = null;
+        }
+
+        return {
+            gender: +d.GENDER_R,
+            timesArrested: +d.NOBOOKY2,
+            alcoholDays: alcoholDays !== null && alcoholDays >= 0 && alcoholDays <= 30 ? groupAlcoholDays(alcoholDays) : null,
+            depressionFrequency: +d.DSTDEPRS
+        };
+    });
+
 
     const maleData = renamedData.filter(d => d.gender === 1);
     const femaleData = renamedData.filter(d => d.gender === 0);
@@ -45,16 +56,27 @@ d3.tsv("data/merged_clean.tsv").then(data => {
     console.log("Sorted Male Times Arrested:", yAxisValuesMale);
     console.log("Sorted Female Times Arrested:", yAxisValuesFemale);
 
-    const xAxisValues = Array.from(new Set(renamedData.map(d => d.alcoholDays)));
+   // console.log("1:", xAxisValues);
 
-    drawHeatmap(svgMale, maleData, "Male", xAxisValues, yAxisValuesMale);
-    drawHeatmap(svgFemale, femaleData, "Female", xAxisValues, yAxisValuesFemale);
+    drawHeatmap(svgMale, maleData, "Male");
+    drawHeatmap(svgFemale, femaleData, "Female");
 });
 
 function drawHeatmap(svg, dataset, label) {
-    const xAxisValues = Array.from(new Set(dataset.map(d => d.alcoholDays))).sort((a, b) => a - b);
-    const yAxisValues = Array.from(new Set(dataset.map(d => d.timesArrested))).sort((a, b) => a - b);
 
+    const desiredOrder = ["0", "1-5", "6-10", "11-15", "16-20", "21-25", "26-30"];
+
+    const xAxisValues = Array.from(new Set(dataset
+        .map(d => d.alcoholDays)
+        .filter(v => v !== null)
+    )).sort((a, b) => desiredOrder.indexOf(a) - desiredOrder.indexOf(b));
+
+   
+    const yAxisValues = Array.from(
+        new Set(dataset.map(d => d.timesArrested).filter(v => v >= 0 && v <= 50))
+    ).sort((a, b) => a - b);
+
+    console.log("1:", xAxisValues);
     const size = 500;
     const cellSize = 40
 
@@ -92,12 +114,12 @@ function drawHeatmap(svg, dataset, label) {
         .data(xAxisValues)
         .enter()
         .append("text")
-        .attr("x", (d, i) => i * cellSize + cellSize / 2 + margin.left)
+        .attr("x", (d, i) => i * cellSize + cellSize / 2)
         .attr("y", yAxisValues.length * cellSize + margin.top + 20)
         .text(d => d)
         .attr("text-anchor", "start")
         .attr("transform", (d, i) => {
-            const x = i * cellSize + cellSize / 2 + margin.left;
+            const x = i * cellSize + cellSize / 2;
             const y = height + 20;
             return `rotate(45, ${x}, ${y})`;
         })
@@ -132,6 +154,18 @@ function drawHeatmap(svg, dataset, label) {
             .attr("stop-color", colorScale(minVal + t * (maxVal - minVal)));
     }
 }
+
+function groupAlcoholDays(day) {
+    if (day === 0) return "0";
+    if (day >= 1 && day <= 5) return "1-5";
+    if (day >= 6 && day <= 10) return "6-10";
+    if (day >= 11 && day <= 15) return "11-15";
+    if (day >= 16 && day <= 20) return "16-20";
+    if (day >= 21 && day <= 25) return "21-25";
+    if (day >= 26 && day <= 30) return "26-30";
+    return null;  // should not happen if filtered correctly
+}
+
 
 
 
