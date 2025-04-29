@@ -14,8 +14,20 @@
 
 <body>
   <h1>Correlation Matrix Heatmap by Gender</h1>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <label for="dropdownId" style="font-size: 18px; margin-right: 8px;">X-Axis:</label>
+    <select id="dropdownId" style="font-size: 16px; padding: 4px 8px;">
+      <option value="alcoholDays">Alcohol Days</option>
+      <option value="chewDays">Chew Days</option>
+      <option value="marijuanaDays">Marijuana Days</option>
+      <option value="workDaysMissed">Work Days Missed</option>
+    </select>
+  </div>
+  
   <div id="male-heatmap" style="margin-bottom:60px;"></div>
   <div id="female-heatmap" style="margin-bottom:60px;"></div>
+  <div id="tooltip1" style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;"></div>
 
   <h1 class="text-center my-4">Alcohol and Marijuana Use: Days Used in the Last Month</h1>
 

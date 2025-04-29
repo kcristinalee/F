@@ -1,6 +1,15 @@
 const margin = { top: 120, right: 100, bottom: 160, left: 100 },
-    width = 800 - margin.left - margin.right,
+    width = 900 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom + 100;
+
+    
+////////  Heat Maps /////////
+const xAxisLabels = {
+    alcoholDays: "Consumed Alcohol",
+    chewDays: "Chewed Tobacco",
+    marijuanaDays: "Consumed Marijuana",
+    workDaysMissed: "Work Days Missed"
+};
 
 const svgMale = d3.select("#male-heatmap")
     .append("svg")
@@ -11,7 +20,6 @@ const svgMale = d3.select("#male-heatmap")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-////////  Heat Maps /////////
 const svgFemale = d3.select("#female-heatmap")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -25,6 +33,7 @@ d3.tsv("data/merged_clean.tsv").then(data => {
     console.log("Raw data loaded:", data.slice(0, 5));
 
     const renamedData = data.map(d => {
+
         let alcoholDays = +d.ALCDAYS;
         if (alcoholDays === 91) {
             alcoholDays = 0;
@@ -32,10 +41,41 @@ d3.tsv("data/merged_clean.tsv").then(data => {
             alcoholDays = null;
         }
 
+        let chewDays = +d.CHW30USE;
+        if (chewDays === 91) {
+            chewDays = 0;
+        } else if ([93, 94, 97, 98, 99].includes(chewDays)) {
+            chewDays = null;
+        }
+
+        let marijuanaDays = +d.MJDAY30A;
+        if (marijuanaDays === 91) {
+            marijuanaDays = 0;
+        } else if ([93, 94, 97, 98, 99].includes(marijuanaDays)) {
+            marijuanaDays = null;
+        }
+
+        let workDaysMissed = +d.WORKDAYS;
+        if (workDaysMissed === 91) {
+            workDaysMissed = 0;
+        } else if ([93, 94, 97, 98, 99].includes(workDaysMissed)) {
+            workDaysMissed = null;
+        }
+
+        let depressionFrequency = +d.DSTDEPRS;
+        if (depressionFrequency === 91) {
+            depressionFrequency = 0;
+        } else if ([93, 94, 97, 98, 99].includes(depressionFrequency)) {
+            depressionFrequency = null;
+        }
+
         return {
             gender: +d.GENDER_R,
             timesArrested: +d.NOBOOKY2,
-            alcoholDays: alcoholDays !== null && alcoholDays >= 0 && alcoholDays <= 30 ? groupAlcoholDays(alcoholDays) : null,
+            alcoholDays: alcoholDays !== null && alcoholDays >= 0 && alcoholDays <= 30 ? group(alcoholDays) : null,
+            chewDays: chewDays !== null && chewDays >= 0 && chewDays <= 30 ? group(chewDays) : null,
+            marijuanaDays: marijuanaDays !== null && marijuanaDays >= 0 && marijuanaDays <= 30 ? group(marijuanaDays) : null,
+            workDaysMissed: workDaysMissed !== null && workDaysMissed >= 0 && workDaysMissed <= 30 ? group(workDaysMissed) : null,
             depressionFrequency: +d.DSTDEPRS
         };
     });
@@ -44,39 +84,58 @@ d3.tsv("data/merged_clean.tsv").then(data => {
     const maleData = renamedData.filter(d => d.gender === 1);
     const femaleData = renamedData.filter(d => d.gender === 0);
 
-    const yAxisValuesMale = Array.from(
-        new Set(maleData.map(d => d.timesArrested).filter(v => v >= 0 && v <= 50))
-    ).sort((a, b) => a - b);
-
-    const yAxisValuesFemale = Array.from(
-        new Set(femaleData.map(d => d.timesArrested).filter(v => v >= 0 && v <= 50))
-    ).sort((a, b) => a - b);
+    // Define the x-axis options
+    const xAxisOptions = ["alcoholDays", "chewDays", "marijuanaDays", "workDaysMissed"];
 
 
-    console.log("Sorted Male Times Arrested:", yAxisValuesMale);
-    console.log("Sorted Female Times Arrested:", yAxisValuesFemale);
+    const dropdown = d3.select("#dropdownId");
 
-   // console.log("1:", xAxisValues);
+    dropdown.on("change", function () {
+        const selectedX = dropdown.property("value");  // Using D3 to access the value
+        console.log("Dropdown value changed:", selectedX);
+        updateHeatmaps(selectedX);
+    });
 
-    drawHeatmap(svgMale, maleData, "Male");
-    drawHeatmap(svgFemale, femaleData, "Female");
+    // Add options
+    dropdown.selectAll("option")
+        .data(xAxisOptions)
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
+
+    // Save globally (so updateHeatmaps can access)
+    window.maleData = maleData;
+    window.femaleData = femaleData;
+
+    drawHeatmap(svgMale, maleData, "Male", "alcoholDays");
+    drawHeatmap(svgFemale, femaleData, "Female", "alcoholDays");
 });
 
-function drawHeatmap(svg, dataset, label) {
+function updateHeatmaps(selectedX) {
+    console.log("Selected X:", selectedX);
+    svgMale.selectAll("*").remove();
+    svgFemale.selectAll("*").remove();
+    drawHeatmap(svgMale, window.maleData, "Male", selectedX);
+    drawHeatmap(svgFemale, window.femaleData, "Female", selectedX);
+}
+
+function drawHeatmap(svg, dataset, label, selectedX) {
 
     const desiredOrder = ["0", "1-5", "6-10", "11-15", "16-20", "21-25", "26-30"];
 
     const xAxisValues = Array.from(new Set(dataset
-        .map(d => d.alcoholDays)
+        .map(d => d[selectedX])
         .filter(v => v !== null)
     )).sort((a, b) => desiredOrder.indexOf(a) - desiredOrder.indexOf(b));
 
-   
+
     const yAxisValues = Array.from(
         new Set(dataset.map(d => d.timesArrested).filter(v => v >= 0 && v <= 50))
     ).sort((a, b) => a - b);
 
-    console.log("1:", xAxisValues);
+    //console.log("1:", xAxisValues);
+
     const size = 500;
     const cellSize = 40
 
@@ -84,20 +143,21 @@ function drawHeatmap(svg, dataset, label) {
 
     yAxisValues.forEach((yVal) => {
         xAxisValues.forEach((xVal) => {
-            const subset = dataset.filter(d => d.timesArrested === yVal && d.alcoholDays === xVal);
+            const subset = dataset.filter(d => d.timesArrested === yVal && d[selectedX] === xVal);
             const avgDepressionFrequency = d3.mean(subset.map(d => d.depressionFrequency));
             correlations.push({ x: xVal, y: yVal, value: avgDepressionFrequency });
         });
     });
 
     const colorScale = d3.scaleSequential(d3.interpolateRdBu)
-        .domain([d3.min(correlations, d => d.value), d3.max(correlations, d => d.value)]);
+        .domain([d3.max(correlations, d => d.value), d3.min(correlations, d => d.value)]);
 
     svg.append("text")
-        .attr("x", width / 2 + margin.left)
+        .attr("x", width / 2 + margin.left - 120)
         .attr("y", -50)
         .attr("text-anchor", "middle")
-        .text(`${label} - Arrests vs Alcohol Days (Depression Frequency)`);
+        .text(`${label} - Arrests vs ${xAxisLabels[selectedX]} (Depression Frequency)`)
+        .style("font-size", "30px");
 
     svg.selectAll("rect")
         .data(correlations)
@@ -108,14 +168,29 @@ function drawHeatmap(svg, dataset, label) {
         .attr("width", cellSize)
         .attr("height", cellSize)
         .style("fill", d => colorScale(d.value))
-        .attr("class", "cell");
+        .attr("class", "cell")
+        .on("mouseover", function (event, d) {
+            d3.select("#tooltip1")
+                .style("opacity", 1)
+                .html(`${xAxisLabels[selectedX]}: ${d.x}<br>Arrests: ${d.y}<br>Avg Depression: ${d.value !== undefined ? d.value.toFixed(2) : "N/A"}`);
+        })
+        .on("mousemove", function (event) {
+            d3.select("#tooltip1")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 20) + "px");
+        })
+        .on("mouseout", function () {
+            d3.select("#tooltip1")
+                .style("opacity", 0);
+        });
+
 
     svg.selectAll(".label-x")
         .data(xAxisValues)
         .enter()
         .append("text")
-        .attr("x", (d, i) => i * cellSize + cellSize / 2)
-        .attr("y", yAxisValues.length * cellSize + margin.top + 20)
+        .attr("x", (d, i) => i * cellSize + cellSize / 2 - 40)
+        .attr("y", yAxisValues.length * cellSize + margin.top - 5)
         .text(d => d)
         .attr("text-anchor", "start")
         .attr("transform", (d, i) => {
@@ -131,7 +206,7 @@ function drawHeatmap(svg, dataset, label) {
         .enter()
         .append("text")
         .attr("y", (d, i) => i * cellSize + margin.top + cellSize / 2)
-        .attr("x", -40)
+        .attr("x", 70)
         .text(d => d)
         .attr("text-anchor", "end")
         .attr("alignment-baseline", "middle")
@@ -153,9 +228,62 @@ function drawHeatmap(svg, dataset, label) {
             .attr("offset", `${t * 100}%`)
             .attr("stop-color", colorScale(minVal + t * (maxVal - minVal)));
     }
+
+    // X-axis Label
+    svg.append("text")
+        .attr("x", (xAxisValues.length * cellSize) / 2 + 100)
+        .attr("y", yAxisValues.length * cellSize + margin.top + 120)
+        .attr("text-anchor", "middle")
+        .text(`Number of Days ${xAxisLabels[selectedX]} in Past 30 Days`)
+        .style("font-size", "14px")
+        .style("font-weight", "bold");
+
+    // Y-axis Label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(-70, ${(yAxisValues.length * cellSize) / 2 + margin.top}) rotate(-90)`)
+        .text("Number of Times Arrested and Booked in Past 12 Months")
+        .style("font-size", "14px")
+        .style("font-weight", "bold");
+
+    // Add a color legend
+    const legendWidth = 200;
+    const legendHeight = 20;
+
+    // Append the gradient rectangle
+    svg.append("rect")
+        .attr("x", (width - legendWidth) / 2 + margin.left - 200)
+        .attr("y", height + margin.top - 50)
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", `url(#legend-gradient-${label})`);
+
+    // Add a scale for the legend
+    const legendScale = d3.scaleLinear()
+        .domain([minVal, maxVal])
+        .range([(width - legendWidth) / 2 + margin.left, (width + legendWidth) / 2 + margin.left]);
+
+    const legendAxis = d3.axisBottom(legendScale)
+        .ticks(5)
+        .tickFormat(d3.format(".2f")); // format numbers to 2 decimal places
+
+    svg.append("g")
+        .attr("transform", `translate(0, ${height + margin.top + 70})`)
+        .call(legendAxis);
+
+    // Add a label for the color legend
+    svg.append("text")
+        .attr("x", width / 2 + margin.left - 200)
+        .attr("y", height + margin.top - 80)
+        .attr("text-anchor", "middle")
+        .text("Increasing Average Depression Frequency ➔")
+        .style("font-size", "14px")
+        .style("font-weight", "bold");
+
+
 }
 
-function groupAlcoholDays(day) {
+function group(day) {
     if (day === 0) return "0";
     if (day >= 1 && day <= 5) return "1-5";
     if (day >= 6 && day <= 10) return "6-10";
