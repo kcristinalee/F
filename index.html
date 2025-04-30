@@ -184,17 +184,55 @@
   <div id="vis-moving" class="text-center"></div>
   <div id="tooltip"></div>
 
+  
   <h1>Depression Analysis</h1>
+  <p id="Bar-graph-about-depressionScore">
+    This bar graph illustrates the relationship between adults' overall severity of major depressive episode (MDE)
+     interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12 months (NOBOOKY2). 
+     The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no interference) 
+     to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
+
+     <br><br>From the graph, we observe that individuals with minimal or no depression interference (level 1)
+     reported the highest average number of arrests. Interestingly, as the severity of depression interference increases, 
+     the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level 5). 
+
+     <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less 
+     involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or 
+     other social factors that limit engagement in arrest-related behavior.
+
+     <br><br>This data highlights a counterintuitive but important insight: less visible mental 
+     health struggles might coincide with more externalized behaviors like arrest, while those facing more 
+     intense internal struggles may be more withdrawn or supervised.
+  </p>
+
   <div class="d-flex justify-content-center mb-5">
     <div id="scatter-plot"></div>
   </div>
 
 
+
+  <h1>Depression Levels Among Individuals With and Without Mental Health Challenges</h1>
+  <p id="histogram-about-depressedWorstMonth-vs-reportedDepression">
+    This grouped histogram displays how often individuals reported feeling depressed during their worst month (DSTDEPRS), 
+    separated by whether they reported experiencing mental or emotional difficulties (HLTINMNT).
+
+    <br><br>The x-axis represents depression frequency scores (1 = least often, 5 = most often).
+    The y-axis shows the number of individuals who gave each score.
+    Bars are grouped by difficulty status:
+    Blue = individuals who reported mental/emotional difficulties
+    Orange = individuals who did not report such difficulties
+
+    <br><br>The chart highlights a clear pattern: those with higher depression frequency scores (4 and 5) were 
+    much more likely to report mental or emotional difficulties. Conversely, individuals with lower depression
+     frequency scores reported fewer difficulties.
+
+     <br><br>This pattern underscores the relationship between depression severity and self-reported emotional 
+     struggles, suggesting that those who experience depressive episodes more frequently are more likely to 
+     acknowledge broader mental or emotional challenges.
+  </p>
   <div class="d-flex justify-content-center mb-5">
-    <div id="box-plot"></div>
+    <div id="box-plot"></div>   
   </div>
-
-
 
   <script src="js/script.js"></script>
 </body>
