@@ -114,3 +114,11 @@ h1 {
 .legend-color.female {
   background-color: palevioletred;
 }
+
+#spiral-writeup {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 2;
+}
