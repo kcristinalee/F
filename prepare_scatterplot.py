@@ -10,42 +10,71 @@ TSV_FILES = [
 ]
 
 # Columns to keep
-KEEP = [
+#FOR THE FIRST PLOT
+KEEP1 = [
     "ASDSOVRL",   # Intensity of depression
-    "DSTDEPRS",    # Depression frequency score
-    "HLTINMNT",    # Mental health treatment status
     "NOBOOKY2",    # Times arrested and booked in the past 12 months
-    "GENDER_R"     # Gender (0 = Female, 1 = Male)
+    #"GENDER_R"     # Gender (0 = Female, 1 = Male)
 ]
 
-frames = []
+
+#for the second plot
+KEEP2 = [
+    "DSTDEPRS",    # Depression frequency score
+    "HLTINMNT",    # Mental health treatment status
+]
+
+frames1 = []
+frames2 = []
 
 # Load each file, keep & clean
 for path in TSV_FILES:
     print(f"• loading {path}")
-    df = pd.read_csv(
+    df1 = pd.read_csv(
         path,
         sep="\t",
-        usecols=KEEP,
-        dtype={
-            "ASDSOVRL": "Int8",
-            "DSTDEPRS": "Int8",
-            "HLTINMNT": "Int8",
-            "NOBOOKY2": "Int8",      # Times arrested and booked
-            "GENDER_R": "Int8"       # Gender variable
-        },
+        usecols=KEEP1,
+        dtype="Int8"
     )
-    frames.append(df)
+
+    df2 = pd.read_csv(
+        path,
+        sep="\t",
+        usecols=KEEP2,
+        dtype="Int8"
+    )
+    frames1.append(df1)
+    frames2.append(df2)
 
 # Concatenate all dataframes
 print("• concatenating files …")
-merged = pd.concat(frames, ignore_index=True)
+merged1 = pd.concat(frames1, ignore_index=True)
+merged2 = pd.concat(frames2, ignore_index=True)
 
 # Drop rows with missing values in the relevant columns
-merged = merged.dropna(subset=["ASDSOVRL", "DSTDEPRS", "HLTINMNT", "NOBOOKY2", "GENDER_R"])
+merged1 = merged1.dropna(subset=["ASDSOVRL", "NOBOOKY2"])
+merged2 = merged2.dropna(subset=["DSTDEPRS", "HLTINMNT"])
+
+
+merged1 = merged1[(merged1["ASDSOVRL"]>=1) & (merged1["ASDSOVRL"]<=5)]
+merged1 = merged1[(merged1["NOBOOKY2"]>= 0) & (merged1["NOBOOKY2"]<=3)]
+dataset1 = merged1.groupby("ASDSOVRL").mean()
+dataset1 = dataset1.reset_index()
+
+
+
+
+merged2 = merged2[(merged2["DSTDEPRS"]>=1) & (merged2["DSTDEPRS"]<=5)]
+merged2 = merged2[(merged2["HLTINMNT"]>= 1) & (merged2["HLTINMNT"]<=2)]
 
 # Save the cleaned data
-OUT_PATH = "data/cleaned_depression_data.tsv"
-merged.to_csv(OUT_PATH, sep="\t", index=False, encoding="utf-8", quoting=3)
+OUT_PATH1 = "data/depression_vs_arrested.tsv"
+OUT_PATH2 = "data/depressionFrequency_treatmentStatus.tsv"
 
-print(f"✅ Cleaned dataset written to {OUT_PATH}")
+dataset1.to_csv(OUT_PATH1, sep="\t", index=False, encoding="utf-8", quoting=3)
+merged2.to_csv(OUT_PATH2, sep="\t", index=False, encoding="utf-8", quoting=3)
+
+
+print(f"✅ Cleaned dataset written to {OUT_PATH1}")
+print(f"✅ Cleaned dataset written to {OUT_PATH2}")
+

@@ -510,66 +510,66 @@ function drawMovingBarGraph(data) {
         .style("font-size", "12px");
 }
 
-function drawScatterPlot(data) {
-    const scatterMargin = { top: 20, right: 30, bottom: 30, left: 40 };
-    const scatterWidth = 800 - scatterMargin.left - scatterMargin.right;
-    const scatterHeight = 400 - scatterMargin.top - scatterMargin.bottom;
+// function drawScatterPlot(data) {
+//     const scatterMargin = { top: 20, right: 30, bottom: 30, left: 40 };
+//     const scatterWidth = 800 - scatterMargin.left - scatterMargin.right;
+//     const scatterHeight = 400 - scatterMargin.top - scatterMargin.bottom;
 
-    const svgScatter = d3.select("#scatter-plot")
-        .append("svg")
-        .attr("width", scatterWidth + scatterMargin.left + scatterMargin.right)
-        .attr("height", scatterHeight + scatterMargin.top + scatterMargin.bottom)
-        .append("g")
-        .attr("transform", `translate(${scatterMargin.left},${scatterMargin.top})`);
+//     const svgScatter = d3.select("#scatter-plot")
+//         .append("svg")
+//         .attr("width", scatterWidth + scatterMargin.left + scatterMargin.right)
+//         .attr("height", scatterHeight + scatterMargin.top + scatterMargin.bottom)
+//         .append("g")
+//         .attr("transform", `translate(${scatterMargin.left},${scatterMargin.top})`);
 
-    const xScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.NOBOOKY2)])
-        .range([0, scatterWidth]);
+//     const xScale = d3.scaleLinear()
+//         .domain([0, d3.max(data, d => d.NOBOOKY2)])
+//         .range([0, scatterWidth]);
 
-    const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.ASDSOVRL)])
-        .range([scatterHeight, 0]);
+//     const yScale = d3.scaleLinear()
+//         .domain([0, d3.max(data, d => d.ASDSOVRL)])
+//         .range([scatterHeight, 0]);
 
-    svgScatter.append("g")
-        .attr("transform", `translate(0,${scatterHeight})`)
-        .call(d3.axisBottom(xScale).ticks(10));
+//     svgScatter.append("g")
+//         .attr("transform", `translate(0,${scatterHeight})`)
+//         .call(d3.axisBottom(xScale).ticks(10));
 
-    svgScatter.append("g")
-        .call(d3.axisLeft(yScale).ticks(10));
+//     svgScatter.append("g")
+//         .call(d3.axisLeft(yScale).ticks(10));
 
-    svgScatter.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", d => xScale(d.NOBOOKY2))
-        .attr("cy", d => yScale(d.ASDSOVRL))
-        .attr("r", 5)
-        .attr("fill", d => d.HLTINMNT === "1" ? "steelblue" : "orange")
-        .attr("opacity", 0.7)
-        .on("mouseover", function (event, d) {
-            d3.select("#tooltip")
-                .style("display", "block")
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY - 20) + "px")
-                .html(`Times Arrested: ${d.NOBOOKY2}<br>Depression Intensity: ${d.ASDSOVRL}<br>Treatment Status: ${d.HLTINMNT === "1" ? "Received Treatment" : "No Treatment"}`);
-        })
-        .on("mousemove", function (event) {
-            d3.select("#tooltip")
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY - 20) + "px");
-        })
-        .on("mouseout", function () {
-            d3.select("#tooltip").style("display", "none");
-        });
+//     svgScatter.selectAll("circle")
+//         .data(data)
+//         .enter()
+//         .append("circle")
+//         .attr("cx", d => xScale(d.NOBOOKY2))
+//         .attr("cy", d => yScale(d.ASDSOVRL))
+//         .attr("r", 5)
+//         .attr("fill", d => d.HLTINMNT === "1" ? "steelblue" : "orange")
+//         .attr("opacity", 0.7)
+//         .on("mouseover", function (event, d) {
+//             d3.select("#tooltip")
+//                 .style("display", "block")
+//                 .style("left", (event.pageX + 10) + "px")
+//                 .style("top", (event.pageY - 20) + "px")
+//                 .html(`Times Arrested: ${d.NOBOOKY2}<br>Depression Intensity: ${d.ASDSOVRL}<br>Treatment Status: ${d.HLTINMNT === "1" ? "Received Treatment" : "No Treatment"}`);
+//         })
+//         .on("mousemove", function (event) {
+//             d3.select("#tooltip")
+//                 .style("left", (event.pageX + 10) + "px")
+//                 .style("top", (event.pageY - 20) + "px");
+//         })
+//         .on("mouseout", function () {
+//             d3.select("#tooltip").style("display", "none");
+//         });
 
-    // Title
-    svgScatter.append("text")
-        .attr("x", scatterWidth / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "middle")
-        .text("Depression Intensity vs. Times Arrested")
-        .style("font-size", "16px");
-}
+//     // Title
+//     svgScatter.append("text")
+//         .attr("x", scatterWidth / 2)
+//         .attr("y", -10)
+//         .attr("text-anchor", "middle")
+//         .text("Depression Intensity vs. Times Arrested")
+//         .style("font-size", "16px");
+// }
 
 
 // function drawBoxPlot(data) {
@@ -662,105 +662,127 @@ function drawScatterPlot(data) {
 //         .text("Box Plot of Depression Frequency by Treatment Status")
 //         .style("font-size", "16px");
 // }
-// function drawBoxPlot(data) {
-//     const boxMargin = { top: 20, right: 30, bottom: 30, left: 40 };
-//     const boxWidth = 800 - boxMargin.left - boxMargin.right;
-//     const boxHeight = 400 - boxMargin.top - boxMargin.bottom;
-
-//     const svgBox = d3.select("#box-plot")
-//         .append("svg")
-//         .attr("width", boxWidth + boxMargin.left + boxMargin.right)
-//         .attr("height", boxHeight + boxMargin.top + boxMargin.bottom)
-//         .append("g")
-//         .attr("transform", `translate(${boxMargin.left},${boxMargin.top})`);
-
-//     // Prepare data for box plot
-//     const treatmentGroups = d3.group(data, d => d.HLTINMNT);
-
-//     const yScale = d3.scaleLinear()
-//         .domain([1,5])
-//         .range([boxHeight, 0]);
-
-//     // Add y-axis
-//     svgBox.append("g")
-//         .call(d3.axisLeft(yScale).ticks(10));
-
-//     const filteredGroups = Array.from(treatmentGroups.entries()).filter(
-//             ([key, _]) => key === "1" || key === "2" || key === 1 || key === 2
-//         );
-
-//     // Create box plots for each treatment group
-//     filteredGroups.forEach(([key, groupData], i) => {
-//         //const depressionScores = groupData.map(d => d.DSTDEPRS);
-//         const depressionScores = groupData
-//         .map(d => d.DSTDEPRS)
-//         .filter(d => d >= 1 && d <= 5);
-
-//     //print out group data
 
 
-//         // Calculate quartiles
-//         const q1 = d3.quantile(depressionScores, 0.25);
-//         const median = d3.quantile(depressionScores, 0.5);
-//         console.log(median);
-//         const q3 = d3.quantile(depressionScores, 0.75);
-//         const iqr = q3 - q1;
-//         const min = d3.min(depressionScores.filter(d => d >= (q1 - 1.5 * iqr)));
-//         const max = d3.max(depressionScores.filter(d => d <= (q3 + 1.5 * iqr)));
 
-//         // Create a group for each box plot
-//         const boxGroup = svgBox.append("g")
-//             .attr("transform", `translate(${i * 150 + 100},0)`); // Adjust spacing between boxes
+function drawHistogram(data) {
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#box-plot") // Same container, reuse ID
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Prepare score and group combinations
+    const scoreRange = [1, 2, 3, 4, 5];
+    const groupLabels = ["1", "2"];
+
+    // Count how many responses per score per group
+    const counts = [];
+    scoreRange.forEach(score => {
+        groupLabels.forEach(group => {
+            const groupData = data.filter(d => String(d.HLTINMNT) === group);
+            const count = groupData.filter(d => +d.DSTDEPRS === score).length;
+            counts.push({ score, group, count });
+        });
+    });
+
+    // Scales
+    const x0 = d3.scaleBand()
+        .domain(scoreRange)
+        .range([0, width])
+        .padding(0.2);
+
+    const x1 = d3.scaleBand()
+        .domain(groupLabels)
+        .range([0, x0.bandwidth()])
+        .padding(0.05);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(counts, d => d.count)]).nice()
+        .range([height, 0]);
+
+    const color = d3.scaleOrdinal()
+        .domain(groupLabels)
+        .range(["steelblue", "orange"]);
+
+    // Axes
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x0).tickFormat(d => `Score ${d}`));
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
+    // Bars
+    svg.selectAll("g.bar-group")
+        .data(scoreRange)
+        .enter()
+        .append("g")
+        .attr("class", "bar-group")
+        .attr("transform", d => `translate(${x0(d)},0)`)
+        .selectAll("rect")
+        .data(d => counts.filter(c => c.score === d))
+        .enter()
+        .append("rect")
+        .attr("x", d => x1(d.group))
+        .attr("y", d => y(d.count))
+        .attr("width", x1.bandwidth())
+        .attr("height", d => height - y(d.count))
+        .attr("fill", d => color(d.group));
+
+    // Legend
+    const legend = svg.append("g")
+        .attr("transform", `translate(${width - 450}, 0)`);
+
+    legend.selectAll("rect")
+        .data(groupLabels)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", (d, i) => i * 20)
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", d => color(d));
+
+    legend.selectAll("text")
+        .data(groupLabels)
+        .enter()
+        .append("text")
+        .attr("x", 20)
+        .attr("y", (d, i) => i * 20 + 10)
+        .text(d => d === "1" ? "difficulties" : "NO difficulties");
+    
+
+    
+    // X Axis Label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + margin.bottom - 10)
+        .text("Depression Frequency");
+
+    // Y Axis Label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -50 )
+        .text("Number of Responses");
 
 
-//         // Draw the box
-//         boxGroup.append("rect")
-//             .attr("x", -20)
-//             .attr("y", yScale(q3))
-//             .attr("height", yScale(q1) - yScale(q3))
-//             .attr("width", 40)
-//             .attr("fill", "lightblue")
-//             .attr("stroke", "black");
-
-//         // Draw the median line
-//         boxGroup.append("line")
-//             .attr("x1", -20)
-//             .attr("x2", 20)
-//             .attr("y1", yScale(median))
-//             .attr("y2", yScale(median))
-//             .attr("stroke", "red");
-
-//         // Draw the whiskers
-//         boxGroup.append("line")
-//             .attr("x1", 0)
-//             .attr("x2", 0)
-//             .attr("y1", yScale(min))
-//             .attr("y2", yScale(q1))
-//             .attr("stroke", "black");
-
-//         boxGroup.append("line")
-//             .attr("x1", 0)
-//             .attr("x2", 0)
-//             .attr("y1", yScale(q3))
-//             .attr("y2", yScale(max))
-//             .attr("stroke", "black");
-
-//         // Add labels
-//         boxGroup.append("text")
-//             .attr("x", 0)
-//             .attr("y", boxHeight + 20)
-//             .attr("text-anchor", "middle")
-//             .text(key === "1" ? "difficulties" : "NO difficulties");
-//     });
-
-//     // Title
-//     svgBox.append("text")
-//         .attr("x", boxWidth / 2)
-//         .attr("y", -10)
-//         .attr("text-anchor", "middle")
-//         .text("Box Plot of Depression Frequency by Treatment Status")
-//         .style("font-size", "16px");
-// }
+    // Title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -15)
+        .attr("text-anchor", "middle")
+        .text("Depression Score Distribution by Treatment Status")
+        .style("font-size", "22px");
+}
 
 ////////////// Bar Chart: Justice Involvement by Drug Use //////////
 function drawMovingBarGraph(data) {
@@ -931,7 +953,203 @@ function drawMovingBarGraph(data) {
 }
 
 
+// Function to create the scatter plot
+// Function to create the scatterplot
+// function createScatterPlot(data) {
+
+//     // Convert the relevant columns to numbers
+//     data.forEach(function(d) {
+//         d.x = +d.ASDSOVRL;  // ASDSOVRL for the x-axis (converted to number)
+//         d.y = +d.NOBOOKY2;  // NOBOOKY2 for the y-axis (converted to number)
+//     });
+
+//     // Set up dimensions and margins for the scatter plot
+//     const margin = { top: 20, right: 20, bottom: 60, left: 80 };
+//     const width = 600 - margin.left - margin.right;
+//     const height = 400 - margin.top - margin.bottom;
+
+//     // Create SVG container for the scatter plot
+//     const svg = d3.select("#scatter-plot").append("svg")
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom)
+//       .append("g")
+//         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//     // Set up the x-axis scale
+//     const xScale = d3.scaleLinear()
+//         .domain([0, d3.max(data, d => d.x)]) // Set domain based on the max value of ASDSOVRL
+//         .range([0, width]); // Map to the width of the SVG container
+
+//     // Set up the y-axis scale
+//     const yScale = d3.scaleLinear()
+//         .domain([0, d3.max(data, d => d.y)]) // Set domain based on the max value of NOBOOKY2
+//         .range([height, 0]); // Map to the height of the SVG container (inverted Y axis)
+
+//     // Add circles (data points) to the scatter plot
+//     svg.selectAll("circle")
+//         .data(data)
+//         .enter().append("circle")
+//         .attr("cx", d => xScale(d.x)) // X position based on ASDSOVRL
+//         .attr("cy", d => yScale(d.y)) // Y position based on NOBOOKY2
+//         .attr("r", 5) // Radius of the circles
+//         .attr("fill", "blue"); // Circle color
+
+//     // Calculate linear regression (slope m and intercept b)
+//     const n = data.length;
+//     const sumX = d3.sum(data, d => d.x);
+//     const sumY = d3.sum(data, d => d.y);
+//     const sumXY = d3.sum(data, d => d.x * d.y);
+//     const sumX2 = d3.sum(data, d => d.x * d.x);
+
+//     const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);  // Slope
+//     const b = (sumY - m * sumX) / n;  // Intercept
+
+//     // Define the trend line (y = mx + b)
+//     const trendLine = [
+//         { x: 0, y: m * 0 + b },  // Start of the line
+//         { x: d3.max(data, d => d.x), y: m * d3.max(data, d => d.x) + b }  // End of the line
+//     ];
+
+//     // Add the trend line to the plot
+//     svg.append("path")
+//         .data([trendLine])
+//         .attr("class", "trend-line")
+//         .attr("d", d3.line()
+//             .x(d => xScale(d.x))
+//             .y(d => yScale(d.y))
+//         )
+//         .attr("fill", "none")
+//         .attr("stroke", "red")
+//         .attr("stroke-width", 2);
+
+//     // Add X-axis to the plot
+//     const xAxis = svg.append("g")
+//         .attr("transform", "translate(0," + height + ")")
+//         .call(d3.axisBottom(xScale));
+
+//     // Add Y-axis to the plot
+//     const yAxis = svg.append("g")
+//         .call(d3.axisLeft(yScale));
+
+//     // Add x-axis label
+//     svg.append("text")
+//         .attr("class", "x-axis-label")
+//         .attr("x", width / 2)  // Position the label in the center of the x-axis
+//         .attr("y", height + 50)  // Position the label below the x-axis
+//         .style("text-anchor", "middle")  // Center align the label
+//         .text("Adult: Overall Severity Level of MDE Interference");  // Label for the x-axis
+
+//     // Add y-axis label
+//     svg.append("text")
+//         .attr("class", "y-axis-label")
+//         .attr("transform", "rotate(-90)")  // Rotate the label to be vertical
+//         .attr("x", -height / 2)  // Position the label in the center of the y-axis
+//         .attr("y", -60)  // Position the label to the left of the y-axis
+//         .style("text-anchor", "middle")  // Center align the label
+//         .text("NOBOOKY2: Arrests/Drug Use");  // Label for the y-axis (if relevant)
+
+//     // Tooltip behavior on mouseover for each data point
+//     const tooltip = d3.select("#tooltip1");
+//     svg.selectAll("circle")
+//         .on("mouseover", function(event, d) {
+//             tooltip.transition()
+//                 .duration(200)
+//                 .style("opacity", .9);
+//             tooltip.html(`ASDSOVRL: ${d.x}<br>NOBOOKY2: ${d.y}`)
+//                 .style("left", (event.pageX + 5) + "px")
+//                 .style("top", (event.pageY - 28) + "px");
+//         })
+//         .on("mouseout", function() {
+//             tooltip.transition()
+//                 .duration(500)
+//                 .style("opacity", 0);
+//         });
+// }
+
+function createBarChart(data) {
+    // Convert the relevant columns to numbers
+    data.forEach(function(d) {
+        d.x = +d.ASDSOVRL;  // Adult MDE interference level
+        d.y = +d.NOBOOKY2;  // Times arrested (NOBOOKY2)
+    });
+
+    // Set up dimensions and margins
+    const margin = { top: 40, right: 20, bottom: 60, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    // Create SVG container
+    const svg = d3.select("#scatter-plot").html("")  // clear the old scatter plot
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // X scale: just based on your two x values (0 and 99)
+    const xScale = d3.scaleBand()
+        .domain(data.map(d => d.x))
+        .range([0, width])
+        .padding(0.4);
+
+    // Y scale
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.y)])  // up to the max of NOBOOKY2
+        .nice()
+        .range([height, 0]);
+
+    // Create bars
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.x))
+        .attr("y", d => yScale(d.y))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => height - yScale(d.y))
+        .attr("fill", "steelblue");
+
+    // X Axis
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale));
+
+    // Y Axis
+    svg.append("g")
+        .call(d3.axisLeft(yScale));
+
+    // X Axis Label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + margin.bottom - 10)
+        .text("Depression Intensity");
+
+    // Y Axis Label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -margin.left + 20)
+        .text("Average arrest frequency");
+
+    // Title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "22px")
+        .text("Relationship between Depression Intensity and Average Arrest frequency");
+
+}
+
+
+
+// Initialize function that loads all the data and creates charts
 function init() {
+    // Existing data loading and processing for other charts
+
+    // Existing functionality for loading alcohol and marijuana use
     d3.tsv("data/spiral_clean.tsv", d => ({
         day: +d.day,
         gender: +d.GENDER_R,
@@ -969,8 +1187,14 @@ function init() {
         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
     });
 
-    d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
+    // Add the scatter plot data loading (does not affect previous code)
+    d3.tsv("data/depression_vs_arrested.tsv").then(data => {
+        console.log("Depression data loaded:", data);  // Check data format in the console
+        createBarChart(data);  // Call the new scatter plot function
+    });
 
+    // Other existing calls for drawing other visualizations (e.g., box plot, bar graph, etc.)
+    d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
     d3.tsv("data/merged_clean.tsv").then(data => {
         const renamedData = data.map(d => ({
             gender: +d.GENDER_R,
@@ -981,10 +1205,134 @@ function init() {
             HLTINMNT: d.HLTINMNT
         }));
 
-        d3.tsv("data/cleaned_depression_data.tsv").then(drawScatterPlot);
-        d3.tsv("data/cleaned_depression_data.tsv").then(drawBoxPlot);
+        // Assuming you also want to draw box plots, scatter plots, etc.
+        d3.tsv("data/depressionFrequency_treatmentStatus.tsv").then(drawHistogram);
     });
 }
 
-
+// Wait for window to load and then initialize
 window.addEventListener('load', init);
+
+// function init() {
+//     d3.tsv("data/spiral_clean.tsv", d => ({
+//         day: +d.day,
+//         gender: +d.GENDER_R,
+//         alcoholUse: +d.ALCDAYS,
+//         marijuanaUse: +d.MJDAY30A
+//     })).then(data => {
+//         const maleAlcohol = Array(31).fill(0);
+//         const femaleAlcohol = Array(31).fill(0);
+//         const maleMJ = Array(31).fill(0);
+//         const femaleMJ = Array(31).fill(0);
+
+//         data.forEach(d => {
+//             if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
+//                 if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
+//                 else femaleAlcohol[d.alcoholUse]++;
+//             }
+//             if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
+//                 if (d.gender === 1) maleMJ[d.marijuanaUse]++;
+//                 else femaleMJ[d.marijuanaUse]++;
+//             }
+//         });
+
+//         const sharedMax = d3.max([
+//             d3.max(maleAlcohol.slice(1)),
+//             d3.max(femaleAlcohol.slice(1)),
+//             d3.max(maleMJ.slice(1)),
+//             d3.max(femaleMJ.slice(1))
+//         ]);
+
+//         const caseScale = d3.scaleLinear()
+//             .domain([0, sharedMax])
+//             .range([0, 80]);
+
+//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
+//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
+//     });
+
+//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
+
+//     d3.tsv("data/merged_clean.tsv").then(data => {
+//         const renamedData = data.map(d => ({
+//             gender: +d.GENDER_R,
+//             timesArrested: +d.NOBOOKY2,
+//             alcoholDays: +d.ALCDAYS,
+//             depressionFrequency: +d.DSTDEPRS,
+//             ASDSOVRL: +d.ASDSOVRL,
+//             HLTINMNT: d.HLTINMNT
+//         }));
+
+//         d3.tsv("data/cleaned_depression_data.tsv").then(createScatterPlot);
+//         //d3.tsv("data/cleaned_depression_data.tsv").then(drawBoxPlot);
+//     });
+// }
+
+
+//window.addEventListener('load', init);
+
+// function init() {
+//     // Existing data loading and processing for other charts
+
+//     // Existing functionality for loading alcohol and marijuana use
+//     d3.tsv("data/spiral_clean.tsv", d => ({
+//         day: +d.day,
+//         gender: +d.GENDER_R,
+//         alcoholUse: +d.ALCDAYS,
+//         marijuanaUse: +d.MJDAY30A
+//     })).then(data => {
+//         const maleAlcohol = Array(31).fill(0);
+//         const femaleAlcohol = Array(31).fill(0);
+//         const maleMJ = Array(31).fill(0);
+//         const femaleMJ = Array(31).fill(0);
+
+//         data.forEach(d => {
+//             if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
+//                 if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
+//                 else femaleAlcohol[d.alcoholUse]++;
+//             }
+//             if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
+//                 if (d.gender === 1) maleMJ[d.marijuanaUse]++;
+//                 else femaleMJ[d.marijuanaUse]++;
+//             }
+//         });
+
+//         const sharedMax = d3.max([
+//             d3.max(maleAlcohol.slice(1)),
+//             d3.max(femaleAlcohol.slice(1)),
+//             d3.max(maleMJ.slice(1)),
+//             d3.max(femaleMJ.slice(1))
+//         ]);
+
+//         const caseScale = d3.scaleLinear()
+//             .domain([0, sharedMax])
+//             .range([0, 80]);
+
+//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
+//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
+//     });
+
+//     // Add the scatter plot data loading (does not affect previous code)
+//     d3.tsv("data/cleaned_depression_data.tsv").then(data => {
+//         console.log("Depression data loaded:", data);  // Check data format in the console
+//         createScatterPlot(data);  // Call the new scatter plot function
+//     });
+
+//     // Other existing calls for drawing other visualizations (e.g., box plot, bar graph, etc.)
+//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
+//     d3.tsv("data/merged_clean.tsv").then(data => {
+//         const renamedData = data.map(d => ({
+//             gender: +d.GENDER_R,
+//             timesArrested: +d.NOBOOKY2,
+//             alcoholDays: +d.ALCDAYS,
+//             depressionFrequency: +d.DSTDEPRS,
+//             ASDSOVRL: +d.ASDSOVRL,
+//             HLTINMNT: d.HLTINMNT
+//         }));
+
+//         // Assuming you also want to draw box plots, scatter plots, etc.
+//         d3.tsv("data/cleaned_depression_data.tsv").then(drawBoxPlot);
+//     });
+// }
+
+// window.addEventListener('load', init);
