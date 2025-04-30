@@ -37,9 +37,33 @@
 
 </p>
 <br>
+<br><br>
 <body>
   <h1>Correlation Matrix Heatmap by Gender</h1>
+  <p id="article-format">We wanted to see the correlation between depression frequency and various behavioral and social
+    factors, such as
+    substance use, work absenteeism, and criminal justice involvement, with a focus on gender differences.
+    We decided to implement a heatmap for this data visualization because it effectively displays the relationship
+    between the three variables at once. We created two side-by-side heatmaps (one for males and one for females) to
+    explore these relationships. The y-axis of each heatmap represents the number of times an individual was arrested
+    and booked in the past 12 months, while the x-axis (selectable via dropdown) allows users to examine different
+    variables: number of days alcohol was consumed, chewing tobacco was used, marijuana was consumed, or work was missed
+    within the past 30 days. The values on the x-axis were grouped into ranges to simplify the visualization and enhance
+    interpretability. The color of each cell indicates the average depression frequency for individuals in that group,
+    where blue reflects lower depression frequency and red reflects higher depression frequency. This visualization is
+    important because it helps uncover patterns in mental health outcomes across gender and behavioral dimensions,
+    allowing researchers and policymakers to identify high-risk populations and inform targeted interventions.
+    <br><br>
+  <h4>Key Findings</h4>
 
+  <p id="article-format">From looking at our heatmaps, we noticed a trend that through all the variables (alcohol,
+    tobacco, marijuana, and
+    work days missed), the color scheme in the Depression Frequency seemed to be more shades of red in the bottom left
+    corner and blue in the top right corner. This means that people were more likely to be depressed even if they did
+    not consume any alcohol, tobacco, marijuana, or didn’t miss any days of work in the past 30 days, and that this
+    causation of depression is more likely due to being arrested in the past 12 months.
+  </p>
+  </p>
   <div style="text-align: center; margin-top: 20px;">
     <label for="dropdownId" style="font-size: 18px; margin-right: 8px;">X-Axis:</label>
     <select id="dropdownId" style="font-size: 16px; padding: 4px 8px;">
@@ -67,7 +91,11 @@
     make patterns like occasional versus daily use stand out clearly. To support deeper exploration, we added tooltips
     that appear when hovering over each section. These show the exact number of respondents for a given substance,
     gender, and usage level, offering more detailed insight beyond what’s visible at a glance.
-    <br><br>As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
+  </p>
+  <br><br>
+  <h4>Key Findings</h4>
+  <p id="article-format">
+    As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
     while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
     drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
     genders.
@@ -85,6 +113,8 @@
     concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
     by substance.
   </p>
+
+
 
   <div class="spiral-legend-wrapper">
     <div class="spiral-legend">
