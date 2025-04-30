@@ -123,3 +123,22 @@ h1, h2, h3, h4 {
   font-size: 16px;
   line-height: 2;
 }
+
+
+#Bar-graph-about-depressionScore{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 2;
+
+}
+
+
+#histogram-about-depressedWorstMonth-vs-reportedDepression{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 2;
+}

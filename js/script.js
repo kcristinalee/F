@@ -595,7 +595,7 @@ function drawHistogram(data) {
         .attr("x", width / 2)
         .attr("y", -15)
         .attr("text-anchor", "middle")
-        .text("Depression Score Distribution by Treatment Status")
+        .text("Depression Frequency and Reported Mental Difficulties")
         .style("font-size", "22px");
 }
 
