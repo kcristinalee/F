@@ -14,7 +14,8 @@
 
 <h1>Introduction</h1>
 
-<p id="article-format">Understanding the intricate interplay between gender, mental illness, substance use, and criminal behavior is
+<p id="article-format">Understanding the intricate interplay between gender, mental illness, substance use, and criminal
+  behavior is
   essential to addressing broader issues of public health and social justice. Our project aims to visualize these
   relationships using the "Gender, Mental Illness, and Crime in the United States, 2004" dataset from ICPSR, which draws
   from the extensive National Survey on Drug Use and Health (NSDUH). With over 55,000 participants and thousands of
@@ -23,6 +24,19 @@
   visualizations, we seek to illuminate how these complex factors intersect, ultimately shedding light on systemic
   disparities and informing data-driven discussions around criminal justice and public health policy.</p>
 
+<h4><em>Exploratory Data Analysis</em></h4>
+<p id="article-format">
+  We performed an exploratory data analysis because not only is the data set extremely big, it is essential to clean and
+  preprocess the dataset to ensure accuracy and consistency in the visualization. Many of the original values in the
+  dataset used special codes such as 91 (indicating "0 days") and 93–99 (representing various forms of missing or
+  invalid data), which needed to be recoded or filtered out. For example, values like 91 were converted to 0, while 93
+  and above were treated as null to avoid skewing the analysis. This cleaning process helped reduce noise in the data
+  and allowed for meaningful comparisons across different demographic and behavioral segments. By transforming raw
+  survey responses into a structured format, the analysis became more robust and insights into patterns of depression in
+  relation to substance use and arrests became more apparent.
+
+</p>
+<br>
 <body>
   <h1>Correlation Matrix Heatmap by Gender</h1>
 
