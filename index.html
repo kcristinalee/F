@@ -31,11 +31,29 @@
     style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
   </div>
 
-  <p id="spiral-writeup">We wanted to explore the relationship between gender and marijuana and alcohol use to identify behavioral patterns before diving into how substance use might correlate with criminal justice involvement. This graph visualizes the number of days people reported using alcohol or marijuana in the past 30 days, split by gender. We excluded responses where the number of days was zero in order to focus specifically on individuals who do use these substances.
-    <br><br>As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1, while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between genders.
-    <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it is often used more intensely than alcohol, particularly by men.
-    <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially normalized across the broader population. Looking at how many people actually consumed each substance in the past 30 days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825 women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states. It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and by substance.
-    </p>
+  <p id="spiral-writeup">We wanted to explore the relationship between gender and marijuana and alcohol use to identify
+    behavioral patterns before diving into how substance use might correlate with criminal justice involvement. This
+    graph visualizes the number of days people reported using alcohol or marijuana in the past 30 days, split by gender.
+    We excluded responses where the number of days was zero in order to focus specifically on individuals who do use
+    these substances.
+    <br><br>As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
+    while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
+    drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
+    genders.
+    <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
+    daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
+    trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
+    women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
+    is often used more intensely than alcohol, particularly by men.
+    <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
+    normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
+    days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
+    women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
+    people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
+    It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
+    concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
+    by substance.
+  </p>
   <h1 class="spiral-title">Alcohol and Marijuana Use: Days Used in the Last Month</h1>
 
   <div class="spiral-legend-wrapper">
@@ -69,7 +87,32 @@
       </div>
     </div>
   </div>
-  
+
+  <p id="Two-bar-writeup">
+    This bar graph animates through different harder drugs to show the relationship between reported use and involvement
+    in the criminal justice system. For each drug, it compares the percentage of people who said they have ever used it
+    to those who have not, highlighting how many in each group have been arrested, placed on probation, or parole.
+    <br><br>To help focus attention on one substance at a time, the graph shows two bars per drug (one for users and one
+    for non-users) rather than displaying all six substances side-by-side at once. This allows viewers to see the stark
+    contrast within each pair without getting overwhelmed by visual clutter. The y-axis represents the percentage of
+    justice-involved individuals (either been arrested, placed on probation, or parole) with the axis going up to 100%,
+    while the x-axis simply distinguishes between “Used” and “Never Used.” The animation cycles through each substance
+    automatically every few seconds, with the corresponding drug name displayed clearly at the top, reinforcing which
+    substance is being analyzed.
+    <br><br>Across all six substances (PCP, Ecstasy, Heroin, Cocaine, Crack, and LSD), the same pattern emerges:
+    individuals who reported using the substance at least once were significantly more likely to have had criminal
+    justice involvement.
+    <br><br>For example, only 15.0% of those who never used PCP had been arrested, on probation, or parole, compared to
+    54.2% of users. The same disparity appears with heroin (15.3% vs. 62.1%), crack (14.4% vs. 62.7%), and cocaine
+    (11.7% vs. 46.1%). Even for drugs that are sometimes perceived as less "serious," like LSD and ecstasy, the
+    differences are still stark: LSD users were nearly four times as likely (48.8%) to have justice involvement than
+    non-users (12.7%), and ecstasy users showed a 43.2% rate compared to just 13.9% among non-users.
+    <br><br>This visualization helps illustrate that the strongest predictor of justice involvement among these groups
+    isn’t necessarily which drug was used, but whether any of them were used at all. While this doesn’t imply direct
+    causation, it points to how drug use often overlaps with other life circumstances that increase the likelihood of
+    interacting with the justice system.
+
+  </p>
   <h1>Impact of Substance Use on Probation, Parole, and Arrest Rates</h1>
   <div id="vis-moving" class="text-center"></div>
   <div id="tooltip"></div>

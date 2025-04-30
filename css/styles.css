@@ -116,7 +116,15 @@ h1 {
 }
 
 #spiral-writeup {
-  max-width: 1000px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 2;
+}
+
+#Two-bar-writeup {
+  max-width: 1100px;
   margin: 0 auto;
   padding: 1rem;
   font-size: 16px;
