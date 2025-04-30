@@ -38,6 +38,73 @@
 </p>
 <br>
 <br><br>
+<h1 class="spiral-title">Exploring Gender Differences in Alcohol and Marijuana Use</h1>
+<p id="article-format">We wanted to explore the relationship between gender and marijuana and alcohol use to identify
+  behavioral patterns before diving into how substance use might correlate with criminal justice involvement. This
+  graph visualizes the number of days people reported using alcohol or marijuana in the past 30 days, split by gender.
+  We excluded responses where the number of days was zero in order to focus specifically on individuals who do use
+  these substances.
+  <br><br>The graph displays the number of days individuals reported using alcohol or marijuana within a 30-day
+  period, separated by gender. We chose a spiral format to make differences in frequency visually intuitive, and to
+  make patterns like occasional versus daily use stand out clearly. To support deeper exploration, we added tooltips
+  that appear when hovering over each section. These show the exact number of respondents for a given substance,
+  gender, and usage level, offering more detailed insight beyond what’s visible at a glance.
+</p>
+<br><br>
+<h4>Key Findings</h4>
+<p id="article-format">
+  As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
+  while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
+  drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
+  genders.
+  <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
+  daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
+  trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
+  women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
+  is often used more intensely than alcohol, particularly by men.
+  <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
+  normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
+  days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
+  women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
+  people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
+  It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
+  concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
+  by substance.
+</p>
+
+<div class="spiral-legend-wrapper">
+  <div class="spiral-legend">
+    <span class="legend-entry">
+      <span class="legend-color male"></span>
+      Male
+    </span>
+    <span class="legend-entry">
+      <span class="legend-color female"></span>
+      Female
+    </span>
+  </div>
+</div>
+<div class="spiral-wrapper">
+  <div class="spiral-section">
+    <h2>Alcohol</h2>
+    <div id="spiral-alcohol"></div>
+    <div id="spiral-alcohol-controls" class="spiral-controls">
+      <button onclick="toggleStats('alcohol')">Show Stats</button>
+      <div id="alcohol-stats" class="spiral-stats hidden"></div>
+    </div>
+  </div>
+
+  <div class="spiral-section">
+    <h2>Marijuana</h2>
+    <div id="spiral-mj"></div>
+    <div id="spiral-mj-controls" class="spiral-controls">
+      <button onclick="toggleStats('mj')">Show Stats</button>
+      <div id="mj-stats" class="spiral-stats hidden"></div>
+    </div>
+  </div>
+</div>
+<br><br><br><br>
+
 
 <body>
   <h1>Correlation Matrix Heatmap by Gender</h1>
@@ -81,73 +148,6 @@
     style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
   </div>
   <br><br>
-  <h1 class="spiral-title">Exploring Gender Differences in Alcohol and Marijuana Use</h1>
-  <p id="article-format">We wanted to explore the relationship between gender and marijuana and alcohol use to identify
-    behavioral patterns before diving into how substance use might correlate with criminal justice involvement. This
-    graph visualizes the number of days people reported using alcohol or marijuana in the past 30 days, split by gender.
-    We excluded responses where the number of days was zero in order to focus specifically on individuals who do use
-    these substances.
-    <br><br>The graph displays the number of days individuals reported using alcohol or marijuana within a 30-day
-    period, separated by gender. We chose a spiral format to make differences in frequency visually intuitive, and to
-    make patterns like occasional versus daily use stand out clearly. To support deeper exploration, we added tooltips
-    that appear when hovering over each section. These show the exact number of respondents for a given substance,
-    gender, and usage level, offering more detailed insight beyond what’s visible at a glance.
-  </p>
-  <br><br>
-  <h4>Key Findings</h4>
-  <p id="article-format">
-    As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
-    while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
-    drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
-    genders.
-    <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
-    daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
-    trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
-    women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
-    is often used more intensely than alcohol, particularly by men.
-    <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
-    normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
-    days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
-    women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
-    people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
-    It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
-    concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
-    by substance.
-  </p>
-
-  <div class="spiral-legend-wrapper">
-    <div class="spiral-legend">
-      <span class="legend-entry">
-        <span class="legend-color male"></span>
-        Male
-      </span>
-      <span class="legend-entry">
-        <span class="legend-color female"></span>
-        Female
-      </span>
-    </div>
-  </div>
-  <div class="spiral-wrapper">
-    <div class="spiral-section">
-      <h2>Alcohol</h2>
-      <div id="spiral-alcohol"></div>
-      <div id="spiral-alcohol-controls" class="spiral-controls">
-        <button onclick="toggleStats('alcohol')">Show Stats</button>
-        <div id="alcohol-stats" class="spiral-stats hidden"></div>
-      </div>
-    </div>
-
-    <div class="spiral-section">
-      <h2>Marijuana</h2>
-      <div id="spiral-mj"></div>
-      <div id="spiral-mj-controls" class="spiral-controls">
-        <button onclick="toggleStats('mj')">Show Stats</button>
-        <div id="mj-stats" class="spiral-stats hidden"></div>
-      </div>
-    </div>
-  </div>
-  <br><br><br><br>
-
   <h1>Impact of Substance Use on Probation, Parole, and Arrest Rates</h1>
   <p id="article-format">
     This bar graph animates through different harder drugs to show the relationship between reported use and involvement
@@ -184,25 +184,28 @@
   <div id="vis-moving" class="text-center"></div>
   <div id="tooltip"></div>
 
-  
+
   <h1>Depression Analysis</h1>
-  <p id="Bar-graph-about-depressionScore">
+  <p id="article-format">
     This bar graph illustrates the relationship between adults' overall severity of major depressive episode (MDE)
-     interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12 months (NOBOOKY2). 
-     The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no interference) 
-     to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
+    interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12
+    months (NOBOOKY2).
+    The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no
+    interference)
+    to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
 
-     <br><br>From the graph, we observe that individuals with minimal or no depression interference (level 1)
-     reported the highest average number of arrests. Interestingly, as the severity of depression interference increases, 
-     the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level 5). 
+    <br><br>From the graph, we observe that individuals with minimal or no depression interference (level 1)
+    reported the highest average number of arrests. Interestingly, as the severity of depression interference increases,
+    the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level
+    5).
 
-     <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less 
-     involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or 
-     other social factors that limit engagement in arrest-related behavior.
+    <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less
+    involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or
+    other social factors that limit engagement in arrest-related behavior.
 
-     <br><br>This data highlights a counterintuitive but important insight: less visible mental 
-     health struggles might coincide with more externalized behaviors like arrest, while those facing more 
-     intense internal struggles may be more withdrawn or supervised.
+    <br><br>This data highlights a counterintuitive but important insight: less visible mental
+    health struggles might coincide with more externalized behaviors like arrest, while those facing more
+    intense internal struggles may be more withdrawn or supervised.
   </p>
 
   <div class="d-flex justify-content-center mb-5">
@@ -211,9 +214,10 @@
 
 
 
-  <h1>Depression Levels Among Individuals With and Without Mental Health Challenges</h1>
-  <p id="histogram-about-depressedWorstMonth-vs-reportedDepression">
-    This grouped histogram displays how often individuals reported feeling depressed during their worst month (DSTDEPRS), 
+  <h1>Depression Levels Among Individuals With & Without Mental Health Challenges</h1>
+  <p id="article-format">
+    This grouped histogram displays how often individuals reported feeling depressed during their worst month
+    (DSTDEPRS),
     separated by whether they reported experiencing mental or emotional difficulties (HLTINMNT).
 
     <br><br>The x-axis represents depression frequency scores (1 = least often, 5 = most often).
@@ -222,16 +226,16 @@
     Blue = individuals who reported mental/emotional difficulties
     Orange = individuals who did not report such difficulties
 
-    <br><br>The chart highlights a clear pattern: those with higher depression frequency scores (4 and 5) were 
+    <br><br>The chart highlights a clear pattern: those with higher depression frequency scores (4 and 5) were
     much more likely to report mental or emotional difficulties. Conversely, individuals with lower depression
-     frequency scores reported fewer difficulties.
+    frequency scores reported fewer difficulties.
 
-     <br><br>This pattern underscores the relationship between depression severity and self-reported emotional 
-     struggles, suggesting that those who experience depressive episodes more frequently are more likely to 
-     acknowledge broader mental or emotional challenges.
+    <br><br>This pattern underscores the relationship between depression severity and self-reported emotional
+    struggles, suggesting that those who experience depressive episodes more frequently are more likely to
+    acknowledge broader mental or emotional challenges.
   </p>
   <div class="d-flex justify-content-center mb-5">
-    <div id="box-plot"></div>   
+    <div id="box-plot"></div>
   </div>
 
   <script src="js/script.js"></script>
