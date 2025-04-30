@@ -30,24 +30,36 @@
   <div id="tooltip1"
     style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
   </div>
+  <h1 class="spiral-title">Alcohol and Marijuana Use: Days Used in the Last Month</h1>
 
-  <h1 class="text-center my-4">Alcohol and Marijuana Use: Days Used in the Last Month</h1>
-  
-  <div class="d-flex justify-content-center mb-5">
-    <div class="p-3 text-center">
+  <div class="spiral-legend-wrapper">
+    <div class="spiral-legend">
+      <span class="legend-entry">
+        <span class="legend-color male"></span>
+        Male
+      </span>
+      <span class="legend-entry">
+        <span class="legend-color female"></span>
+        Female
+      </span>
+    </div>
+  </div>
+  <div class="spiral-wrapper">
+    <div class="spiral-section">
       <h2>Alcohol</h2>
       <div id="spiral-alcohol"></div>
-      <div id="spiral-alcohol-controls" style="margin-top: 10px;">
+      <div id="spiral-alcohol-controls" class="spiral-controls">
         <button onclick="toggleStats('alcohol')">Show Stats</button>
-        <div id="alcohol-stats" style="display: none; font-size: 14px; margin-top: 5px;"></div>
+        <div id="alcohol-stats" class="spiral-stats hidden"></div>
       </div>
     </div>
-    <div class="p-3 text-center">
+
+    <div class="spiral-section">
       <h2>Marijuana</h2>
       <div id="spiral-mj"></div>
-      <div id="spiral-mj-controls" style="margin-top: 10px;">
+      <div id="spiral-mj-controls" class="spiral-controls">
         <button onclick="toggleStats('mj')">Show Stats</button>
-        <div id="mj-stats" style="display: none; font-size: 14px; margin-top: 5px;"></div>
+        <div id="mj-stats" class="spiral-stats hidden"></div>
       </div>
     </div>
   </div>
@@ -56,8 +68,6 @@
   <div id="vis-moving" class="text-center"></div>
   <div id="tooltip"></div>
 
-
-  <!-- New Divs for the Scatter Plot and Box Plot -->
   <h1>Depression Analysis</h1>
   <div class="d-flex justify-content-center mb-5">
     <div id="scatter-plot"></div>

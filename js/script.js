@@ -84,19 +84,17 @@ d3.tsv("data/merged_clean.tsv").then(data => {
     const maleData = renamedData.filter(d => d.gender === 1);
     const femaleData = renamedData.filter(d => d.gender === 0);
 
-    // Define the x-axis options
     const xAxisOptions = ["alcoholDays", "chewDays", "marijuanaDays", "workDaysMissed"];
 
 
     const dropdown = d3.select("#dropdownId");
 
     dropdown.on("change", function () {
-        const selectedX = dropdown.property("value");  // Using D3 to access the value
+        const selectedX = dropdown.property("value");
         console.log("Dropdown value changed:", selectedX);
         updateHeatmaps(selectedX);
     });
 
-    // Add options
     dropdown.selectAll("option")
         .data(xAxisOptions)
         .enter()
@@ -104,7 +102,6 @@ d3.tsv("data/merged_clean.tsv").then(data => {
         .text(d => d)
         .attr("value", d => d);
 
-    // Save globally (so updateHeatmaps can access)
     window.maleData = maleData;
     window.femaleData = femaleData;
 
@@ -133,8 +130,6 @@ function drawHeatmap(svg, dataset, label, selectedX) {
     const yAxisValues = Array.from(
         new Set(dataset.map(d => d.timesArrested).filter(v => v >= 0 && v <= 50))
     ).sort((a, b) => a - b);
-
-    //console.log("1:", xAxisValues);
 
     const size = 500;
     const cellSize = 40
@@ -229,7 +224,6 @@ function drawHeatmap(svg, dataset, label, selectedX) {
             .attr("stop-color", colorScale(minVal + t * (maxVal - minVal)));
     }
 
-    // X-axis Label
     svg.append("text")
         .attr("x", (xAxisValues.length * cellSize) / 2 + 100)
         .attr("y", yAxisValues.length * cellSize + margin.top + 120)
@@ -238,7 +232,6 @@ function drawHeatmap(svg, dataset, label, selectedX) {
         .style("font-size", "14px")
         .style("font-weight", "bold");
 
-    // Y-axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", `translate(-70, ${(yAxisValues.length * cellSize) / 2 + margin.top}) rotate(-90)`)
@@ -246,11 +239,9 @@ function drawHeatmap(svg, dataset, label, selectedX) {
         .style("font-size", "14px")
         .style("font-weight", "bold");
 
-    // Add a color legend
     const legendWidth = 200;
     const legendHeight = 20;
 
-    // Append the gradient rectangle
     svg.append("rect")
         .attr("x", (width - legendWidth) / 2 + margin.left - 200)
         .attr("y", height + margin.top - 50)
@@ -258,20 +249,18 @@ function drawHeatmap(svg, dataset, label, selectedX) {
         .attr("height", legendHeight)
         .style("fill", `url(#legend-gradient-${label})`);
 
-    // Add a scale for the legend
     const legendScale = d3.scaleLinear()
         .domain([minVal, maxVal])
         .range([(width - legendWidth) / 2 + margin.left, (width + legendWidth) / 2 + margin.left]);
 
     const legendAxis = d3.axisBottom(legendScale)
         .ticks(5)
-        .tickFormat(d3.format(".2f")); // format numbers to 2 decimal places
+        .tickFormat(d3.format(".2f"));
 
     svg.append("g")
         .attr("transform", `translate(0, ${height + margin.top + 70})`)
         .call(legendAxis);
 
-    // Add a label for the color legend
     svg.append("text")
         .attr("x", width / 2 + margin.left - 200)
         .attr("y", height + margin.top - 80)
@@ -279,8 +268,6 @@ function drawHeatmap(svg, dataset, label, selectedX) {
         .text("Increasing Average Depression Frequency ➔")
         .style("font-size", "14px")
         .style("font-weight", "bold");
-
-
 }
 
 function group(day) {
@@ -291,11 +278,8 @@ function group(day) {
     if (day >= 16 && day <= 20) return "16-20";
     if (day >= 21 && day <= 25) return "21-25";
     if (day >= 26 && day <= 30) return "26-30";
-    return null;  // should not happen if filtered correctly
+    return null;
 }
-
-
-
 
 ////////  Spiral Graph  /////////
 const svgAlcohol = d3.select('#spiral-alcohol')
@@ -303,14 +287,14 @@ const svgAlcohol = d3.select('#spiral-alcohol')
     .attr('width', 600)
     .attr('height', 600)
     .append('g')
-    .attr('transform', `translate(${600 / 2},${600 / 2})`);
+    .attr('transform', `translate(${600 / 2 - 100},${600 / 2})`);
 
 const svgMarijuana = d3.select('#spiral-mj')
     .append('svg')
     .attr('width', 600)
     .attr('height', 600)
     .append('g')
-    .attr('transform', `translate(${600 / 2},${600 / 2})`);
+    .attr('transform', `translate(${600 / 2 - 100},${600 / 2})`);
 
 const spiralArc = (fromRadius, toRadius, width, fromAngle, toAngle) => {
     const x1 = fromRadius * Math.sin(fromAngle);
@@ -410,9 +394,7 @@ function createVis(svg, maleCounts, femaleCounts, caseScale, labelPrefix) {
             .style('font-size', '12px')
             .style('font-weight', 'bold')
             .style('fill', 'black');
-
     }
-
 }
 
 ////////////// Bar Chart: Justice Involvement by Drug Use //////////
@@ -510,178 +492,21 @@ function drawMovingBarGraph(data) {
         .style("font-size", "12px");
 }
 
-// function drawScatterPlot(data) {
-//     const scatterMargin = { top: 20, right: 30, bottom: 30, left: 40 };
-//     const scatterWidth = 800 - scatterMargin.left - scatterMargin.right;
-//     const scatterHeight = 400 - scatterMargin.top - scatterMargin.bottom;
-
-//     const svgScatter = d3.select("#scatter-plot")
-//         .append("svg")
-//         .attr("width", scatterWidth + scatterMargin.left + scatterMargin.right)
-//         .attr("height", scatterHeight + scatterMargin.top + scatterMargin.bottom)
-//         .append("g")
-//         .attr("transform", `translate(${scatterMargin.left},${scatterMargin.top})`);
-
-//     const xScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.NOBOOKY2)])
-//         .range([0, scatterWidth]);
-
-//     const yScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.ASDSOVRL)])
-//         .range([scatterHeight, 0]);
-
-//     svgScatter.append("g")
-//         .attr("transform", `translate(0,${scatterHeight})`)
-//         .call(d3.axisBottom(xScale).ticks(10));
-
-//     svgScatter.append("g")
-//         .call(d3.axisLeft(yScale).ticks(10));
-
-//     svgScatter.selectAll("circle")
-//         .data(data)
-//         .enter()
-//         .append("circle")
-//         .attr("cx", d => xScale(d.NOBOOKY2))
-//         .attr("cy", d => yScale(d.ASDSOVRL))
-//         .attr("r", 5)
-//         .attr("fill", d => d.HLTINMNT === "1" ? "steelblue" : "orange")
-//         .attr("opacity", 0.7)
-//         .on("mouseover", function (event, d) {
-//             d3.select("#tooltip")
-//                 .style("display", "block")
-//                 .style("left", (event.pageX + 10) + "px")
-//                 .style("top", (event.pageY - 20) + "px")
-//                 .html(`Times Arrested: ${d.NOBOOKY2}<br>Depression Intensity: ${d.ASDSOVRL}<br>Treatment Status: ${d.HLTINMNT === "1" ? "Received Treatment" : "No Treatment"}`);
-//         })
-//         .on("mousemove", function (event) {
-//             d3.select("#tooltip")
-//                 .style("left", (event.pageX + 10) + "px")
-//                 .style("top", (event.pageY - 20) + "px");
-//         })
-//         .on("mouseout", function () {
-//             d3.select("#tooltip").style("display", "none");
-//         });
-
-//     // Title
-//     svgScatter.append("text")
-//         .attr("x", scatterWidth / 2)
-//         .attr("y", -10)
-//         .attr("text-anchor", "middle")
-//         .text("Depression Intensity vs. Times Arrested")
-//         .style("font-size", "16px");
-// }
-
-
-// function drawBoxPlot(data) {
-//     const boxMargin = { top: 20, right: 30, bottom: 30, left: 40 };
-//     const boxWidth = 800 - boxMargin.left - boxMargin.right;
-//     const boxHeight = 400 - boxMargin.top - boxMargin.bottom;
-
-//     const svgBox = d3.select("#box-plot")
-//         .append("svg")
-//         .attr("width", boxWidth + boxMargin.left + boxMargin.right)
-//         .attr("height", boxHeight + boxMargin.top + boxMargin.bottom)
-//         .append("g")
-//         .attr("transform", `translate(${boxMargin.left},${boxMargin.top})`);
-
-//     // Prepare data for box plot
-
-//     var treatmentGroups = d3.group(data, d => d.HLTINMNT);
-
-
-//     const yScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.DSTDEPRS)]) // Depression frequency score
-//         .range([boxHeight, 0]);
-
-//     // Add y-axis
-//     svgBox.append("g")
-//         .call(d3.axisLeft(yScale).ticks(10));
-
-//     // Create box plots for each treatment group
-//     treatmentGroups.forEach((group, i) => {
-//         const groupData = group.map(d => d.DSTDEPRS);
-//         console.log(groupData);
-
-//         // Calculate quartiles
-//         const q1 = d3.quantile(groupData, 0.25);
-//         const median = d3.quantile(groupData, 0.5);
-//         const q3 = d3.quantile(groupData, 0.75);
-//         const iqr = q3 - q1; // Interquartile range
-//         const min = d3.min(groupData.filter(d => d >= (q1 - 1.5 * iqr))); // Lower whisker
-//         const max = d3.max(groupData.filter(d => d <= (q3 + 1.5 * iqr))); // Upper whisker
-
-//         // Create a group for each box plot
-//         const boxGroup = svgBox.append("g")
-//             .attr("transform", `translate(${i * 100 + 50},0)`); // Position boxes
-
-//         // Draw the box
-//         boxGroup.append("rect")
-//             .attr("x", -20)
-//             .attr("y", yScale(q3))
-//             .attr("height", yScale(q1) - yScale(q3))
-//             .attr("width", 40)
-//             .attr("fill", "lightblue")
-//             .attr("stroke", "black");
-
-//         // Draw the median line
-//         boxGroup.append("line")
-//             .attr("x1", -20)
-//             .attr("x2", 20)
-//             .attr("y1", yScale(median))
-//             .attr("y2", yScale(median))
-//             .attr("stroke", "black");
-
-//         // Draw the whiskers
-//         boxGroup.append("line")
-//             .attr("x1", 0)
-//             .attr("x2", 0)
-//             .attr("y1", yScale(min))
-//             .attr("y2", yScale(q1))
-//             .attr("stroke", "black");
-
-//         boxGroup.append("line")
-//             .attr("x1", 0)
-//             .attr("x2", 0)
-//             .attr("y1", yScale(q3))
-//             .attr("y2", yScale(max))
-//             .attr("stroke", "black");
-
-//         // Add labels
-//         boxGroup.append("text")
-//             .attr("x", 0)
-//             .attr("y", boxHeight + 20)
-//             .attr("text-anchor", "middle")
-//             .text(group.key === "1" ? "Received Treatment" : "No Treatment");
-//     });
-
-//     // Title
-//     svgBox.append("text")
-//         .attr("x", boxWidth / 2)
-//         .attr("y", -10)
-//         .attr("text-anchor", "middle")
-//         .text("Box Plot of Depression Frequency by Treatment Status")
-//         .style("font-size", "16px");
-// }
-
-
-
 function drawHistogram(data) {
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    const svg = d3.select("#box-plot") // Same container, reuse ID
+    const svg = d3.select("#box-plot")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Prepare score and group combinations
     const scoreRange = [1, 2, 3, 4, 5];
     const groupLabels = ["1", "2"];
 
-    // Count how many responses per score per group
     const counts = [];
     scoreRange.forEach(score => {
         groupLabels.forEach(group => {
@@ -691,7 +516,6 @@ function drawHistogram(data) {
         });
     });
 
-    // Scales
     const x0 = d3.scaleBand()
         .domain(scoreRange)
         .range([0, width])
@@ -710,7 +534,6 @@ function drawHistogram(data) {
         .domain(groupLabels)
         .range(["steelblue", "orange"]);
 
-    // Axes
     svg.append("g")
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(x0).tickFormat(d => `Score ${d}`));
@@ -718,7 +541,6 @@ function drawHistogram(data) {
     svg.append("g")
         .call(d3.axisLeft(y));
 
-    // Bars
     svg.selectAll("g.bar-group")
         .data(scoreRange)
         .enter()
@@ -735,7 +557,6 @@ function drawHistogram(data) {
         .attr("height", d => height - y(d.count))
         .attr("fill", d => color(d.group));
 
-    // Legend
     const legend = svg.append("g")
         .attr("transform", `translate(${width - 450}, 0)`);
 
@@ -757,16 +578,12 @@ function drawHistogram(data) {
         .attr("y", (d, i) => i * 20 + 10)
         .text(d => d === "1" ? "difficulties" : "NO difficulties");
 
-
-
-    // X Axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + margin.bottom - 10)
         .text("Depression Frequency");
 
-    // Y Axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
@@ -774,8 +591,6 @@ function drawHistogram(data) {
         .attr("y", -50)
         .text("Number of Responses");
 
-
-    // Title
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", -15)
@@ -952,153 +767,33 @@ function drawMovingBarGraph(data) {
     }, 3000);
 }
 
-
-// Function to create the scatter plot
-// Function to create the scatterplot
-// function createScatterPlot(data) {
-
-//     // Convert the relevant columns to numbers
-//     data.forEach(function(d) {
-//         d.x = +d.ASDSOVRL;  // ASDSOVRL for the x-axis (converted to number)
-//         d.y = +d.NOBOOKY2;  // NOBOOKY2 for the y-axis (converted to number)
-//     });
-
-//     // Set up dimensions and margins for the scatter plot
-//     const margin = { top: 20, right: 20, bottom: 60, left: 80 };
-//     const width = 600 - margin.left - margin.right;
-//     const height = 400 - margin.top - margin.bottom;
-
-//     // Create SVG container for the scatter plot
-//     const svg = d3.select("#scatter-plot").append("svg")
-//         .attr("width", width + margin.left + margin.right)
-//         .attr("height", height + margin.top + margin.bottom)
-//       .append("g")
-//         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-//     // Set up the x-axis scale
-//     const xScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.x)]) // Set domain based on the max value of ASDSOVRL
-//         .range([0, width]); // Map to the width of the SVG container
-
-//     // Set up the y-axis scale
-//     const yScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.y)]) // Set domain based on the max value of NOBOOKY2
-//         .range([height, 0]); // Map to the height of the SVG container (inverted Y axis)
-
-//     // Add circles (data points) to the scatter plot
-//     svg.selectAll("circle")
-//         .data(data)
-//         .enter().append("circle")
-//         .attr("cx", d => xScale(d.x)) // X position based on ASDSOVRL
-//         .attr("cy", d => yScale(d.y)) // Y position based on NOBOOKY2
-//         .attr("r", 5) // Radius of the circles
-//         .attr("fill", "blue"); // Circle color
-
-//     // Calculate linear regression (slope m and intercept b)
-//     const n = data.length;
-//     const sumX = d3.sum(data, d => d.x);
-//     const sumY = d3.sum(data, d => d.y);
-//     const sumXY = d3.sum(data, d => d.x * d.y);
-//     const sumX2 = d3.sum(data, d => d.x * d.x);
-
-//     const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);  // Slope
-//     const b = (sumY - m * sumX) / n;  // Intercept
-
-//     // Define the trend line (y = mx + b)
-//     const trendLine = [
-//         { x: 0, y: m * 0 + b },  // Start of the line
-//         { x: d3.max(data, d => d.x), y: m * d3.max(data, d => d.x) + b }  // End of the line
-//     ];
-
-//     // Add the trend line to the plot
-//     svg.append("path")
-//         .data([trendLine])
-//         .attr("class", "trend-line")
-//         .attr("d", d3.line()
-//             .x(d => xScale(d.x))
-//             .y(d => yScale(d.y))
-//         )
-//         .attr("fill", "none")
-//         .attr("stroke", "red")
-//         .attr("stroke-width", 2);
-
-//     // Add X-axis to the plot
-//     const xAxis = svg.append("g")
-//         .attr("transform", "translate(0," + height + ")")
-//         .call(d3.axisBottom(xScale));
-
-//     // Add Y-axis to the plot
-//     const yAxis = svg.append("g")
-//         .call(d3.axisLeft(yScale));
-
-//     // Add x-axis label
-//     svg.append("text")
-//         .attr("class", "x-axis-label")
-//         .attr("x", width / 2)  // Position the label in the center of the x-axis
-//         .attr("y", height + 50)  // Position the label below the x-axis
-//         .style("text-anchor", "middle")  // Center align the label
-//         .text("Adult: Overall Severity Level of MDE Interference");  // Label for the x-axis
-
-//     // Add y-axis label
-//     svg.append("text")
-//         .attr("class", "y-axis-label")
-//         .attr("transform", "rotate(-90)")  // Rotate the label to be vertical
-//         .attr("x", -height / 2)  // Position the label in the center of the y-axis
-//         .attr("y", -60)  // Position the label to the left of the y-axis
-//         .style("text-anchor", "middle")  // Center align the label
-//         .text("NOBOOKY2: Arrests/Drug Use");  // Label for the y-axis (if relevant)
-
-//     // Tooltip behavior on mouseover for each data point
-//     const tooltip = d3.select("#tooltip1");
-//     svg.selectAll("circle")
-//         .on("mouseover", function(event, d) {
-//             tooltip.transition()
-//                 .duration(200)
-//                 .style("opacity", .9);
-//             tooltip.html(`ASDSOVRL: ${d.x}<br>NOBOOKY2: ${d.y}`)
-//                 .style("left", (event.pageX + 5) + "px")
-//                 .style("top", (event.pageY - 28) + "px");
-//         })
-//         .on("mouseout", function() {
-//             tooltip.transition()
-//                 .duration(500)
-//                 .style("opacity", 0);
-//         });
-// }
-
 function createBarChart(data) {
-    // Convert the relevant columns to numbers
     data.forEach(function (d) {
-        d.x = +d.ASDSOVRL;  // Adult MDE interference level
-        d.y = +d.NOBOOKY2;  // Times arrested (NOBOOKY2)
+        d.x = +d.ASDSOVRL;
+        d.y = +d.NOBOOKY2;
     });
 
-    // Set up dimensions and margins
     const margin = { top: 40, right: 20, bottom: 60, left: 60 };
     const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    // Create SVG container
-    const svg = d3.select("#scatter-plot").html("")  // clear the old scatter plot
+    const svg = d3.select("#scatter-plot").html("")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // X scale: just based on your two x values (0 and 99)
     const xScale = d3.scaleBand()
         .domain(data.map(d => d.x))
         .range([0, width])
         .padding(0.4);
 
-    // Y scale
     const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.y)])  // up to the max of NOBOOKY2
+        .domain([0, d3.max(data, d => d.y)])
         .nice()
         .range([height, 0]);
 
-    // Create bars
     svg.selectAll(".bar")
         .data(data)
         .enter().append("rect")
@@ -1109,23 +804,19 @@ function createBarChart(data) {
         .attr("height", d => height - yScale(d.y))
         .attr("fill", "steelblue");
 
-    // X Axis
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScale));
 
-    // Y Axis
     svg.append("g")
         .call(d3.axisLeft(yScale));
 
-    // X Axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + margin.bottom - 10)
         .text("Depression Intensity");
 
-    // Y Axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
@@ -1133,7 +824,6 @@ function createBarChart(data) {
         .attr("y", -margin.left + 20)
         .text("Average arrest frequency");
 
-    // Title
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", -10)
@@ -1143,131 +833,10 @@ function createBarChart(data) {
 
 }
 
-// function init() {
-
-//     d3.tsv("data/spiral_clean.tsv", d => ({
-//         day: +d.day,
-//         gender: +d.GENDER_R,
-//         alcoholUse: +d.ALCDAYS,
-//         marijuanaUse: +d.MJDAY30A
-//     })).then(data => {
-//         const maleAlcohol = Array(31).fill(0);
-//         const femaleAlcohol = Array(31).fill(0);
-//         const maleMJ = Array(31).fill(0);
-//         const femaleMJ = Array(31).fill(0);
-
-//         const totalMales = data.filter(d => d.gender === 1).length;
-//         const totalFemales = data.filter(d => d.gender === 0).length;
-
-//         console.log("Total Males:", totalMales);
-//         console.log("Total Females:", totalFemales);
-
-//         d3.select("#spiral-alcohol")
-//             .append("div")
-//             .html(`Total Male Respondents: ${totalMales}`)
-//             .style("text-align", "center")
-//             .style("margin-top", "10px")
-//             .style("font-size", "14px");
-
-//         d3.select("#spiral-mj")
-//             .append("div")
-//             .html(`Total Female Respondents: ${totalFemales}`)
-//             .style("text-align", "center")
-//             .style("margin-top", "10px")
-//             .style("font-size", "14px");
-
-//         let totalAlcoholMale = 0, countAlcoholMale = 0;
-//         let totalAlcoholFemale = 0, countAlcoholFemale = 0;
-//         let totalMJMale = 0, countMJMale = 0;
-//         let totalMJFemale = 0, countMJFemale = 0;
-
-//         data.forEach(d => {
-//             if (d.alcoholUse >= 1 && d.alcoholUse <= 30) {
-//                 if (d.gender === 1) {
-//                     maleAlcohol[d.alcoholUse]++;
-//                     totalAlcoholMale += d.alcoholUse;
-//                     countAlcoholMale++;
-//                 } else {
-//                     femaleAlcohol[d.alcoholUse]++;
-//                     totalAlcoholFemale += d.alcoholUse;
-//                     countAlcoholFemale++;
-//                 }
-//             }
-//             if (d.marijuanaUse >= 1 && d.marijuanaUse <= 30) {
-//                 if (d.gender === 1) {
-//                     maleMJ[d.marijuanaUse]++;
-//                     totalMJMale += d.marijuanaUse;
-//                     countMJMale++;
-//                 } else {
-//                     femaleMJ[d.marijuanaUse]++;
-//                     totalMJFemale += d.marijuanaUse;
-//                     countMJFemale++;
-//                 }
-//             }
-//         });
-
-//         const avgAlcoholMale = (totalAlcoholMale / countAlcoholMale).toFixed(1);
-//         const avgAlcoholFemale = (totalAlcoholFemale / countAlcoholFemale).toFixed(1);
-//         const avgMJMale = (totalMJMale / countMJMale).toFixed(1);
-//         const avgMJFemale = (totalMJFemale / countMJFemale).toFixed(1);
-
-//         d3.select('#spiral-alcohol')
-//             .append('div')
-//             .html(`<strong>Average Alcohol Use:</strong><br>Male: ${avgAlcoholMale} days<br>Female: ${avgAlcoholFemale} days 
-//             <br> Total Men Who Drank in the last 30 days: ${totalAlcoholMale} <br> Total Women Who Drank in the last 30 days: ${totalAlcoholFemale}`)
-//             .style("text-align", "center")
-//             .style("margin-top", "10px")
-//             .style("font-size", "14px");
-
-//         d3.select('#spiral-mj')
-//             .append('div')
-//             .html(`<strong>Average Marijuana Use:</strong><br>Male: ${avgMJMale} days<br>Female: ${avgMJFemale} days
-//             <br> Total Men Who Drank in the last 30 days: ${totalMJMale} <br> Total Women Who Drank in the last 30 days: ${totalMJFemale}`)
-//             .style("text-align", "center")
-//             .style("margin-top", "10px")
-//             .style("font-size", "14px");
-
-//         const sharedMax = d3.max([
-//             d3.max(maleAlcohol.slice(1)),
-//             d3.max(femaleAlcohol.slice(1)),
-//             d3.max(maleMJ.slice(1)),
-//             d3.max(femaleMJ.slice(1))
-//         ]);
-
-//         const caseScale = d3.scaleLinear()
-//             .domain([0, sharedMax])
-//             .range([0, 80]);
-
-//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
-//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
-//     });
-
-//     d3.tsv("data/depression_vs_arrested.tsv").then(data => {
-//         console.log("Depression data loaded:", data);
-//         createBarChart(data);
-//     });
-
-//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
-//     d3.tsv("data/merged_clean.tsv").then(data => {
-//         const renamedData = data.map(d => ({
-//             gender: +d.GENDER_R,
-//             timesArrested: +d.NOBOOKY2,
-//             alcoholDays: +d.ALCDAYS,
-//             depressionFrequency: +d.DSTDEPRS,
-//             ASDSOVRL: +d.ASDSOVRL,
-//             HLTINMNT: d.HLTINMNT
-//         }));
-
-//         d3.tsv("data/depressionFrequency_treatmentStatus.tsv").then(drawHistogram);
-//     });
-// }
-
-// window.addEventListener('load', init);
-
 function toggleStats(substance) {
     const statsDiv = document.getElementById(`${substance}-stats`);
     const button = document.querySelector(`#spiral-${substance}-controls button`);
-    
+
     if (statsDiv.style.display === "none") {
         statsDiv.style.display = "block";
         button.textContent = "Hide Stats";

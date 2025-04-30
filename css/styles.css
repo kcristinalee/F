@@ -21,3 +21,96 @@ h1 {
   box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
 }
 
+#alcohol-stats {
+  display: none;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+#mj-stats {
+  display: none;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.spiral-title {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.spiral-section {
+  text-align: center;
+  max-width: 400px;
+}
+
+.spiral-controls {
+  margin-top: -60px;
+}
+
+.spiral-controls button {
+  padding: 2px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 0.3rem;
+  border-color: gray;
+}
+
+.spiral-stats {
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.spiral-section svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.spiral-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.spiral-legend-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  order: 1;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.spiral-legend {
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.legend-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #ccc;
+}
+
+.legend-color.male {
+  background-color: steelblue;
+}
+
+.legend-color.female {
+  background-color: palevioletred;
+}
