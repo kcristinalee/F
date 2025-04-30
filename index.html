@@ -24,23 +24,34 @@
       <option value="workDaysMissed">Work Days Missed</option>
     </select>
   </div>
-  
+
   <div id="male-heatmap" style="margin-bottom:60px;"></div>
   <div id="female-heatmap" style="margin-bottom:60px;"></div>
-  <div id="tooltip1" style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;"></div>
+  <div id="tooltip1"
+    style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
+  </div>
 
   <h1 class="text-center my-4">Alcohol and Marijuana Use: Days Used in the Last Month</h1>
-
+  
   <div class="d-flex justify-content-center mb-5">
     <div class="p-3 text-center">
       <h2>Alcohol</h2>
       <div id="spiral-alcohol"></div>
+      <div id="spiral-alcohol-controls" style="margin-top: 10px;">
+        <button onclick="toggleStats('alcohol')">Show Stats</button>
+        <div id="alcohol-stats" style="display: none; font-size: 14px; margin-top: 5px;"></div>
+      </div>
     </div>
     <div class="p-3 text-center">
       <h2>Marijuana</h2>
       <div id="spiral-mj"></div>
+      <div id="spiral-mj-controls" style="margin-top: 10px;">
+        <button onclick="toggleStats('mj')">Show Stats</button>
+        <div id="mj-stats" style="display: none; font-size: 14px; margin-top: 5px;"></div>
+      </div>
     </div>
   </div>
+  
   <h1>Impact of Substance Use on Probation, Parole, and Arrest Rates</h1>
   <div id="vis-moving" class="text-center"></div>
   <div id="tooltip"></div>
@@ -56,8 +67,8 @@
   <div class="d-flex justify-content-center mb-5">
     <div id="box-plot"></div>
   </div>
-  
-  
+
+
 
   <script src="js/script.js"></script>
 </body>

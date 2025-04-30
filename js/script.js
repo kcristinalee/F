@@ -2,7 +2,7 @@ const margin = { top: 120, right: 100, bottom: 160, left: 100 },
     width = 900 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom + 100;
 
-    
+
 ////////  Heat Maps /////////
 const xAxisLabels = {
     alcoholDays: "Consumed Alcohol",
@@ -756,9 +756,9 @@ function drawHistogram(data) {
         .attr("x", 20)
         .attr("y", (d, i) => i * 20 + 10)
         .text(d => d === "1" ? "difficulties" : "NO difficulties");
-    
 
-    
+
+
     // X Axis Label
     svg.append("text")
         .attr("text-anchor", "middle")
@@ -771,7 +771,7 @@ function drawHistogram(data) {
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
-        .attr("y", -50 )
+        .attr("y", -50)
         .text("Number of Responses");
 
 
@@ -1068,7 +1068,7 @@ function drawMovingBarGraph(data) {
 
 function createBarChart(data) {
     // Convert the relevant columns to numbers
-    data.forEach(function(d) {
+    data.forEach(function (d) {
         d.x = +d.ASDSOVRL;  // Adult MDE interference level
         d.y = +d.NOBOOKY2;  // Times arrested (NOBOOKY2)
     });
@@ -1083,7 +1083,7 @@ function createBarChart(data) {
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-      .append("g")
+        .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // X scale: just based on your two x values (0 and 99)
@@ -1143,13 +1143,141 @@ function createBarChart(data) {
 
 }
 
+// function init() {
 
+//     d3.tsv("data/spiral_clean.tsv", d => ({
+//         day: +d.day,
+//         gender: +d.GENDER_R,
+//         alcoholUse: +d.ALCDAYS,
+//         marijuanaUse: +d.MJDAY30A
+//     })).then(data => {
+//         const maleAlcohol = Array(31).fill(0);
+//         const femaleAlcohol = Array(31).fill(0);
+//         const maleMJ = Array(31).fill(0);
+//         const femaleMJ = Array(31).fill(0);
 
-// Initialize function that loads all the data and creates charts
+//         const totalMales = data.filter(d => d.gender === 1).length;
+//         const totalFemales = data.filter(d => d.gender === 0).length;
+
+//         console.log("Total Males:", totalMales);
+//         console.log("Total Females:", totalFemales);
+
+//         d3.select("#spiral-alcohol")
+//             .append("div")
+//             .html(`Total Male Respondents: ${totalMales}`)
+//             .style("text-align", "center")
+//             .style("margin-top", "10px")
+//             .style("font-size", "14px");
+
+//         d3.select("#spiral-mj")
+//             .append("div")
+//             .html(`Total Female Respondents: ${totalFemales}`)
+//             .style("text-align", "center")
+//             .style("margin-top", "10px")
+//             .style("font-size", "14px");
+
+//         let totalAlcoholMale = 0, countAlcoholMale = 0;
+//         let totalAlcoholFemale = 0, countAlcoholFemale = 0;
+//         let totalMJMale = 0, countMJMale = 0;
+//         let totalMJFemale = 0, countMJFemale = 0;
+
+//         data.forEach(d => {
+//             if (d.alcoholUse >= 1 && d.alcoholUse <= 30) {
+//                 if (d.gender === 1) {
+//                     maleAlcohol[d.alcoholUse]++;
+//                     totalAlcoholMale += d.alcoholUse;
+//                     countAlcoholMale++;
+//                 } else {
+//                     femaleAlcohol[d.alcoholUse]++;
+//                     totalAlcoholFemale += d.alcoholUse;
+//                     countAlcoholFemale++;
+//                 }
+//             }
+//             if (d.marijuanaUse >= 1 && d.marijuanaUse <= 30) {
+//                 if (d.gender === 1) {
+//                     maleMJ[d.marijuanaUse]++;
+//                     totalMJMale += d.marijuanaUse;
+//                     countMJMale++;
+//                 } else {
+//                     femaleMJ[d.marijuanaUse]++;
+//                     totalMJFemale += d.marijuanaUse;
+//                     countMJFemale++;
+//                 }
+//             }
+//         });
+
+//         const avgAlcoholMale = (totalAlcoholMale / countAlcoholMale).toFixed(1);
+//         const avgAlcoholFemale = (totalAlcoholFemale / countAlcoholFemale).toFixed(1);
+//         const avgMJMale = (totalMJMale / countMJMale).toFixed(1);
+//         const avgMJFemale = (totalMJFemale / countMJFemale).toFixed(1);
+
+//         d3.select('#spiral-alcohol')
+//             .append('div')
+//             .html(`<strong>Average Alcohol Use:</strong><br>Male: ${avgAlcoholMale} days<br>Female: ${avgAlcoholFemale} days 
+//             <br> Total Men Who Drank in the last 30 days: ${totalAlcoholMale} <br> Total Women Who Drank in the last 30 days: ${totalAlcoholFemale}`)
+//             .style("text-align", "center")
+//             .style("margin-top", "10px")
+//             .style("font-size", "14px");
+
+//         d3.select('#spiral-mj')
+//             .append('div')
+//             .html(`<strong>Average Marijuana Use:</strong><br>Male: ${avgMJMale} days<br>Female: ${avgMJFemale} days
+//             <br> Total Men Who Drank in the last 30 days: ${totalMJMale} <br> Total Women Who Drank in the last 30 days: ${totalMJFemale}`)
+//             .style("text-align", "center")
+//             .style("margin-top", "10px")
+//             .style("font-size", "14px");
+
+//         const sharedMax = d3.max([
+//             d3.max(maleAlcohol.slice(1)),
+//             d3.max(femaleAlcohol.slice(1)),
+//             d3.max(maleMJ.slice(1)),
+//             d3.max(femaleMJ.slice(1))
+//         ]);
+
+//         const caseScale = d3.scaleLinear()
+//             .domain([0, sharedMax])
+//             .range([0, 80]);
+
+//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
+//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
+//     });
+
+//     d3.tsv("data/depression_vs_arrested.tsv").then(data => {
+//         console.log("Depression data loaded:", data);
+//         createBarChart(data);
+//     });
+
+//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
+//     d3.tsv("data/merged_clean.tsv").then(data => {
+//         const renamedData = data.map(d => ({
+//             gender: +d.GENDER_R,
+//             timesArrested: +d.NOBOOKY2,
+//             alcoholDays: +d.ALCDAYS,
+//             depressionFrequency: +d.DSTDEPRS,
+//             ASDSOVRL: +d.ASDSOVRL,
+//             HLTINMNT: d.HLTINMNT
+//         }));
+
+//         d3.tsv("data/depressionFrequency_treatmentStatus.tsv").then(drawHistogram);
+//     });
+// }
+
+// window.addEventListener('load', init);
+
+function toggleStats(substance) {
+    const statsDiv = document.getElementById(`${substance}-stats`);
+    const button = document.querySelector(`#spiral-${substance}-controls button`);
+    
+    if (statsDiv.style.display === "none") {
+        statsDiv.style.display = "block";
+        button.textContent = "Hide Stats";
+    } else {
+        statsDiv.style.display = "none";
+        button.textContent = "Show Stats";
+    }
+}
+
 function init() {
-    // Existing data loading and processing for other charts
-
-    // Existing functionality for loading alcohol and marijuana use
     d3.tsv("data/spiral_clean.tsv", d => ({
         day: +d.day,
         gender: +d.GENDER_R,
@@ -1161,16 +1289,66 @@ function init() {
         const maleMJ = Array(31).fill(0);
         const femaleMJ = Array(31).fill(0);
 
+        const totalMales = data.filter(d => d.gender === 1).length;
+        const totalFemales = data.filter(d => d.gender === 0).length;
+
+        let totalAlcoholMale = 0, countAlcoholMale = 0, numAlcoholMale = 0;
+        let totalAlcoholFemale = 0, countAlcoholFemale = 0, numAlcoholFemale = 0;
+        let totalMJMale = 0, countMJMale = 0, numMJMale = 0;
+        let totalMJFemale = 0, countMJFemale = 0, numMJFemale = 0;
+
         data.forEach(d => {
-            if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
-                if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
-                else femaleAlcohol[d.alcoholUse]++;
+            if (d.alcoholUse >= 1 && d.alcoholUse <= 30) {
+                if (d.gender === 1) {
+                    maleAlcohol[d.alcoholUse]++;
+                    totalAlcoholMale += d.alcoholUse;
+                    countAlcoholMale++;
+                    numAlcoholMale++;
+                } else {
+                    femaleAlcohol[d.alcoholUse]++;
+                    totalAlcoholFemale += d.alcoholUse;
+                    countAlcoholFemale++;
+                    numAlcoholFemale++;
+                }
             }
-            if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
-                if (d.gender === 1) maleMJ[d.marijuanaUse]++;
-                else femaleMJ[d.marijuanaUse]++;
+            if (d.marijuanaUse >= 1 && d.marijuanaUse <= 30) {
+                if (d.gender === 1) {
+                    maleMJ[d.marijuanaUse]++;
+                    totalMJMale += d.marijuanaUse;
+                    countMJMale++;
+                    numMJMale++;
+                } else {
+                    femaleMJ[d.marijuanaUse]++;
+                    totalMJFemale += d.marijuanaUse;
+                    countMJFemale++;
+                    numMJFemale++;
+                }
             }
         });
+
+        const avgAlcoholMale = (totalAlcoholMale / countAlcoholMale).toFixed(1);
+        const avgAlcoholFemale = (totalAlcoholFemale / countAlcoholFemale).toFixed(1);
+        const avgMJMale = (totalMJMale / countMJMale).toFixed(1);
+        const avgMJFemale = (totalMJFemale / countMJFemale).toFixed(1);
+
+        const alcoholStats = `
+            <strong>Average Alcohol Use:</strong><br>
+            Male: ${avgAlcoholMale} days<br>
+            Female: ${avgAlcoholFemale} days<br><br>
+            <strong>Men Who Drank:</strong> ${countAlcoholMale} of ${totalMales}<br>
+            <strong>Women Who Drank:</strong> ${countAlcoholFemale} of ${totalFemales}
+        `;
+
+        const mjStats = `
+            <strong>Average Marijuana Use:</strong><br>
+            Male: ${avgMJMale} days<br>
+            Female: ${avgMJFemale} days<br><br>
+            <strong>Men Who Used:</strong> ${countMJMale} of ${totalMales}<br>
+            <strong>Women Who Used:</strong> ${countMJFemale} of ${totalFemales}
+        `;
+
+        d3.select('#alcohol-stats').html(alcoholStats);
+        d3.select('#mj-stats').html(mjStats);
 
         const sharedMax = d3.max([
             d3.max(maleAlcohol.slice(1)),
@@ -1187,13 +1365,11 @@ function init() {
         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
     });
 
-    // Add the scatter plot data loading (does not affect previous code)
     d3.tsv("data/depression_vs_arrested.tsv").then(data => {
-        console.log("Depression data loaded:", data);  // Check data format in the console
-        createBarChart(data);  // Call the new scatter plot function
+        console.log("Depression data loaded:", data);
+        createBarChart(data);
     });
 
-    // Other existing calls for drawing other visualizations (e.g., box plot, bar graph, etc.)
     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
     d3.tsv("data/merged_clean.tsv").then(data => {
         const renamedData = data.map(d => ({
@@ -1205,134 +1381,9 @@ function init() {
             HLTINMNT: d.HLTINMNT
         }));
 
-        // Assuming you also want to draw box plots, scatter plots, etc.
         d3.tsv("data/depressionFrequency_treatmentStatus.tsv").then(drawHistogram);
     });
 }
 
-// Wait for window to load and then initialize
 window.addEventListener('load', init);
 
-// function init() {
-//     d3.tsv("data/spiral_clean.tsv", d => ({
-//         day: +d.day,
-//         gender: +d.GENDER_R,
-//         alcoholUse: +d.ALCDAYS,
-//         marijuanaUse: +d.MJDAY30A
-//     })).then(data => {
-//         const maleAlcohol = Array(31).fill(0);
-//         const femaleAlcohol = Array(31).fill(0);
-//         const maleMJ = Array(31).fill(0);
-//         const femaleMJ = Array(31).fill(0);
-
-//         data.forEach(d => {
-//             if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
-//                 if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
-//                 else femaleAlcohol[d.alcoholUse]++;
-//             }
-//             if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
-//                 if (d.gender === 1) maleMJ[d.marijuanaUse]++;
-//                 else femaleMJ[d.marijuanaUse]++;
-//             }
-//         });
-
-//         const sharedMax = d3.max([
-//             d3.max(maleAlcohol.slice(1)),
-//             d3.max(femaleAlcohol.slice(1)),
-//             d3.max(maleMJ.slice(1)),
-//             d3.max(femaleMJ.slice(1))
-//         ]);
-
-//         const caseScale = d3.scaleLinear()
-//             .domain([0, sharedMax])
-//             .range([0, 80]);
-
-//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
-//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
-//     });
-
-//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
-
-//     d3.tsv("data/merged_clean.tsv").then(data => {
-//         const renamedData = data.map(d => ({
-//             gender: +d.GENDER_R,
-//             timesArrested: +d.NOBOOKY2,
-//             alcoholDays: +d.ALCDAYS,
-//             depressionFrequency: +d.DSTDEPRS,
-//             ASDSOVRL: +d.ASDSOVRL,
-//             HLTINMNT: d.HLTINMNT
-//         }));
-
-//         d3.tsv("data/cleaned_depression_data.tsv").then(createScatterPlot);
-//         //d3.tsv("data/cleaned_depression_data.tsv").then(drawBoxPlot);
-//     });
-// }
-
-
-//window.addEventListener('load', init);
-
-// function init() {
-//     // Existing data loading and processing for other charts
-
-//     // Existing functionality for loading alcohol and marijuana use
-//     d3.tsv("data/spiral_clean.tsv", d => ({
-//         day: +d.day,
-//         gender: +d.GENDER_R,
-//         alcoholUse: +d.ALCDAYS,
-//         marijuanaUse: +d.MJDAY30A
-//     })).then(data => {
-//         const maleAlcohol = Array(31).fill(0);
-//         const femaleAlcohol = Array(31).fill(0);
-//         const maleMJ = Array(31).fill(0);
-//         const femaleMJ = Array(31).fill(0);
-
-//         data.forEach(d => {
-//             if (d.alcoholUse >= 0 && d.alcoholUse <= 30) {
-//                 if (d.gender === 1) maleAlcohol[d.alcoholUse]++;
-//                 else femaleAlcohol[d.alcoholUse]++;
-//             }
-//             if (d.marijuanaUse >= 0 && d.marijuanaUse <= 30) {
-//                 if (d.gender === 1) maleMJ[d.marijuanaUse]++;
-//                 else femaleMJ[d.marijuanaUse]++;
-//             }
-//         });
-
-//         const sharedMax = d3.max([
-//             d3.max(maleAlcohol.slice(1)),
-//             d3.max(femaleAlcohol.slice(1)),
-//             d3.max(maleMJ.slice(1)),
-//             d3.max(femaleMJ.slice(1))
-//         ]);
-
-//         const caseScale = d3.scaleLinear()
-//             .domain([0, sharedMax])
-//             .range([0, 80]);
-
-//         createVis(svgAlcohol, maleAlcohol, femaleAlcohol, caseScale, "Alcohol");
-//         createVis(svgMarijuana, maleMJ, femaleMJ, caseScale, "Marijuana");
-//     });
-
-//     // Add the scatter plot data loading (does not affect previous code)
-//     d3.tsv("data/cleaned_depression_data.tsv").then(data => {
-//         console.log("Depression data loaded:", data);  // Check data format in the console
-//         createScatterPlot(data);  // Call the new scatter plot function
-//     });
-
-//     // Other existing calls for drawing other visualizations (e.g., box plot, bar graph, etc.)
-//     d3.tsv("data/arrest_drug_clean.tsv").then(drawMovingBarGraph);
-//     d3.tsv("data/merged_clean.tsv").then(data => {
-//         const renamedData = data.map(d => ({
-//             gender: +d.GENDER_R,
-//             timesArrested: +d.NOBOOKY2,
-//             alcoholDays: +d.ALCDAYS,
-//             depressionFrequency: +d.DSTDEPRS,
-//             ASDSOVRL: +d.ASDSOVRL,
-//             HLTINMNT: d.HLTINMNT
-//         }));
-
-//         // Assuming you also want to draw box plots, scatter plots, etc.
-//         d3.tsv("data/cleaned_depression_data.tsv").then(drawBoxPlot);
-//     });
-// }
-
-// window.addEventListener('load', init);
