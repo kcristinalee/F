@@ -815,21 +815,21 @@ function createBarChart(data) {
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + margin.bottom - 10)
-        .text("Depression Intensity");
+        .text("Severity of Depression Interference (1 = None, 5 = Severe)");
 
     svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
         .attr("y", -margin.left + 20)
-        .text("Average arrest frequency");
+        .text("Average Number of Arrests (Past 12 Months)");
 
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", -10)
         .attr("text-anchor", "middle")
         .style("font-size", "22px")
-        .text("Relationship between Depression Intensity and Average Arrest frequency");
+        .text("Arrest Frequency by Depression Interference Severity");
 
 }
 
