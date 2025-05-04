@@ -402,10 +402,8 @@ function drawDonutChart(csvPath, elementId, genderLabel) {
 }
 
 // Call the function for all four charts
-drawDonutChart("data/donut_male_smoked.csv", "male-smoked", "Male (Smoked)");
-// drawDonutChart("data/donut_male_nonsmoker.csv", "male-nonsmoker", "Male (Did Not Smoke)");
-drawDonutChart("data/donut_female_smoked.csv", "female-smoked", "Female (Smoked)");
-//drawDonutChart("data/donut_female_nonsmoker.csv", "female-nonsmoker", "Female (Did Not Smoke)");
+drawDonutChart("data/donut_male.csv", "male-smoked", "Male");
+drawDonutChart("data/donut_female.csv", "female-smoked", "Female");
 
 ////////  Spiral Graph  /////////
 const svgAlcohol = d3.select('#spiral-alcohol')
