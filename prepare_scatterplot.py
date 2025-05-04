@@ -19,9 +19,16 @@ KEEP1 = [
 
 
 #for the second plot
+# KEEP2 = [
+#     "DSTDEPRS",    # Depression frequency score
+#     "HLTINMNT",    # Mental health treatment status
+# ]
+
 KEEP2 = [
-    "DSTDEPRS",    # Depression frequency score
-    "HLTINMNT",    # Mental health treatment status
+    "IRSEX",       # Gender (1 = Male, 2 = Female)
+    "BOOKED",      # Ever arrested/booked (1 = Yes, 0 = No)
+    "NOBOOKY2",    # Times arrested in past year (0-3)
+    "BKAGASLT"     # Arrested for aggravated assault (1 = Yes, 2 = No)
 ]
 
 frames1 = []
@@ -51,9 +58,15 @@ print("• concatenating files …")
 merged1 = pd.concat(frames1, ignore_index=True)
 merged2 = pd.concat(frames2, ignore_index=True)
 
+
 # Drop rows with missing values in the relevant columns
 merged1 = merged1.dropna(subset=["ASDSOVRL", "NOBOOKY2"])
-merged2 = merged2.dropna(subset=["DSTDEPRS", "HLTINMNT"])
+# merged2 = merged2.dropna(subset=["DSTDEPRS", "HLTINMNT"])
+merged2 = merged2.dropna(subset=[ "IRSEX", "BOOKED","NOBOOKY2","BKAGASLT"])
+
+
+
+
 
 
 merged1 = merged1[(merged1["ASDSOVRL"]>=1) & (merged1["ASDSOVRL"]<=5)]
@@ -62,14 +75,26 @@ dataset1 = merged1.groupby("ASDSOVRL").mean()
 dataset1 = dataset1.reset_index()
 
 
+merged2 = merged2[
+    (merged2["IRSEX"].isin([1, 2])) & 
+    (merged2["BOOKED"].isin([0, 1])) & 
+    (merged2["NOBOOKY2"].isin([0, 1, 2, 3])) &
+    (merged2["BKAGASLT"].isin([1, 2]))
+]
 
+# Recode gender for clarity
+merged2["GENDER"] = merged2["IRSEX"].map({1: "Male", 2: "Female"})
 
-merged2 = merged2[(merged2["DSTDEPRS"]>=1) & (merged2["DSTDEPRS"]<=5)]
-merged2 = merged2[(merged2["HLTINMNT"]>= 1) & (merged2["HLTINMNT"]<=2)]
+# Recode assault arrests
+merged2["ASSAULT_ARREST"] = merged2["BKAGASLT"].map({1: "Yes", 2: "No"})
+
+# merged2 = merged2[(merged2["DSTDEPRS"]>=1) & (merged2["DSTDEPRS"]<=5)]
+# merged2 = merged2[(merged2["HLTINMNT"]>= 1) & (merged2["HLTINMNT"]<=2)]
 
 # Save the cleaned data
 OUT_PATH1 = "data/depression_vs_arrested.tsv"
-OUT_PATH2 = "data/depressionFrequency_treatmentStatus.tsv"
+#OUT_PATH2 = "data/depressionFrequency_treatmentStatus.tsv"
+OUT_PATH2 = "data/male_vs_female_arrest.tsv"
 
 dataset1.to_csv(OUT_PATH1, sep="\t", index=False, encoding="utf-8", quoting=3)
 merged2.to_csv(OUT_PATH2, sep="\t", index=False, encoding="utf-8", quoting=3)
