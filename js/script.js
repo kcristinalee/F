@@ -281,6 +281,132 @@ function group(day) {
     return null;
 }
 
+/////////  Donut Charts ////////
+
+function drawDonutChart(csvPath, elementId, genderLabel) {
+
+    console.log(`Running drawDonutChart for ${elementId}`);
+
+    const width = 300;
+    const height = 300;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select(`#${elementId}`)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const tooltip = d3.select("#tooltip100");
+
+    // Define pie and arc outside the conditional block
+    const pie = d3.pie().value(d => d.value);
+    const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius * 0.9);
+
+
+    d3.csv(csvPath).then(data => {
+        data.forEach(d => d.value = +d.AvgCIG30USE);
+
+        
+        // If all values are 0, show labels in the center
+        const allZero = data.every(d => d.value === 0);
+        if (allZero) {
+
+            console.log("allzero:", genderLabel);
+
+            const labels = ["Jail Treatment", "Attacked Someone", "Stole $50+", "Sold Drug"];
+            const labelRadius = radius * 0.7; // Radius of the circle for labels
+
+            // Create a circular path for the labels
+            const angleStep = 360 / labels.length;
+
+            labels.forEach((label, i) => {
+                const angle = angleStep * i - 90; // Calculate angle for each label
+
+                // Position the label around the circle
+                svg.append("text")
+                    .attr("transform", `translate(${labelRadius * Math.cos(Math.PI * angle / 180)}, ${labelRadius * Math.sin(Math.PI * angle / 180)})`)
+                    .attr("dy", "0.35em")
+                    .style("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .text(label);
+            });
+        } else {
+            
+
+        console.log("First row of data:", data[0]);
+
+
+        const color = d3.scaleOrdinal()
+            .domain(data.map(d => d.Behavior))
+            .range(d3.schemeSet2);
+
+        // const pie = d3.pie().value(d => d.value);
+        // const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius * 0.9);
+
+        const arcs = svg.selectAll("g.arc")
+            .data(pie(data))
+            .enter()
+            .append("g")
+            .attr("class", "arc");
+
+        arcs.append("path")
+            .attr("d", arc)
+            .attr("fill", d => color(d.data.Behavior))
+            .attr("stroke", "white")
+            .style("stroke-width", "2px")
+            .on("mouseover", function (event, d) {
+                tooltip
+                    .style("visibility", "visible")
+                    .html(`
+                        <div style="font-size: 13px;">
+                            <strong>Behavior:</strong> ${d.data.Behavior}<br>
+                            <strong>Avg Cigarette Days:</strong> ${d.data.AvgCIG30USE}
+                        </div>`);
+            })
+            .on("mousemove", function (event) {
+                const tooltipWidth = tooltip.node().offsetWidth;
+                const tooltipHeight = tooltip.node().offsetHeight;
+            
+                const pageX = event.pageX;
+                const pageY = event.pageY;
+            
+                const left = pageX + tooltipWidth > window.innerWidth
+                    ? pageX - tooltipWidth - 10
+                    : pageX + 10;
+            
+                const top = pageY + tooltipHeight > window.innerHeight
+                    ? pageY - tooltipHeight - 10
+                    : pageY - 28;
+            
+                tooltip
+                    .style("left", `${left}px`)
+                    .style("top", `${top}px`);
+            })
+            .on("mouseout", function () {
+                tooltip.style("visibility", "hidden");
+            });
+            
+
+        arcs.append("text")
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .attr("dy", "0.35em")
+            .style("text-anchor", "middle")
+            .style("font-size", "10px")
+            .text(d => d.data.Behavior);
+        }
+    });
+
+    
+}
+
+// Call the function for all four charts
+drawDonutChart("data/donut_male_smoked.csv", "male-smoked", "Male (Smoked)");
+// drawDonutChart("data/donut_male_nonsmoker.csv", "male-nonsmoker", "Male (Did Not Smoke)");
+drawDonutChart("data/donut_female_smoked.csv", "female-smoked", "Female (Smoked)");
+//drawDonutChart("data/donut_female_nonsmoker.csv", "female-nonsmoker", "Female (Did Not Smoke)");
+
 ////////  Spiral Graph  /////////
 const svgAlcohol = d3.select('#spiral-alcohol')
     .append('svg')

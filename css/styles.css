@@ -151,3 +151,42 @@ h1, h2, h3, h4 {
   text-align: center;
   font-style: italic;
 }
+.donut-wrapper {
+  display: flex;
+  justify-content: space-between; /* Adds space between the sections */
+  align-items: center;            /* Centers the charts vertically if they have different heights */
+}
+
+.donut-section {
+  width: 48%; /* Ensures each section takes up almost half the available space */
+  text-align: center; /* Centers the title inside each section */
+}
+
+h3 {
+  margin-bottom: 10px; /* Adds space between the title and chart */
+}
+
+#tooltip100 {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 10;
+}
+
+.chart-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px; /* spacing between rows */
+}
+
+.donut-chart {
+  margin: 0 20px; /* spacing between charts */
+}
+
+

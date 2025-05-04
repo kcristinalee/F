@@ -142,9 +142,38 @@
       <option value="workDaysMissed">Work Days Missed</option>
     </select>
   </div>
+  <div style="display: flex; justify-content: center; gap: 20px;">
+    <div id="male-heatmap"></div>
+    <div id="female-heatmap"></div>
+  </div> 
+  
+  <br><br><br>
+<h1 class="donut-title">Criminal Behavior and Gender</h1>
+<p id="article-format">
+  To explore potential behavioral differences by gender, we created donut charts that visualize the proportion of people 
+  who engaged in certain criminal activities within the past year, including theft, drug dealing, physical assault, and 
+  receiving treatment in jail. These charts allow for side-by-side comparison of male and female responses, highlighting 
+  gender disparities in criminal behavior.
+</p>
 
-  <div id="male-heatmap" style="margin-bottom:60px;"></div>
-  <div id="female-heatmap" style="margin-bottom:60px;"></div>
+<!-- Smoked charts -->
+<div class="chart-row">
+  <div>
+    <h4>Male (Smoked)</h4>
+    <div id="male-smoked" class="donut-chart"></div>
+  </div>
+  <div>
+    <h4>Female (Smoked)</h4>
+    <div id="female-smoked" class="donut-chart"></div>
+  </div>
+</div>
+
+
+
+<div id="tooltip100" style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 5px; border-radius: 5px;"></div>
+
+  <!-- <div id="male-heatmap" style="margin-bottom:60px;"></div>
+  <div id="female-heatmap" style="margin-bottom:60px;"></div> -->
   <div id="tooltip1"
     style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
   </div>
