@@ -108,7 +108,7 @@
 
 
 <body>
-  <h1>Correlation Matrix Heatmap by Gender</h1>
+  <h1>Arrests vs Consumed Alcohol (Depression Frequency)</h1>
   <p id="article-format">We wanted to see the correlation between depression frequency and various behavioral and social
     factors, such as
     substance use, work absenteeism, and criminal justice involvement, with a focus on gender differences.
@@ -142,10 +142,17 @@
       <option value="workDaysMissed">Work Days Missed</option>
     </select>
   </div>
-  <div style="display: flex; justify-content: center; gap: 20px;">
-    <div id="male-heatmap"></div>
-    <div id="female-heatmap"></div>
-  </div> 
+  
+  <div class="chart-row">
+    <div>
+      <h4>Male</h4>
+      <div id="male-heatmap"class="donut-chart"></div>
+    </div>
+    <div>
+      <h4>Female</h4>
+      <div id="female-heatmap"class="donut-chart"></div>
+    </div>
+  </div>
   
   <br><br><br>
 <h1 class="donut-title">Criminal Behavior and Gender</h1>
