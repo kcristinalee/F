@@ -581,85 +581,107 @@ function drawGenderArrestComparison() {
     const width = 700 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
-    // Clear previous SVG and add filter UI
+    // Clear previous SVG
     d3.select("#graph-about-arrest").html(`
         <div class="filter-controls">
             <select id="crime-filter">
                 <option value="ALL">All Arrests</option>
-                <option value="BKAGASLT">Violent Crimes</option>
-                <option value="BKDRUG">Drug Crimes</option>
+                <option value="VIOLENT">Violent Crimes</option>
+                <option value="DRUG">Drug Crimes</option>
             </select>
         </div>
         <div class="chart-area"></div>
     `);
 
-    const svg = d3.select("#graph-about-arrest .chart-area")
+    const svg = d3.select("graph-about-arrest .chart-area")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Load and process data
     d3.tsv("data/male_vs_female_arrest.tsv").then(rawData => {
-        // Convert numeric fields
-        const data = rawData.map(d => ({
-            ...d,
-            IRSEX: +d.IRSEX,
-            BOOKED: +d.BOOKED,
-            BKAGASLT: d.BKAGASLT ? +d.BKAGASLT : 0,
-            BKDRUG: d.BKDRUG ? +d.BKDRUG : 0
-        }));
+        // Data cleaning with proper value handling for all variables
+        const data = rawData.map(d => {
+            return {
+                ...d,
+                IRSEX: +d.IRSEX || 0,  // 1=Male, 2=Female
+                BOOKED: (+d.BOOKED === 1 || +d.BOOKED === 3) ? 1 : 0, // 1/3=Arrested, 2=Not
+                BKAGASLT: (+d.BKAGASLT === 1 || +d.BKAGASLT === 3) ? 1 : 0, // 1/3=Yes, 2=No
+                //BKDRUG: (+d.BKDRUG === 1 || +d.BKDRUG === 3) ? 1 : 0, // 1/3=Yes, 2=No
+                isValid: (+d.IRSEX === 1 || +d.IRSEX === 2) && 
+                        (+d.BOOKED === 0 || +d.BOOKED === 1) &&
+                        !isNaN(+d.BKAGASLT) 
+                        //&& 
+                        //!isNaN(+d.BKDRUG)
+            };
+        }).filter(d => d.isValid);
 
-        // Main update function
         function updateChart(crimeFilter = "ALL") {
-            // Filter data based on selection
-            let filteredData = data;
-            if (crimeFilter !== "ALL") {
-                filteredData = data.filter(d => d[crimeFilter] === 1);
-            }
+            // Filter data with proper value handling
+            const filteredData = data.filter(d => {
+                if (crimeFilter === "VIOLENT") return d.BKAGASLT === 1;
+                //if (crimeFilter === "DRUG") return d.BKDRUG === 1;
+                return true; // All arrests
+            });
 
-            // Calculate rates with confidence intervals
-            const calculateStats = (groupData) => {
-                const n = groupData.length;
-                const arrested = groupData.filter(d => d.BOOKED === 1).length;
-                const rate = (arrested / n) * 100;
-                // 95% confidence interval
-                const se = 1.96 * Math.sqrt((rate * (100 - rate)) / n);
+            // Group data with proper gender mapping
+            const groupData = (genderCode) => {
+                const gender = genderCode === 1 ? "Male" : "Female";
+                const group = filteredData.filter(d => d.IRSEX === genderCode);
+                
+                if (group.length === 0) {
+                    return {
+                        gender,
+                        rate: 0,
+                        lower: 0,
+                        upper: 0,
+                        count: 0,
+                        total: 0,
+                        hasData: false
+                    };
+                }
+
+                const arrested = group.filter(d => d.BOOKED === 1).length;
+                const rate = group.length > 0 ? (arrested / group.length) * 100 : 0;
+                const se = group.length > 0 ? 1.96 * Math.sqrt((rate * (100 - rate)) / group.length) : 0;
+                
                 return {
+                    gender,
                     rate,
                     lower: Math.max(0, rate - se),
                     upper: Math.min(100, rate + se),
                     count: arrested,
-                    total: n
+                    total: group.length,
+                    hasData: group.length > 0
                 };
             };
 
-            const maleData = filteredData.filter(d => d.IRSEX === 1);
-            const femaleData = filteredData.filter(d => d.IRSEX === 2);
-
             const chartData = [
-                { gender: "Male", ...calculateStats(maleData) },
-                { gender: "Female", ...calculateStats(femaleData) }
+                groupData(1), // Male
+                groupData(2)  // Female
             ];
+
+            // Calculate max rate (minimum 10% scale for visibility)
+            const maxRate = Math.max(
+                10, 
+                d3.max(chartData, d => d.upper),
+                d3.max(chartData, d => d.rate)
+            );
 
             // Update scales
             const x = d3.scaleLinear()
-                .domain([0, d3.max(chartData, d => d.upper) * 1.1])
-                .range([0, width]);
+                .domain([0, maxRate])
+                .range([0, width])
+                .nice();
 
             const y = d3.scaleBand()
                 .domain(chartData.map(d => d.gender))
                 .range([0, height])
                 .padding(0.4);
 
-            // Color scale
-            const color = d3.scaleOrdinal()
-                .domain(["Male", "Female"])
-                .range(["#1f77b4", "#e377c2"]);
-
-            // Remove previous elements
-            svg.selectAll(".bar, .error-bar, .label").remove();
+            // Clear previous elements
+            svg.selectAll("*").remove();
 
             // Draw bars
             svg.selectAll(".bar")
@@ -671,64 +693,43 @@ function drawGenderArrestComparison() {
                 .attr("height", y.bandwidth())
                 .attr("x", 0)
                 .attr("width", d => x(d.rate))
-                .attr("fill", d => color(d.gender))
-                .on("mouseover", function(event, d) {
-                    d3.select("#tooltip")
-                        .style("opacity", 1)
-                        .html(`
-                            <strong>${d.gender} Arrests</strong><br>
-                            ${crimeFilter === "ALL" ? "All Crimes" : crimeFilter === "BKAGASLT" ? "Violent Crimes" : "Drug Crimes"}<br>
-                            Rate: ${d.rate.toFixed(1)}%<br>
-                            (95% CI: ${d.lower.toFixed(1)}% - ${d.upper.toFixed(1)}%)<br>
-                            Arrested: ${d.count}/${d.total}
-                        `);
-                })
-                .on("mousemove", function(event) {
-                    d3.select("#tooltip")
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY - 20) + "px");
-                })
-                .on("mouseout", function() {
-                    d3.select("#tooltip").style("opacity", 0);
-                });
+                .attr("fill", d => d.gender === "Male" ? "#1f77b4" : "#e377c2")
+                .on("mouseover", showTooltip)
+                .on("mousemove", moveTooltip)
+                .on("mouseout", hideTooltip);
 
-            // Add error bars
-            svg.selectAll(".error-bar")
-                .data(chartData)
-                .enter()
-                .append("line")
-                .attr("class", "error-bar")
-                .attr("x1", d => x(d.lower))
-                .attr("x2", d => x(d.upper))
-                .attr("y1", d => y(d.gender) + y.bandwidth()/2)
-                .attr("y2", d => y(d.gender) + y.bandwidth()/2)
-                .attr("stroke", "#333")
-                .attr("stroke-width", 2);
+            // Draw error bars only for valid data
+            chartData.filter(d => d.hasData).forEach(d => {
+                // Error bar line
+                svg.append("line")
+                    .attr("class", "error-bar")
+                    .attr("x1", x(d.lower))
+                    .attr("x2", x(d.upper))
+                    .attr("y1", y(d.gender) + y.bandwidth()/2)
+                    .attr("y2", y(d.gender) + y.bandwidth()/2)
+                    .attr("stroke", "#333")
+                    .attr("stroke-width", 2);
 
-            // Add center line for error bars
-            svg.selectAll(".error-mid")
-                .data(chartData)
-                .enter()
-                .append("line")
-                .attr("class", "error-mid")
-                .attr("x1", d => x(d.lower))
-                .attr("x2", d => x(d.lower))
-                .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
-                .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
-                .attr("stroke", "#333")
-                .attr("stroke-width", 2);
+                // Left whisker
+                svg.append("line")
+                    .attr("class", "error-whisker")
+                    .attr("x1", x(d.lower))
+                    .attr("x2", x(d.lower))
+                    .attr("y1", y(d.gender) + y.bandwidth() * 0.3)
+                    .attr("y2", y(d.gender) + y.bandwidth() * 0.7)
+                    .attr("stroke", "#333")
+                    .attr("stroke-width", 1);
 
-            svg.selectAll(".error-mid")
-                .data(chartData)
-                .enter()
-                .append("line")
-                .attr("class", "error-mid")
-                .attr("x1", d => x(d.upper))
-                .attr("x2", d => x(d.upper))
-                .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
-                .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
-                .attr("stroke", "#333")
-                .attr("stroke-width", 2);
+                // Right whisker
+                svg.append("line")
+                    .attr("class", "error-whisker")
+                    .attr("x1", x(d.upper))
+                    .attr("x2", x(d.upper))
+                    .attr("y1", y(d.gender) + y.bandwidth() * 0.3)
+                    .attr("y2", y(d.gender) + y.bandwidth() * 0.7)
+                    .attr("stroke", "#333")
+                    .attr("stroke-width", 1);
+            });
 
             // Add value labels
             svg.selectAll(".label")
@@ -741,12 +742,9 @@ function drawGenderArrestComparison() {
                 .attr("dy", "0.35em")
                 .style("font-size", "12px")
                 .style("font-weight", "bold")
-                .text(d => `${d.rate.toFixed(1)}%`);
+                .text(d => d.hasData ? `${d.rate.toFixed(1)}%` : "No data");
 
-            // Update axes
-            svg.select(".x-axis").remove();
-            svg.select(".y-axis").remove();
-
+            // Add axes
             svg.append("g")
                 .attr("class", "x-axis")
                 .attr("transform", `translate(0,${height})`)
@@ -756,8 +754,7 @@ function drawGenderArrestComparison() {
                 .attr("class", "y-axis")
                 .call(d3.axisLeft(y));
 
-            // Update title
-            svg.select(".title").remove();
+            // Add title
             svg.append("text")
                 .attr("class", "title")
                 .attr("x", width/2)
@@ -765,18 +762,262 @@ function drawGenderArrestComparison() {
                 .attr("text-anchor", "middle")
                 .style("font-size", "16px")
                 .style("font-weight", "bold")
-                .text(`Arrest Rates by Gender${crimeFilter === "ALL" ? "" : crimeFilter === "BKAGASLT" ? " (Violent Crimes)" : " (Drug Crimes)"}`);
+                .text(() => {
+                    const filter = d3.select("#crime-filter").node().value;
+                    let subtitle = "";
+                    if (filter === "VIOLENT") subtitle = " (Aggravated Assault)";
+                    if (filter === "DRUG") subtitle = " (Drug Offenses)";
+                    return `Arrest Rates by Gender${subtitle}`;
+                });
         }
 
-        // Initial render
-        updateChart();
+        // Tooltip functions
+        function showTooltip(event, d) {
+            if (!d.hasData) return;
+            
+            const filter = d3.select("#crime-filter").node().value;
+            let crimeType = "";
+            if (filter === "VIOLENT") crimeType = "Aggravated Assault Cases";
+            if (filter === "DRUG") crimeType = "Drug Offense Cases";
+            
+            d3.select("#tooltip")
+                .style("opacity", 1)
+                .html(`
+                    <strong>${d.gender} Arrests</strong><br>
+                    ${crimeType || "All Arrest Cases"}<br>
+                    Arrest Rate: ${d.rate.toFixed(1)}%<br>
+                    95% Confidence: ${d.lower.toFixed(1)}% - ${d.upper.toFixed(1)}%<br>
+                    ${d.count} arrested out of ${d.total} cases
+                `);
+        }
 
-        // Filter interaction
+        function moveTooltip(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 20) + "px");
+        }
+
+        function hideTooltip() {
+            d3.select("#tooltip").style("opacity", 0);
+        }
+
+        // Initialize
+        updateChart();
         d3.select("#crime-filter").on("change", function() {
             updateChart(this.value);
         });
+    }).catch(error => {
+        console.error("Error loading data:", error);
+        d3.select("#visualization-container")
+            .append("div")
+            .style("color", "red")
+            .text("Error loading data. Please check the console for details.");
     });
 }
+
+
+
+// function drawGenderArrestComparison() {
+//     const margin = { top: 40, right: 30, bottom: 80, left: 60 };
+//     const width = 700 - margin.left - margin.right;
+//     const height = 500 - margin.top - margin.bottom;
+
+//     // Clear previous SVG and add filter UI
+//     d3.select("#graph-about-arrest").html(`
+//         <div class="filter-controls">
+//             <select id="crime-filter">
+//                 <option value="ALL">All Arrests</option>
+//                 <option value="BKAGASLT">Violent Crimes</option>
+//                 <option value="BKDRUG">Drug Crimes</option>
+//             </select>
+//         </div>
+//         <div class="chart-area"></div>
+//     `);
+
+//     const svg = d3.select("#graph-about-arrest .chart-area")
+//         .append("svg")
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom)
+//         .append("g")
+//         .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // Load and process data
+//     d3.tsv("data/male_vs_female_arrest.tsv").then(rawData => {
+//         // Convert numeric fields
+//         const data = rawData.map(d => ({
+//             ...d,
+//             IRSEX: +d.IRSEX,
+//             BOOKED: +d.BOOKED,
+//             BKAGASLT: d.BKAGASLT ? +d.BKAGASLT : 0,
+//             BKDRUG: d.BKDRUG ? +d.BKDRUG : 0
+//         }));
+
+//         // Main update function
+//         function updateChart(crimeFilter = "ALL") {
+//             // Filter data based on selection
+//             let filteredData = data;
+//             if (crimeFilter !== "ALL") {
+//                 filteredData = data.filter(d => d[crimeFilter] === 1);
+//             }
+
+//             // Calculate rates with confidence intervals
+//             const calculateStats = (groupData) => {
+//                 const n = groupData.length;
+//                 const arrested = groupData.filter(d => d.BOOKED === 1).length;
+//                 const rate = (arrested / n) * 100;
+//                 // 95% confidence interval
+//                 const se = 1.96 * Math.sqrt((rate * (100 - rate)) / n);
+//                 return {
+//                     rate,
+//                     lower: Math.max(0, rate - se),
+//                     upper: Math.min(100, rate + se),
+//                     count: arrested,
+//                     total: n
+//                 };
+//             };
+
+//             const maleData = filteredData.filter(d => d.IRSEX === 1);
+//             const femaleData = filteredData.filter(d => d.IRSEX === 2);
+
+//             const chartData = [
+//                 { gender: "Male", ...calculateStats(maleData) },
+//                 { gender: "Female", ...calculateStats(femaleData) }
+//             ];
+
+//             // Update scales
+//             const x = d3.scaleLinear()
+//                 .domain([0, d3.max(chartData, d => d.upper) * 1.1])
+//                 .range([0, width]);
+
+//             const y = d3.scaleBand()
+//                 .domain(chartData.map(d => d.gender))
+//                 .range([0, height])
+//                 .padding(0.4);
+
+//             // Color scale
+//             const color = d3.scaleOrdinal()
+//                 .domain(["Male", "Female"])
+//                 .range(["#1f77b4", "#e377c2"]);
+
+//             // Remove previous elements
+//             svg.selectAll(".bar, .error-bar, .label").remove();
+
+//             // Draw bars
+//             svg.selectAll(".bar")
+//                 .data(chartData)
+//                 .enter()
+//                 .append("rect")
+//                 .attr("class", "bar")
+//                 .attr("y", d => y(d.gender))
+//                 .attr("height", y.bandwidth())
+//                 .attr("x", 0)
+//                 .attr("width", d => x(d.rate))
+//                 .attr("fill", d => color(d.gender))
+//                 .on("mouseover", function(event, d) {
+//                     d3.select("#tooltip")
+//                         .style("opacity", 1)
+//                         .html(`
+//                             <strong>${d.gender} Arrests</strong><br>
+//                             ${crimeFilter === "ALL" ? "All Crimes" : crimeFilter === "BKAGASLT" ? "Violent Crimes" : "Drug Crimes"}<br>
+//                             Rate: ${d.rate.toFixed(1)}%<br>
+//                             (95% CI: ${d.lower.toFixed(1)}% - ${d.upper.toFixed(1)}%)<br>
+//                             Arrested: ${d.count}/${d.total}
+//                         `);
+//                 })
+//                 .on("mousemove", function(event) {
+//                     d3.select("#tooltip")
+//                         .style("left", (event.pageX + 10) + "px")
+//                         .style("top", (event.pageY - 20) + "px");
+//                 })
+//                 .on("mouseout", function() {
+//                     d3.select("#tooltip").style("opacity", 0);
+//                 });
+
+//             // Add error bars
+//             svg.selectAll(".error-bar")
+//                 .data(chartData)
+//                 .enter()
+//                 .append("line")
+//                 .attr("class", "error-bar")
+//                 .attr("x1", d => x(d.lower))
+//                 .attr("x2", d => x(d.upper))
+//                 .attr("y1", d => y(d.gender) + y.bandwidth()/2)
+//                 .attr("y2", d => y(d.gender) + y.bandwidth()/2)
+//                 .attr("stroke", "#333")
+//                 .attr("stroke-width", 2);
+
+//             // Add center line for error bars
+//             svg.selectAll(".error-mid")
+//                 .data(chartData)
+//                 .enter()
+//                 .append("line")
+//                 .attr("class", "error-mid")
+//                 .attr("x1", d => x(d.lower))
+//                 .attr("x2", d => x(d.lower))
+//                 .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
+//                 .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
+//                 .attr("stroke", "#333")
+//                 .attr("stroke-width", 2);
+
+//             svg.selectAll(".error-mid")
+//                 .data(chartData)
+//                 .enter()
+//                 .append("line")
+//                 .attr("class", "error-mid")
+//                 .attr("x1", d => x(d.upper))
+//                 .attr("x2", d => x(d.upper))
+//                 .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
+//                 .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
+//                 .attr("stroke", "#333")
+//                 .attr("stroke-width", 2);
+
+//             // Add value labels
+//             svg.selectAll(".label")
+//                 .data(chartData)
+//                 .enter()
+//                 .append("text")
+//                 .attr("class", "label")
+//                 .attr("x", d => x(d.rate) + 5)
+//                 .attr("y", d => y(d.gender) + y.bandwidth()/2)
+//                 .attr("dy", "0.35em")
+//                 .style("font-size", "12px")
+//                 .style("font-weight", "bold")
+//                 .text(d => `${d.rate.toFixed(1)}%`);
+
+//             // Update axes
+//             svg.select(".x-axis").remove();
+//             svg.select(".y-axis").remove();
+
+//             svg.append("g")
+//                 .attr("class", "x-axis")
+//                 .attr("transform", `translate(0,${height})`)
+//                 .call(d3.axisBottom(x).ticks(5).tickFormat(d => `${d}%`));
+
+//             svg.append("g")
+//                 .attr("class", "y-axis")
+//                 .call(d3.axisLeft(y));
+
+//             // Update title
+//             svg.select(".title").remove();
+//             svg.append("text")
+//                 .attr("class", "title")
+//                 .attr("x", width/2)
+//                 .attr("y", -10)
+//                 .attr("text-anchor", "middle")
+//                 .style("font-size", "16px")
+//                 .style("font-weight", "bold")
+//                 .text(`Arrest Rates by Gender${crimeFilter === "ALL" ? "" : crimeFilter === "BKAGASLT" ? " (Violent Crimes)" : " (Drug Crimes)"}`);
+//         }
+
+//         // Initial render
+//         updateChart();
+
+//         // Filter interaction
+//         d3.select("#crime-filter").on("change", function() {
+//             updateChart(this.value);
+//         });
+//     });
+// }
 // function drawHistogram(data) {
 //     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
 //     const width = 800 - margin.left - margin.right;

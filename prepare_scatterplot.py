@@ -75,12 +75,21 @@ dataset1 = merged1.groupby("ASDSOVRL").mean()
 dataset1 = dataset1.reset_index()
 
 
-merged2 = merged2[
-    (merged2["IRSEX"].isin([1, 2])) & 
-    (merged2["BOOKED"].isin([0, 1])) & 
-    (merged2["NOBOOKY2"].isin([0, 1, 2, 3])) &
-    (merged2["BKAGASLT"].isin([1, 2]))
-]
+# merged2 = merged2[
+#     (merged2["IRSEX"].isin([1, 2])) & 
+#     (merged2["BOOKED"].isin([0, 1])) & 
+#     (merged2["NOBOOKY2"].isin([0, 1, 2, 3])) &
+#     (merged2["BKAGASLT"].isin([1, 2]))
+# ]
+
+
+merged2 = merged2[(merged2["IRSEX"]>=1) & (merged2["IRSEX"]<=2)]
+merged2 = merged2[(merged2["BOOKED"]>=1) & (merged2["BOOKED"]<=3)]
+merged2 = merged2[(merged2["NOBOOKY2"]>=0) & (merged2["NOBOOKY2"]<=3)]
+merged2 = merged2[(merged2["BKAGASLT"]>=1) & (merged2["BKAGASLT"]<=3)]
+#BKDRUG
+#merged2 = merged2[(merged2["BKDRUG"]>=1) & (merged2["BKDRUG"]<=3)]
+
 
 # Recode gender for clarity
 merged2["GENDER"] = merged2["IRSEX"].map({1: "Male", 2: "Female"})
