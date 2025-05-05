@@ -575,112 +575,314 @@ function drawMovingBarGraph(data) {
         .style("font-size", "12px");
 }
 
-function drawHistogram(data) {
-    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
 
-    const svg = d3.select("#box-plot")
+function drawGenderArrestComparison() {
+    const margin = { top: 40, right: 30, bottom: 80, left: 60 };
+    const width = 700 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    // Clear previous SVG and add filter UI
+    d3.select("#graph-about-arrest").html(`
+        <div class="filter-controls">
+            <select id="crime-filter">
+                <option value="ALL">All Arrests</option>
+                <option value="BKAGASLT">Violent Crimes</option>
+                <option value="BKDRUG">Drug Crimes</option>
+            </select>
+        </div>
+        <div class="chart-area"></div>
+    `);
+
+    const svg = d3.select("#graph-about-arrest .chart-area")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const scoreRange = [1, 2, 3, 4, 5];
-    const groupLabels = ["1", "2"];
+    // Load and process data
+    d3.tsv("data/male_vs_female_arrest.tsv").then(rawData => {
+        // Convert numeric fields
+        const data = rawData.map(d => ({
+            ...d,
+            IRSEX: +d.IRSEX,
+            BOOKED: +d.BOOKED,
+            BKAGASLT: d.BKAGASLT ? +d.BKAGASLT : 0,
+            BKDRUG: d.BKDRUG ? +d.BKDRUG : 0
+        }));
 
-    const counts = [];
-    scoreRange.forEach(score => {
-        groupLabels.forEach(group => {
-            const groupData = data.filter(d => String(d.HLTINMNT) === group);
-            const count = groupData.filter(d => +d.DSTDEPRS === score).length;
-            counts.push({ score, group, count });
+        // Main update function
+        function updateChart(crimeFilter = "ALL") {
+            // Filter data based on selection
+            let filteredData = data;
+            if (crimeFilter !== "ALL") {
+                filteredData = data.filter(d => d[crimeFilter] === 1);
+            }
+
+            // Calculate rates with confidence intervals
+            const calculateStats = (groupData) => {
+                const n = groupData.length;
+                const arrested = groupData.filter(d => d.BOOKED === 1).length;
+                const rate = (arrested / n) * 100;
+                // 95% confidence interval
+                const se = 1.96 * Math.sqrt((rate * (100 - rate)) / n);
+                return {
+                    rate,
+                    lower: Math.max(0, rate - se),
+                    upper: Math.min(100, rate + se),
+                    count: arrested,
+                    total: n
+                };
+            };
+
+            const maleData = filteredData.filter(d => d.IRSEX === 1);
+            const femaleData = filteredData.filter(d => d.IRSEX === 2);
+
+            const chartData = [
+                { gender: "Male", ...calculateStats(maleData) },
+                { gender: "Female", ...calculateStats(femaleData) }
+            ];
+
+            // Update scales
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(chartData, d => d.upper) * 1.1])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(chartData.map(d => d.gender))
+                .range([0, height])
+                .padding(0.4);
+
+            // Color scale
+            const color = d3.scaleOrdinal()
+                .domain(["Male", "Female"])
+                .range(["#1f77b4", "#e377c2"]);
+
+            // Remove previous elements
+            svg.selectAll(".bar, .error-bar, .label").remove();
+
+            // Draw bars
+            svg.selectAll(".bar")
+                .data(chartData)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("y", d => y(d.gender))
+                .attr("height", y.bandwidth())
+                .attr("x", 0)
+                .attr("width", d => x(d.rate))
+                .attr("fill", d => color(d.gender))
+                .on("mouseover", function(event, d) {
+                    d3.select("#tooltip")
+                        .style("opacity", 1)
+                        .html(`
+                            <strong>${d.gender} Arrests</strong><br>
+                            ${crimeFilter === "ALL" ? "All Crimes" : crimeFilter === "BKAGASLT" ? "Violent Crimes" : "Drug Crimes"}<br>
+                            Rate: ${d.rate.toFixed(1)}%<br>
+                            (95% CI: ${d.lower.toFixed(1)}% - ${d.upper.toFixed(1)}%)<br>
+                            Arrested: ${d.count}/${d.total}
+                        `);
+                })
+                .on("mousemove", function(event) {
+                    d3.select("#tooltip")
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 20) + "px");
+                })
+                .on("mouseout", function() {
+                    d3.select("#tooltip").style("opacity", 0);
+                });
+
+            // Add error bars
+            svg.selectAll(".error-bar")
+                .data(chartData)
+                .enter()
+                .append("line")
+                .attr("class", "error-bar")
+                .attr("x1", d => x(d.lower))
+                .attr("x2", d => x(d.upper))
+                .attr("y1", d => y(d.gender) + y.bandwidth()/2)
+                .attr("y2", d => y(d.gender) + y.bandwidth()/2)
+                .attr("stroke", "#333")
+                .attr("stroke-width", 2);
+
+            // Add center line for error bars
+            svg.selectAll(".error-mid")
+                .data(chartData)
+                .enter()
+                .append("line")
+                .attr("class", "error-mid")
+                .attr("x1", d => x(d.lower))
+                .attr("x2", d => x(d.lower))
+                .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
+                .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
+                .attr("stroke", "#333")
+                .attr("stroke-width", 2);
+
+            svg.selectAll(".error-mid")
+                .data(chartData)
+                .enter()
+                .append("line")
+                .attr("class", "error-mid")
+                .attr("x1", d => x(d.upper))
+                .attr("x2", d => x(d.upper))
+                .attr("y1", d => y(d.gender) + y.bandwidth()/2 - 5)
+                .attr("y2", d => y(d.gender) + y.bandwidth()/2 + 5)
+                .attr("stroke", "#333")
+                .attr("stroke-width", 2);
+
+            // Add value labels
+            svg.selectAll(".label")
+                .data(chartData)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("x", d => x(d.rate) + 5)
+                .attr("y", d => y(d.gender) + y.bandwidth()/2)
+                .attr("dy", "0.35em")
+                .style("font-size", "12px")
+                .style("font-weight", "bold")
+                .text(d => `${d.rate.toFixed(1)}%`);
+
+            // Update axes
+            svg.select(".x-axis").remove();
+            svg.select(".y-axis").remove();
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(5).tickFormat(d => `${d}%`));
+
+            svg.append("g")
+                .attr("class", "y-axis")
+                .call(d3.axisLeft(y));
+
+            // Update title
+            svg.select(".title").remove();
+            svg.append("text")
+                .attr("class", "title")
+                .attr("x", width/2)
+                .attr("y", -10)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
+                .text(`Arrest Rates by Gender${crimeFilter === "ALL" ? "" : crimeFilter === "BKAGASLT" ? " (Violent Crimes)" : " (Drug Crimes)"}`);
+        }
+
+        // Initial render
+        updateChart();
+
+        // Filter interaction
+        d3.select("#crime-filter").on("change", function() {
+            updateChart(this.value);
         });
     });
-
-    const x0 = d3.scaleBand()
-        .domain(scoreRange)
-        .range([0, width])
-        .padding(0.2);
-
-    const x1 = d3.scaleBand()
-        .domain(groupLabels)
-        .range([0, x0.bandwidth()])
-        .padding(0.05);
-
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(counts, d => d.count)]).nice()
-        .range([height, 0]);
-
-    const color = d3.scaleOrdinal()
-        .domain(groupLabels)
-        .range(["steelblue", "orange"]);
-
-    svg.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x0).tickFormat(d => `Score ${d}`));
-
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    svg.selectAll("g.bar-group")
-        .data(scoreRange)
-        .enter()
-        .append("g")
-        .attr("class", "bar-group")
-        .attr("transform", d => `translate(${x0(d)},0)`)
-        .selectAll("rect")
-        .data(d => counts.filter(c => c.score === d))
-        .enter()
-        .append("rect")
-        .attr("x", d => x1(d.group))
-        .attr("y", d => y(d.count))
-        .attr("width", x1.bandwidth())
-        .attr("height", d => height - y(d.count))
-        .attr("fill", d => color(d.group));
-
-    const legend = svg.append("g")
-        .attr("transform", `translate(${width - 450}, 0)`);
-
-    legend.selectAll("rect")
-        .data(groupLabels)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", (d, i) => i * 20)
-        .attr("width", 12)
-        .attr("height", 12)
-        .attr("fill", d => color(d));
-
-    legend.selectAll("text")
-        .data(groupLabels)
-        .enter()
-        .append("text")
-        .attr("x", 20)
-        .attr("y", (d, i) => i * 20 + 10)
-        .text(d => d === "1" ? "difficulties" : "NO difficulties");
-
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("x", width / 2)
-        .attr("y", height + margin.bottom - 10)
-        .text("Depression Frequency");
-
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
-        .attr("y", -50)
-        .text("Number of Responses");
-
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", -15)
-        .attr("text-anchor", "middle")
-        .text("Depression Frequency and Reported Mental Difficulties")
-        .style("font-size", "22px");
 }
+// function drawHistogram(data) {
+//     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+//     const width = 800 - margin.left - margin.right;
+//     const height = 400 - margin.top - margin.bottom;
+
+//     const svg = d3.select("#box-plot")
+//         .append("svg")
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom)
+//         .append("g")
+//         .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     const scoreRange = [1, 2, 3, 4, 5];
+//     const groupLabels = ["1", "2"];
+
+//     const counts = [];
+//     scoreRange.forEach(score => {
+//         groupLabels.forEach(group => {
+//             const groupData = data.filter(d => String(d.HLTINMNT) === group);
+//             const count = groupData.filter(d => +d.DSTDEPRS === score).length;
+//             counts.push({ score, group, count });
+//         });
+//     });
+
+//     const x0 = d3.scaleBand()
+//         .domain(scoreRange)
+//         .range([0, width])
+//         .padding(0.2);
+
+//     const x1 = d3.scaleBand()
+//         .domain(groupLabels)
+//         .range([0, x0.bandwidth()])
+//         .padding(0.05);
+
+//     const y = d3.scaleLinear()
+//         .domain([0, d3.max(counts, d => d.count)]).nice()
+//         .range([height, 0]);
+
+//     const color = d3.scaleOrdinal()
+//         .domain(groupLabels)
+//         .range(["steelblue", "orange"]);
+
+//     svg.append("g")
+//         .attr("transform", `translate(0,${height})`)
+//         .call(d3.axisBottom(x0).tickFormat(d => `Score ${d}`));
+
+//     svg.append("g")
+//         .call(d3.axisLeft(y));
+
+//     svg.selectAll("g.bar-group")
+//         .data(scoreRange)
+//         .enter()
+//         .append("g")
+//         .attr("class", "bar-group")
+//         .attr("transform", d => `translate(${x0(d)},0)`)
+//         .selectAll("rect")
+//         .data(d => counts.filter(c => c.score === d))
+//         .enter()
+//         .append("rect")
+//         .attr("x", d => x1(d.group))
+//         .attr("y", d => y(d.count))
+//         .attr("width", x1.bandwidth())
+//         .attr("height", d => height - y(d.count))
+//         .attr("fill", d => color(d.group));
+
+//     const legend = svg.append("g")
+//         .attr("transform", `translate(${width - 450}, 0)`);
+
+//     legend.selectAll("rect")
+//         .data(groupLabels)
+//         .enter()
+//         .append("rect")
+//         .attr("x", 0)
+//         .attr("y", (d, i) => i * 20)
+//         .attr("width", 12)
+//         .attr("height", 12)
+//         .attr("fill", d => color(d));
+
+//     legend.selectAll("text")
+//         .data(groupLabels)
+//         .enter()
+//         .append("text")
+//         .attr("x", 20)
+//         .attr("y", (d, i) => i * 20 + 10)
+//         .text(d => d === "1" ? "difficulties" : "NO difficulties");
+
+//     svg.append("text")
+//         .attr("text-anchor", "middle")
+//         .attr("x", width / 2)
+//         .attr("y", height + margin.bottom - 10)
+//         .text("Depression Frequency");
+
+//     svg.append("text")
+//         .attr("text-anchor", "middle")
+//         .attr("transform", "rotate(-90)")
+//         .attr("x", -height / 2)
+//         .attr("y", -50)
+//         .text("Number of Responses");
+
+//     svg.append("text")
+//         .attr("x", width / 2)
+//         .attr("y", -15)
+//         .attr("text-anchor", "middle")
+//         .text("Depression Frequency and Reported Mental Difficulties")
+//         .style("font-size", "22px");
+// }
 
 ////////////// Bar Chart: Justice Involvement by Drug Use //////////
 function drawMovingBarGraph(data) {
@@ -1033,7 +1235,7 @@ function init() {
             HLTINMNT: d.HLTINMNT
         }));
 
-        d3.tsv("data/depressionFrequency_treatmentStatus.tsv").then(drawHistogram);
+        d3.tsv("data/male_vs_female_arrest.tsv").then(drawGenderArrestComparison);
     });
 }
 
