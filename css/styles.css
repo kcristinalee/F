@@ -189,5 +189,14 @@ h3 {
   margin: 0 20px; /* spacing between charts */
 }
 
-
-
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 6px;
+  font-size: 12px;
+  background: lightsteelblue;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+}
