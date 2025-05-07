@@ -51,27 +51,7 @@
   that appear when hovering over each section. These show the exact number of respondents for a given substance,
   gender, and usage level, offering more detailed insight beyond what’s visible at a glance.
 </p>
-<br><br>
-<h4>Key Findings</h4>
-<p id="article-format">
-  As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
-  while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
-  drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
-  genders.
-  <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
-  daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
-  trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
-  women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
-  is often used more intensely than alcohol, particularly by men.
-  <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
-  normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
-  days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
-  women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
-  people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
-  It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
-  concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
-  by substance.
-</p>
+<br>
 
 <div class="spiral-legend-wrapper">
   <div class="spiral-legend">
@@ -104,8 +84,59 @@
     </div>
   </div>
 </div>
+<h4>Key Findings</h4>
+<p id="article-format">
+  As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
+  while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
+  drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
+  genders.
+  <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
+  daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
+  trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
+  women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
+  is often used more intensely than alcohol, particularly by men.
+  <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
+  normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
+  days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
+  women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
+  people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
+  It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
+  concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
+  by substance.
+</p>
+
+
 <br><br><br><br>
 
+<h1>Depression Analysis</h1>
+<p id="article-format">
+  This bar graph illustrates the relationship between adults' overall severity of major depressive episode (MDE)
+  interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12
+  months (NOBOOKY2).
+  The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no
+  interference)
+  to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
+</p>
+<div class="d-flex justify-content-center mb-5">
+  <div id="scatter-plot"></div>
+</div>
+<h4>Key Findings</h4>
+<p id="article-format">
+  From the graph, we observe that individuals with minimal or no depression interference (level 1)
+  reported the highest average number of arrests. Interestingly, as the severity of depression interference increases,
+  the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level
+  5).
+
+  <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less
+  involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or
+  other social factors that limit engagement in arrest-related behavior.
+
+  <br><br>This data highlights a counterintuitive but important insight: less visible mental
+  health struggles might coincide with more externalized behaviors like arrest, while those facing more
+  intense internal struggles may be more withdrawn or supervised.
+</p>
+
+<br><br><br>
 
 <body>
   <h1>Arrests vs Consumed Alcohol (Depression Frequency)</h1>
@@ -123,6 +154,27 @@
     important because it helps uncover patterns in mental health outcomes across gender and behavioral dimensions,
     allowing researchers and policymakers to identify high-risk populations and inform targeted interventions.
     <br><br>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <label for="dropdownId" style="font-size: 18px; margin-right: 8px;">X-Axis:</label>
+    <select id="dropdownId" style="font-size: 16px; padding: 4px 8px;">
+      <option value="alcoholDays">Alcohol Days</option>
+      <option value="chewDays">Chew Days</option>
+      <option value="marijuanaDays">Marijuana Days</option>
+      <option value="workDaysMissed">Work Days Missed</option>
+    </select>
+  </div>
+
+  <div class="chart-row">
+    <div>
+      <h4>Male</h4>
+      <div id="male-heatmap" class="donut-chart"></div>
+    </div>
+    <div>
+      <h4>Female</h4>
+      <div id="female-heatmap" class="donut-chart"></div>
+    </div>
+  </div>
   <h4>Key Findings</h4>
 
   <p id="article-format">From looking at our heatmaps, we noticed a trend that through all the variables (alcohol,
@@ -133,51 +185,16 @@
     causation of depression is more likely due to being arrested in the past 12 months.
   </p>
   </p>
-  <div style="text-align: center; margin-top: 20px;">
-    <label for="dropdownId" style="font-size: 18px; margin-right: 8px;">X-Axis:</label>
-    <select id="dropdownId" style="font-size: 16px; padding: 4px 8px;">
-      <option value="alcoholDays">Alcohol Days</option>
-      <option value="chewDays">Chew Days</option>
-      <option value="marijuanaDays">Marijuana Days</option>
-      <option value="workDaysMissed">Work Days Missed</option>
-    </select>
-  </div>
-  
-  <div class="chart-row">
-    <div>
-      <h4>Male</h4>
-      <div id="male-heatmap"class="donut-chart"></div>
-    </div>
-    <div>
-      <h4>Female</h4>
-      <div id="female-heatmap"class="donut-chart"></div>
-    </div>
-  </div>
-  
+
+
   <br><br><br>
-<h1 class="donut-title">Criminal Behavior and Gender</h1>
-<p id="article-format">
-  To explore potential behavioral differences by gender, we created donut charts that visualize the proportion of people 
-  who engaged in certain criminal activities within the past year, including theft, drug dealing, physical assault, and 
-  receiving treatment in jail. These charts allow for side-by-side comparison of male and female responses, highlighting 
-  gender disparities in criminal behavior.
-</p>
 
-<!-- Smoked charts -->
-<div class="chart-row">
-  <div>
-    <h4>Male</h4>
-    <div id="male-smoked" class="donut-chart"></div>
+
+
+
+  <div id="tooltip100"
+    style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 5px; border-radius: 5px;">
   </div>
-  <div>
-    <h4>Female</h4>
-    <div id="female-smoked" class="donut-chart"></div>
-  </div>
-</div>
-
-
-
-<div id="tooltip100" style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 5px; border-radius: 5px;"></div>
 
   <!-- <div id="male-heatmap" style="margin-bottom:60px;"></div>
   <div id="female-heatmap" style="margin-bottom:60px;"></div> -->
@@ -200,6 +217,9 @@
     <br>
     <br>
   </p>
+  <div id="vis-moving" class="text-center"></div>
+  <div id="tooltip"></div>
+
   <h4>Key Findings</h4>
   <p id="article-format">
     Across all six substances (PCP, Ecstasy, Heroin, Cocaine, Crack, and LSD), the same pattern emerges:
@@ -216,66 +236,55 @@
     interacting with the justice system.
   </p>
 
-
-
-  <div id="vis-moving" class="text-center"></div>
-  <div id="tooltip"></div>
-
-
-  <h1>Depression Analysis</h1>
+<br><br><br>
+  <h1 class="donut-title">Criminal Behavior and Gender</h1>
   <p id="article-format">
-    This bar graph illustrates the relationship between adults' overall severity of major depressive episode (MDE)
-    interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12
-    months (NOBOOKY2).
-    The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no
-    interference)
-    to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
-
-    <br><br>From the graph, we observe that individuals with minimal or no depression interference (level 1)
-    reported the highest average number of arrests. Interestingly, as the severity of depression interference increases,
-    the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level
-    5).
-
-    <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less
-    involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or
-    other social factors that limit engagement in arrest-related behavior.
-
-    <br><br>This data highlights a counterintuitive but important insight: less visible mental
-    health struggles might coincide with more externalized behaviors like arrest, while those facing more
-    intense internal struggles may be more withdrawn or supervised.
+    To explore potential behavioral differences by gender, we created donut charts that visualize the proportion of
+    people
+    who engaged in certain criminal activities within the past year, including theft, drug dealing, physical assault,
+    and
+    receiving treatment in jail. These charts allow for side-by-side comparison of male and female responses,
+    highlighting
+    gender disparities in criminal behavior.
   </p>
 
-  <div class="d-flex justify-content-center mb-5">
-    <div id="scatter-plot"></div>
+  <!-- Smoked charts -->
+  <div class="chart-row">
+    <div>
+      <h4>Male</h4>
+      <div id="male-smoked" class="donut-chart"></div>
+    </div>
+    <div>
+      <h4>Female</h4>
+      <div id="female-smoked" class="donut-chart"></div>
+    </div>
   </div>
+  <br><br><br>
 
-<br><br><br>
+  <h1>Male vs Female Arrests</h1>
+  <p id="article-format">
+    The graph displays the distribution of arrests by gender—male and female—across
+    three categories: all arrests, violent crimes (such as aggravated assault), and drug-related crimes.
+    It visualizes the proportion of males and females who were arrested within each crime category,
+    making it easier to compare gender differences in arrest patterns.
+  </p>
+  <div class="d-flex justify-content-center mb-5">
+    <div id="graph-about-arrest"></div>
+  </div>
+  <h4>Key Findings</h4>
+  <p id="article-format">
+    From the graph, we observe that males consistently account for a higher percentage of arrests
+    in all three categories. Specifically, males represent 69.1% of total arrests and drug-related arrests,
+    while females make up 30.9% in both. In violent crimes, males still lead at 65.8%,
+    but females show a relatively higher share at 34.2% compared to the other categories.
 
-<h1>Male vs Female Arrests</h1>
-<p id="article-format">
-  <br><br>The graph displays the distribution of arrests by gender—male and female—across 
-  three categories: all arrests, violent crimes (such as aggravated assault), and drug-related crimes. 
-  It visualizes the proportion of males and females who were arrested within each crime category, 
-  making it easier to compare gender differences in arrest patterns.
-
-  <br><br>From the graph, we observe that males consistently account for a higher percentage of arrests 
-  in all three categories. Specifically, males represent 69.1% of total arrests and drug-related arrests, 
-  while females make up 30.9% in both. In violent crimes, males still lead at 65.8%, 
-  but females show a relatively higher share at 34.2% compared to the other categories.
-
-  <br><br>The trend shows a consistent gender disparity in arrest rates, with males being 
-  arrested more often than females across all crime types. However, the data highlights a 
-  noteworthy point: while males dominate in all categories, the gender gap is narrower in violent crimes. 
-  This indicates that, proportionally, females are more represented in violent crime arrests than in drug-related or overall arrests. It suggests possible differences in the types of offenses 
-  committed by each gender or variations in how different crimes are policed and recorded.
-
-
-
-</p>
-<div class="d-flex justify-content-center mb-5">
-  <div id="graph-about-arrest"></div>
-</div>
-
+    <br><br>The trend shows a consistent gender disparity in arrest rates, with males being
+    arrested more often than females across all crime types. However, the data highlights a
+    noteworthy point: while males dominate in all categories, the gender gap is narrower in violent crimes.
+    This indicates that, proportionally, females are more represented in violent crime arrests than in drug-related or
+    overall arrests. It suggests possible differences in the types of offenses
+    committed by each gender or variations in how different crimes are policed and recorded.
+  </p>
 
 
   <script src="js/script.js"></script>

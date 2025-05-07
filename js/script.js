@@ -314,7 +314,6 @@ function drawBarChart(csvPath, elementId, genderLabel) {
             .domain(data.map(d => d.Behavior))
             .range(d3.schemeSet2);
 
-        // X-axis
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
             .call(d3.axisBottom(xScale))
@@ -322,12 +321,10 @@ function drawBarChart(csvPath, elementId, genderLabel) {
             .attr("transform", "rotate(-45)")
             .style("text-anchor", "end");
 
-        // Y-axis
         svg.append("g")
             .attr("transform", `translate(${margin.left}, 0)`)
             .call(d3.axisLeft(yScale));
 
-        // Bars
         svg.selectAll("rect")
             .data(data)
             .enter()
@@ -360,7 +357,6 @@ function drawBarChart(csvPath, elementId, genderLabel) {
     });
 }
 
-// Call the function for all four charts
 drawBarChart("data/donut_male.csv", "male-smoked", "Male");
 drawBarChart("data/donut_female.csv", "female-smoked", "Female");
 
@@ -581,7 +577,6 @@ function drawGenderArrestComparison() {
     const width = 700 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
-    // Clear previous SVG
     d3.select("#graph-about-arrest").html(`
         <div class="filter-controls">
             <select id="crime-filter">
@@ -601,31 +596,24 @@ function drawGenderArrestComparison() {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     d3.tsv("data/male_vs_female_arrest.tsv").then(rawData => {
-        // Data cleaning with proper value handling for all variables
         const data = rawData.map(d => {
             return {
                 ...d,
-                IRSEX: +d.IRSEX || 0,  // 1=Male, 2=Female
-                BOOKED: (+d.BOOKED === 1 || +d.BOOKED === 3) ? 1 : 0, // 1/3=Arrested, 2=Not
-                BKAGASLT: (+d.BKAGASLT === 1 || +d.BKAGASLT === 3) ? 1 : 0, // 1/3=Yes, 2=No
-                //BKDRUG: (+d.BKDRUG === 1 || +d.BKDRUG === 3) ? 1 : 0, // 1/3=Yes, 2=No
+                IRSEX: +d.IRSEX || 0,
+                BOOKED: (+d.BOOKED === 1 || +d.BOOKED === 3) ? 1 : 0,
+                BKAGASLT: (+d.BKAGASLT === 1 || +d.BKAGASLT === 3) ? 1 : 0,
                 isValid: (+d.IRSEX === 1 || +d.IRSEX === 2) && 
                         (+d.BOOKED === 0 || +d.BOOKED === 1) &&
                         !isNaN(+d.BKAGASLT) 
-                        //&& 
-                        //!isNaN(+d.BKDRUG)
+
             };
         }).filter(d => d.isValid);
 
         function updateChart(crimeFilter = "ALL") {
-            // Filter data with proper value handling
             const filteredData = data.filter(d => {
                 if (crimeFilter === "VIOLENT") return d.BKAGASLT === 1;
-                //if (crimeFilter === "DRUG") return d.BKDRUG === 1;
-                return true; // All arrests
+                return true;
             });
-
-            // Group data with proper gender mapping
             const groupData = (genderCode) => {
                 const gender = genderCode === 1 ? "Male" : "Female";
                 const group = filteredData.filter(d => d.IRSEX === genderCode);
@@ -642,7 +630,6 @@ function drawGenderArrestComparison() {
                     };
                 }
 
-                //const arrested = group.filter(d => d.BOOKED === 1).length;
                 const rate = group.length > 0 ? (group.length/filteredData.length) * 100 : 0;
                 const se = group.length > 0 ? 1.96 * Math.sqrt((rate * (100 - rate)) / group.length) : 0;
                 
@@ -658,20 +645,18 @@ function drawGenderArrestComparison() {
             };
 
             const chartData = [
-                groupData(1), // Male
-                groupData(2)  // Female
+                groupData(1),
+                groupData(2)
             ];
             console.log(chartData[0])
             console.log( chartData[1])
 
-            // Calculate max rate (minimum 10% scale for visibility)
             const maxRate = Math.max(
                 10, 
                 d3.max(chartData, d => d.upper),
                 d3.max(chartData, d => d.rate)
             );
 
-            // Update scales
             const x = d3.scaleLinear()
                 .domain([0, maxRate])
                 .range([0, width])
@@ -682,10 +667,8 @@ function drawGenderArrestComparison() {
                 .range([0, height])
                 .padding(0.4);
 
-            // Clear previous elements
             svg.selectAll("*").remove();
 
-            // Draw bars
             svg.selectAll(".bar")
                 .data(chartData)
                 .enter()
@@ -701,7 +684,6 @@ function drawGenderArrestComparison() {
                 .on("mouseout", hideTooltip);
 
 
-            // Add value labels
             svg.selectAll(".label")
                 .data(chartData)
                 .enter()
@@ -714,7 +696,6 @@ function drawGenderArrestComparison() {
                 .style("font-weight", "bold")
                 .text(d => d.hasData ? `${d.rate.toFixed(1)}%` : "No data");
 
-            // Add axes
             svg.append("g")
                 .attr("class", "x-axis")
                 .attr("transform", `translate(0,${height})`)
@@ -724,7 +705,6 @@ function drawGenderArrestComparison() {
                 .attr("class", "y-axis")
                 .call(d3.axisLeft(y));
 
-            // Add title
             svg.append("text")
                 .attr("class", "title")
                 .attr("x", width/2)
@@ -741,7 +721,6 @@ function drawGenderArrestComparison() {
                 });
         }
 
-        // Tooltip functions
         function showTooltip(event, d) {
             if (!d.hasData) return;
             
@@ -771,7 +750,6 @@ function drawGenderArrestComparison() {
             d3.select("#tooltip").style("opacity", 0);
         }
 
-        // Initialize
         updateChart();
         d3.select("#crime-filter").on("change", function() {
             updateChart(this.value);
@@ -986,8 +964,6 @@ function createBarChart(data) {
         .nice()
         .range([height, 0]);
 
-    //
-    //const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
     const colorScale = d3.scaleOrdinal()
        .domain(data.map(d => d.x))
        .range(d3.schemeCategory10);
