@@ -1,3 +1,5 @@
+let globalData = null;
+
 // arrest_risk.js
 function calculateArrestRisk(data) {
     const clean = data.filter(d =>
@@ -96,17 +98,18 @@ function calculateArrestRisk(data) {
         }
       }, 1500 / risks[gender]);
     });
-  }
-  function loadAndRender() {
+   }
+   function loadAndRender() {
     d3.tsv("data/choose_life_raw.tsv").then(data => {
-      const risk = calculateArrestRisk(data);
+      globalData = data;  // <--- STORE the data for reuse later
   
+      const risk = calculateArrestRisk(data);
       document.getElementById("clean-slate").style.display = "block";
   
       // Step 1: draw the jars (empty)
       setupJars();
   
-      // Scroll down to jars and paragraph
+      // Scroll and animate as before
       setTimeout(() => {
         document.getElementById("clean-slate").scrollIntoView({
           behavior: "smooth",
@@ -114,36 +117,219 @@ function calculateArrestRisk(data) {
         });
       }, 100);
   
-      // Step 2: fill jars after scroll completes
       setTimeout(() => {
         animateJars(risk);
       }, 800);
   
-      // Step 3: fade in follow-up and button
       setTimeout(() => {
         const followUp = document.getElementById("follow-up");
         const nextBtn = document.getElementById("next-button-wrapper");
-  
         followUp.style.display = "block";
         nextBtn.style.display = "block";
-  
         setTimeout(() => {
           followUp.style.transition = "opacity 2s ease-in-out";
           nextBtn.style.transition = "opacity 2s ease-in-out";
           followUp.style.opacity = 1;
           nextBtn.style.opacity = 1;
         }, 100);
-      }, 7500);
+      }, 300);
     });
   }
   
+
+//   function loadAndRender() {
+//     d3.tsv("data/choose_life_raw.tsv").then(data => {
+//       const risk = calculateArrestRisk(data);
+  
+//       document.getElementById("clean-slate").style.display = "block";
+  
+//       // Step 1: draw the jars (empty)
+//       setupJars();
+  
+//       // Scroll down to jars and paragraph
+//       setTimeout(() => {
+//         document.getElementById("clean-slate").scrollIntoView({
+//           behavior: "smooth",
+//           block: "center"
+//         });
+//       }, 100);
+  
+//       // Step 2: fill jars after scroll completes
+//       setTimeout(() => {
+//         animateJars(risk);
+//       }, 800);
+  
+//       // Step 3: fade in follow-up and button
+//       setTimeout(() => {
+//         const followUp = document.getElementById("follow-up");
+//         const nextBtn = document.getElementById("next-button-wrapper");
+  
+//         followUp.style.display = "block";
+//         nextBtn.style.display = "block";
+  
+//         setTimeout(() => {
+//           followUp.style.transition = "opacity 2s ease-in-out";
+//           nextBtn.style.transition = "opacity 2s ease-in-out";
+//           followUp.style.opacity = 1;
+//           nextBtn.style.opacity = 1;
+//         }, 100);
+//       }, 3500);
+//     });
+//   }
+
+  function calculateTobaccoRisk(data) {
+    const tobaccoUsers = data.filter(d =>
+      d.TOBFLAG === "1" &&
+      d.CIGEVER === "2" &&
+      d.ALCEVER === "2" &&
+      d.MJEVER === "2" &&
+      d.IEMFLAG === "0" &&
+      d.DEPRESSIONINDEX === "0"
+    );
+  
+    const female = tobaccoUsers.filter(d => d.FEMALE === "1");
+    const male = tobaccoUsers.filter(d => d.FEMALE === "0");
+  
+    const femaleRisk = female.filter(d => d.CRIMEHIST === "1").length / female.length * 100;
+    const maleRisk = male.filter(d => d.CRIMEHIST === "1").length / male.length * 100;
+  
+    return {
+      female: Math.round(femaleRisk),
+      male: Math.round(maleRisk)
+    };
+  }
+  function showTobaccoResult(risks, message) {
+    const container = document.getElementById("tobacco-result");
+    container.innerHTML = ""; // Clear previous scenario
+  
+    // Create SVG container
+    const svg = d3.select(container)
+      .append("svg")
+      .attr("width", 1000)
+      .attr("height", 300);
+  
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+  
+    ["female", "male"].forEach((gender, i) => {
+      const color = gender === "female" ? "hotpink" : "steelblue";
+      const x = 80 * i + 685;
+      const clipId = `clip-${gender}-tobacco`;
+  
+      svg.append("clipPath")
+        .attr("id", clipId)
+        .append("rect")
+        .attr("x", x)
+        .attr("y", 50)
+        .attr("width", jarWidth)
+        .attr("height", jarHeight)
+        .attr("rx", 10);
+  
+      svg.append("rect")
+        .attr("x", x)
+        .attr("y", 50)
+        .attr("width", jarWidth)
+        .attr("height", jarHeight)
+        .attr("rx", 10)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 2);
+  
+      const bar = svg.append("rect")
+        .attr("x", x)
+        .attr("y", 250)
+        .attr("width", jarWidth)
+        .attr("height", 0)
+        .attr("fill", color)
+        .attr("clip-path", `url(#${clipId})`);
+  
+      const label = svg.append("text")
+        .attr("x", x + jarWidth / 2)
+        .attr("y", 40)
+        .attr("text-anchor", "middle")
+        .text("0%")
+        .style("font-size", "18px")
+        .style("font-weight", "bold")
+        .style("fill", color);
+  
+      let percent = 0;
+      const target = risks[gender];
+      bar.transition()
+        .duration(1500)
+        .attr("y", 250 - scale(target))
+        .attr("height", scale(target));
+  
+      const interval = setInterval(() => {
+        if (percent >= target) {
+          clearInterval(interval);
+          label.text(`${target}%`);
+        } else {
+          percent++;
+          label.text(`${percent}%`);
+        }
+      }, 1500 / Math.max(target, 1));
+    });
+  
+    // Add paragraph below jars
+    d3.select(container)
+    .append("p")
+    .attr("id", "article-format")
+    .html(message);
+}
   
   document.getElementById("calc-risk").addEventListener("click", loadAndRender);
   
   
+  document.getElementById("start-life-btn").addEventListener("click", () => {
+    const choice1 = document.getElementById("choice-1");
+    choice1.style.display = "block";
+    choice1.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
   
-
-
+  document.getElementById("take-tobacco").addEventListener("click", () => {
+    const risks = calculateTobaccoRisk(globalData);
+    showTobaccoResult(risks, "By choosing to use tobacco, Karen and Bob's arrest risk jumps by 1%, a choice which technically doubles the arrest risk for women, though that risk still remains slim.");
+    // Scroll to the tobacco result container
+    setTimeout(() => {
+        const container = document.getElementById("tobacco-result");
+        if (container) {
+            container.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+    }, 300); // slight delay to ensure rendering happens before scroll
+  
+    // Reset both buttons
+    document.getElementById("take-tobacco").classList.remove("dimmed");
+    document.getElementById("skip-tobacco").classList.remove("dimmed");
+  
+    // Dim the *unselected* one
+    document.getElementById("skip-tobacco").classList.add("dimmed");
+  });
+  
+  document.getElementById("skip-tobacco").addEventListener("click", () => {
+    const risks = calculateArrestRisk(globalData);
+    showTobaccoResult(risks, "By saying no to tobacco, they keep their risk levels where they were...");
+    // Scroll to the tobacco result container
+    setTimeout(() => {
+        const container = document.getElementById("tobacco-result");
+        if (container) {
+        container.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+        }
+    }, 300); // slight delay to ensure rendering happens before scroll
+  
+    // Reset both buttons
+    document.getElementById("take-tobacco").classList.remove("dimmed");
+    document.getElementById("skip-tobacco").classList.remove("dimmed");
+  
+    // Dim the *unselected* one
+    document.getElementById("take-tobacco").classList.add("dimmed");
+  });
 
   // const margin = { top: 120, right: 100, bottom: 160, left: 100 },
 //     width = 900 - margin.left - margin.right,

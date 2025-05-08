@@ -271,3 +271,13 @@ h3 {
   border-color: rgb(149, 228, 29);
   margin-bottom: 1rem;
 }
+
+#choice-1 {
+  padding-top: 10rem;
+  padding-bottom: 5rem
+}
+
+.dimmed {
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
