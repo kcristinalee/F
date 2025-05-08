@@ -125,10 +125,17 @@ h1, h2, h3, h4 {
   max-width: 1100px;
   margin: 0 auto;
   padding: 1rem;
-  font-size: 16px;
+  font-size: 25px;
   line-height: 2;
 }
-
+#clean-slate {
+  display: none;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 25px;
+  line-height: 2;
+}
 
 #graph-about-arrest{
   max-width: 1100px;
@@ -209,7 +216,24 @@ h3 {
 
 .path-line {
   width: 4px;
-  height: 200rem;
+  height: 10rem;
   background-color: black;
   margin-top: 0rem;
 }
+
+#risk-bars {
+  margin-left: 39rem;
+  display: block;
+  display: center;
+}
+
+#risk-bars svg {
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.2));
+}
+#risk-bars text {
+  font-family: 'Helvetica', sans-serif;
+  font-weight: bold;
+  fill: white;
+  text-shadow: 1px 1px 2px black;
+}
+

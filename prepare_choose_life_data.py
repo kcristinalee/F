@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""
+prepare_choose_life_data.py
+---------------------------
+
+• reads the five NSDUH split TSVs
+• keeps only selected variables related to drug use, mental health, gender, and arrest history
+• does NOT recode or transform data — raw values are preserved
+• outputs a combined file: data/choose_life_raw.tsv
+"""
+
+import pandas as pd
+
+# 1. File paths
+TSV_FILES = [
+    "data/split_part_1.tsv",
+    "data/split_part_2.tsv",
+    "data/split_part_3.tsv",
+    "data/split_part_4.tsv",
+    "data/split_part_5.tsv",
+]
+
+# 2. Variables to extract (as-is, no recoding)
+SELECTED_COLUMNS = [
+    "CIGEVER",        # Ever smoked a cigarette
+    "TOBFLAG",        # Ever used tabacco
+    "ALCEVER",        # Ever drank alcohol
+    "MJEVER",         # Ever used marijuana
+    "IEMFLAG",        # Illicit drugs (excluding MJ)
+    "DEPRESSIONINDEX",# Depression index (0 = none, 9 = high)
+    "ANYTXMDE",       # Any treatment for MDE (not meds)
+    "MDETXRX",        # Treatment or Rx for MDE
+    "CRIMEHIST",      # Ever arrested/charged
+    "FEMALE",         # Gender
+]
+
+# 3. Load, select, and combine
+frames = []
+for path in TSV_FILES:
+    print(f"• Reading {path}")
+    df = pd.read_csv(
+        path,
+        sep="\t",
+        usecols=lambda col: col in SELECTED_COLUMNS,
+        dtype="object"  # Keep original values as-is
+    )
+    frames.append(df)
+
+# 4. Concatenate all chunks
+merged = pd.concat(frames, ignore_index=True)
+
+# 5. Save to new file
+OUT_PATH = "data/choose_life_raw.tsv"
+merged.to_csv(OUT_PATH, sep="\t", index=False, encoding="utf-8", quoting=3)
+
+print(f"✅ Saved selected variables to {OUT_PATH}")
