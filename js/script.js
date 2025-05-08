@@ -19,8 +19,9 @@ function calculateArrestRisk(data) {
       female: Math.round(femaleArrestRate)
     };
   }
+  let jarElements = {}; // store references for later animation
 
-function drawJars(risks) {
+  function setupJars() {
     const svg = d3.select("#risk-bars")
       .html("")
       .append("svg")
@@ -72,6 +73,14 @@ function drawJars(risks) {
         .style("font-weight", "bold")
         .style("fill", color);
   
+      jarElements[gender] = { bar, label, scale };
+    });
+  }
+  
+  function animateJars(risks) {
+    ["female", "male"].forEach(gender => {
+      const { bar, label, scale } = jarElements[gender];
+  
       bar.transition()
         .duration(1500)
         .attr("y", 250 - scale(risks[gender]))
@@ -88,16 +97,51 @@ function drawJars(risks) {
       }, 1500 / risks[gender]);
     });
   }
-  
   function loadAndRender() {
     d3.tsv("data/choose_life_raw.tsv").then(data => {
       const risk = calculateArrestRisk(data);
-      drawJars(risk);
+  
       document.getElementById("clean-slate").style.display = "block";
+  
+      // Step 1: draw the jars (empty)
+      setupJars();
+  
+      // Scroll down to jars and paragraph
+      setTimeout(() => {
+        document.getElementById("clean-slate").scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }, 100);
+  
+      // Step 2: fill jars after scroll completes
+      setTimeout(() => {
+        animateJars(risk);
+      }, 800);
+  
+      // Step 3: fade in follow-up and button
+      setTimeout(() => {
+        const followUp = document.getElementById("follow-up");
+        const nextBtn = document.getElementById("next-button-wrapper");
+  
+        followUp.style.display = "block";
+        nextBtn.style.display = "block";
+  
+        setTimeout(() => {
+          followUp.style.transition = "opacity 2s ease-in-out";
+          nextBtn.style.transition = "opacity 2s ease-in-out";
+          followUp.style.opacity = 1;
+          nextBtn.style.opacity = 1;
+        }, 100);
+      }, 7500);
     });
   }
   
+  
   document.getElementById("calc-risk").addEventListener("click", loadAndRender);
+  
+  
+  
 
 
 
