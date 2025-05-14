@@ -281,3 +281,39 @@ h3 {
   opacity: 0.4;
   transition: opacity 0.3s ease;
 }
+
+#risk-bars {
+  display: flex;
+  justify-content: center;
+  gap: 0rem;
+  margin-top: 0rem;
+}
+
+.risk-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.risk-bar {
+  width: 4rem;
+  height: 0;
+  background-color: gray;
+  transition: height 1s ease;
+}
+
+.female-bar {
+  background-color: hotpink;
+}
+
+.male-bar {
+  background-color: steelblue;
+}
+
+.tobacco-risk-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
