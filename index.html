@@ -105,47 +105,31 @@
     </p>
   </div>
   <div id="tobacco-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-<!-- 
-  <div id="tobacco-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;">
-    <div class="tobacco-risk-container" style="display: flex; flex-direction: column; align-items: center;">
-      <div id="female-risk-bar-tobacco" class="risk-bar female-bar"></div>
-      <div class="risk-icon female-icon" style="display: block; margin-top: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="hotpink" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
-          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 
-            0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 
-            .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 
-            0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 
-            9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 
-            0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
-        </svg>
-      </div>
-    </div>
-  
-    <div class="tobacco-risk-container" style="display: flex; flex-direction: column; align-items: center;">
-      <div id="male-risk-bar-tobacco" class="risk-bar male-bar"></div>
-      <div class="risk-icon male-icon" style="display: block; margin-top: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="blue" class="bi bi-person-standing" viewBox="0 0 16 16">
-          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 
-            6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 
-            0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 
-            0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 
-            0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 
-            0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0"/>
-        </svg>
-      </div>
-    </div>
+
+  <div id="tobacco-followup-wrapper" style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+    <p id="tobacco-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      Even a single try shifted their arrest risk — now let’s see what happens if they try cigarettes.
+    </p>
+    <button id="continue-to-cigarettes" class="btn btn-primary btn-lg">Continue</button>
   </div>
-   -->
 
-   <!-- <div id="tobacco-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-  <div id="tobacco-button-container" style="display: none; text-align: center; padding-top: 3rem;">
-    <button id="calc-tobacco-risk" style="margin-bottom: 2rem;" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
-  </div> -->
-
+  
   <div id="tobacco-button-container" style="display: none; text-align: center; padding-top: 3rem;">
     <button id="calc-tobacco-risk" style="margin-bottom: 2rem;" class ="btn btn-dark btn-lg">Calculate Arrest Risk</button>
   </div>
+  <div id="cigarette-scene" style="display: none; text-align: center; margin-top: 2rem;">
+    <img id="cigarette-image" src="images/cig-img.jpeg" alt="Cigarette Packet"
+    style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
 
+    <p style="font-size: 24px; max-width: 900px; margin: auto; padding: 1rem;">
+      Later, they tried smoking cigarettes — again, only once. But did that small step push them further toward risk?
+    </p>
+    <div id="cigarette-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+  
+    <div style="text-align: center; margin-top: 2rem;">
+      <button id="calc-cigarette-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+    </div>
+  </div>
 
   
 </body>
