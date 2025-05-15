@@ -759,61 +759,166 @@ document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
 
 function createHeatmap(data) {
   const cleaned = data.filter(d => {
-  const alc = +d.ALCDAYS;
-  const dep = +d.DSTDEPRS;
+    const alc = +d.ALCDAYS;
+    const dep = +d.DSTDEPRS;
 
-  return (
-    (alc >= 0 && alc <= 30) || alc === 91 || alc === 93
-  ) && (
-    dep >= 1 && dep <= 5
-  );
-});
-  console.log(`Cleaned: ${cleaned}`);
+    return (
+      ((alc >= 0 && alc <= 30) || alc === 91 || alc === 93) &&
+      (dep >= 1 && dep <= 5)
+    );
+  });
+
   function binAlcohol(days) {
-  if (days === 91 || days === 93) return "0 days";
+    if (days === 91 || days === 93) return "0 days";
+    if (days <= 5) return "1–5";
+    if (days <= 10) return "6–10";
+    if (days <= 15) return "11–15";
+    if (days <= 20) return "16–20";
+    if (days <= 25) return "21–25";
+    return "26–30";
+  }
 
-  if (days <= 5) return "1-5";
-  if (days <= 10) return "6-0";
-  if (days <= 15) return "11-15";
-  if (days <= 20) return "16-20";
-  if (days <= 25) return "21-25";
-  return "26-30";
-}
+  const depressionLevels = [1, 2, 3, 4, 5]; // 1 = most depressed, 5 = least
+
+  const grouped = d3.rollups(
+    cleaned,
+    v => {
+      const total = v.length;
+      const levelCounts = d3.rollup(
+        v,
+        v2 => v2.length / total,
+        d => +d.DSTDEPRS
+      );
+      const result = { bin: binAlcohol(+v[0].ALCDAYS) };
+      depressionLevels.forEach(level => {
+        result[level] = levelCounts.get(level) || 0;
+      });
+      return result;
+    },
+    d => binAlcohol(+d.ALCDAYS)
+  );
+
+  const areaData = grouped.map(([bin, data]) => ({ ...data, bin }));
+
+  const binOrder = ["0 days", "1–5", "6–10", "11–15", "16–20", "21–25", "26–30"];
+  areaData.sort((a, b) => binOrder.indexOf(a.bin) - binOrder.indexOf(b.bin));
+
+  // Stack using reversed depression levels so most depressed (1) is at bottom
+  const stack = d3.stack()
+    .keys(depressionLevels.map(d => d.toString()).reverse());
+
+  const stackedSeries = stack(areaData);
+
+  const svg = d3.select("#stacked_area"),
+        margin = { top: 40, right: 30, bottom: 50, left: 50 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const x = d3.scalePoint()
+    .domain(binOrder)
+    .range([0, width])
+    .padding(0.5);
+
+  const y = d3.scaleLinear()
+    .domain([0, 1])
+    .range([height, 0]);
+
+  const color = d3.scaleOrdinal()
+    .domain(depressionLevels.map(d => d.toString()))
+    .range(d3.schemeRdYlBu[5].reverse()); // Level 1 is red, Level 5 is blue
+
+  const area = d3.area()
+    .x(d => x(d.data.bin))
+    .y0(d => y(d[0]))
+    .y1(d => y(d[1]));
+
+  g.selectAll("path")
+    .data(stackedSeries)
+    .enter().append("path")
+    .attr("fill", d => color(d.key))
+    .attr("d", area)
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5);
+
+  g.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x));
+
+  g.append("g")
+    .call(d3.axisLeft(y).ticks(5, "%"));
+
+  // Legend
+  const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width + margin.left -73},${margin.top})`);
+    const depressionDescriptions = {
+  1: "All of the time",
+  2: "Most of the time",
+  3: "Some of the time",
+  4: "A little of the time",
+  5: "None of the time"
+};
+
+  depressionLevels.forEach((level, i) => {
+    legend.append("rect")
+      .attr("x", 0)
+      .attr("y", i * 20)
+      .attr("width", 12)
+      .attr("height", 12)
+      .attr("fill", color(level.toString()));
+
+    legend.append("text")
+      .attr("x", 18)
+      .attr("y", i * 20 + 10)
+      .text(depressionDescriptions[level])
+      .attr("alignment-baseline", "middle")
+      .style("font-size", "12px");
+  });
+
+  svg.append("text")
+    .attr("x", (width + margin.left + margin.right) / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "18px")
+    .text("Depression Level Distribution by Alcohol Use (Stacked Area)");
 
 
-const counts = d3.rollups(
-  cleaned,
-  v => v.length,
-  d => binAlcohol(+d.ALCDAYS),
-  d => +d.DSTDEPRS
-);
+// const counts = d3.rollups(
+//   cleaned,
+//   v => v.length,
+//   d => binAlcohol(+d.ALCDAYS),
+//   d => +d.DSTDEPRS
+// );
 
-// Flatten to array of objects
-const flattened = counts.flatMap(([bin, levels]) =>
-  levels.map(([depLevel, count]) => ({
-    bin,
-    depLevel,
-    count
-  }))
-);
-const bins = [...new Set(flattened.map(d => d.bin))].sort();
-const levels = [1, 2, 3, 4, 5];
+// // Flatten to array of objects
+// const flattened = counts.flatMap(([bin, levels]) =>
+//   levels.map(([depLevel, count]) => ({
+//     bin,
+//     depLevel,
+//     count
+//   }))
+// );
+// const bins = [...new Set(flattened.map(d => d.bin))].sort();
+// const levels = [1, 2, 3, 4, 5];
 
-const xScale = d3.scaleBand().domain(bins).range([0, width]).padding(0.05);
-const yScale = d3.scaleBand().domain(levels).range([0, height]).padding(0.05);
-const colorScale = d3.scaleSequential(d3.interpolateReds)
-  .domain([0, d3.max(flattened, d => d.count)]);
+// const xScale = d3.scaleBand().domain(bins).range([0, width]).padding(0.05);
+// const yScale = d3.scaleBand().domain(levels).range([0, height]).padding(0.05);
+// const colorScale = d3.scaleSequential(d3.interpolateReds)
+//   .domain([0, d3.max(flattened, d => d.count)]);
 
-svg.selectAll("rect")
-  .data(flattened)
-  .enter().append("rect")
-    .attr("x", d => xScale(d.bin))
-    .attr("y", d => yScale(d.depLevel))
-    .attr("width", xScale.bandwidth())
-    .attr("height", yScale.bandwidth())
-    .attr("fill", d => colorScale(d.count))
-    .append("title")
-    .text(d => `Bin: ${d.bin}, Depression: ${d.depLevel}, Count: ${d.count}`);
+// svg.selectAll("rect")
+//   .data(flattened)
+//   .enter().append("rect")
+//     .attr("x", d => xScale(d.bin))
+//     .attr("y", d => yScale(d.depLevel))
+//     .attr("width", xScale.bandwidth())
+//     .attr("height", yScale.bandwidth())
+//     .attr("fill", d => colorScale(d.count))
+//     .append("title")
+//     .text(d => `Bin: ${d.bin}, Depression: ${d.depLevel}, Count: ${d.count}`);
 //     data.forEach(function (d) {
 //         d.x = +d.ASDSOVRL;
 //         d.y = +d.NOBOOKY2;
