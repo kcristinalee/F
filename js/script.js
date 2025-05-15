@@ -747,8 +747,467 @@ document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
 });
 
 
+document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
+  document.getElementById("calc-alcohol-risk").style.display = "none";
+  document.getElementById("alcohol-risk-bars").style.display = "flex";
+  setupAlcoholJars(); // you’ll create this function just like the other two
 
+  const risks = calculateAlcoholRisk(globalData);
 
+  ["female", "male"].forEach(gender => {
+    const { bar, label, scale } = jarElements[`${gender}-alcohol`];
+    const target = risks[gender];
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", 250 - scale(target))
+      .attr("height", scale(target));
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= target) {
+        clearInterval(interval);
+        label.text(`${target}%`);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / Math.max(target, 1));
+  });
+
+  setTimeout(() => {
+    document.getElementById("alcohol-risk-bars").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 100);
+
+  setTimeout(() => {
+    const wrapper = document.getElementById("alcohol-followup-wrapper");
+    wrapper.style.display = "block";
+    setTimeout(() => {
+      wrapper.style.opacity = 1;
+    }, 50);
+  }, 1800);
+});
+
+document.getElementById("continue-to-marijuana").addEventListener("click", () => {
+  document.getElementById("marijuana-scene").style.display = "block";
+  document.getElementById("marijuana-image").style.display = "block";
+  document.getElementById("marijuana-button-container").style.display = "block";
+
+  document.getElementById("marijuana-scene").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+});
+
+function calculateMarijuanaRisk(data) {
+  const users = data.filter(d =>
+    d.TOBFLAG === "1" &&
+    d.CIGEVER === "1" &&
+    d.ALCEVER === "1" &&
+    d.MJEVER === "1" &&
+    d.IEMFLAG === "0" &&
+    d.DEPRESSIONINDEX === "0"
+  );
+
+  const female = users.filter(d => d.FEMALE === "1");
+  const male = users.filter(d => d.FEMALE === "0");
+
+  const femaleRisk = female.filter(d => d.CRIMEHIST === "1").length / female.length * 100;
+  const maleRisk = male.filter(d => d.CRIMEHIST === "1").length / male.length * 100;
+
+  return {
+    female: Math.round(femaleRisk),
+    male: Math.round(maleRisk)
+  };
+}
+
+function setupMarijuanaJars() {
+  const container = document.getElementById("marijuana-risk-bars");
+  container.innerHTML = "";
+
+  ["female", "male"].forEach(gender => {
+    const color = gender === "female" ? "hotpink" : "steelblue";
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+
+    const clipId = `clip-${gender}-marijuana`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", 250)
+      .attr("width", jarWidth)
+      .attr("height", 0)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text("0%")
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+      const icon = document.createElement("div");
+      icon.innerHTML = gender === "female"
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="hotpink"
+              class="bi bi-person-standing-dress" viewBox="0 0 16 16">
+              <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 0 0 0 
+              1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 
+              .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 
+              0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 
+              9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 
+              0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
+            </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="steelblue"
+              class="bi bi-person-standing" viewBox="0 0 16 16">
+              <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 
+              6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 
+              0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 
+              0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 
+              0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 
+              0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0"/>
+            </svg>`;
+      
+    jarDiv.appendChild(icon);
+    container.appendChild(jarDiv);
+
+    jarElements[`${gender}-marijuana`] = { bar, label, scale };
+  });
+}
+
+document.getElementById("calc-marijuana-risk").addEventListener("click", () => {
+  document.getElementById("calc-marijuana-risk").style.display = "none";
+  document.getElementById("marijuana-risk-bars").style.display = "flex";
+  setupMarijuanaJars();
+
+  const risks = calculateMarijuanaRisk(globalData);
+
+  ["female", "male"].forEach(gender => {
+    const { bar, label, scale } = jarElements[`${gender}-marijuana`];
+    const target = risks[gender];
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", 250 - scale(target))
+      .attr("height", scale(target));
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= target) {
+        clearInterval(interval);
+        label.text(`${target}%`);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / Math.max(target, 1));
+  });
+
+  setTimeout(() => {
+    document.getElementById("marijuana-risk-bars").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 100);
+});
+
+document.getElementById("calc-marijuana-risk").addEventListener("click", () => {
+  document.getElementById("calc-marijuana-risk").style.display = "none";
+  document.getElementById("marijuana-risk-bars").style.display = "flex";
+  setupMarijuanaJars();
+
+  const risks = calculateMarijuanaRisk(globalData);
+
+  ["female", "male"].forEach(gender => {
+    const { bar, label, scale } = jarElements[`${gender}-marijuana`];
+    const target = risks[gender];
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", 250 - scale(target))
+      .attr("height", scale(target));
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= target) {
+        clearInterval(interval);
+        label.text(`${target}%`);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / Math.max(target, 1));
+  });
+
+  setTimeout(() => {
+    document.getElementById("marijuana-risk-bars").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 100);
+
+  setTimeout(() => {
+    const wrapper = document.getElementById("marijuana-followup-wrapper");
+    wrapper.style.display = "block";
+    setTimeout(() => {
+      wrapper.style.opacity = 1;
+    }, 50);
+  }, 1800);
+});
+
+document.getElementById("continue-to-harddrugs").addEventListener("click", () => {
+  document.getElementById("drug-scene").style.display = "block";
+  document.getElementById("drug-scene").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+function calculateHardDrugRisk(data, selectedDrugs) {
+  return {
+    female: computeRisk(data, selectedDrugs, "1"),
+    male: computeRisk(data, selectedDrugs, "0"),
+  };
+}
+
+function computeRisk(data, selectedDrugs, genderVal) {
+  const subset = data.filter(d =>
+    d.FEMALE === genderVal &&
+    d.CIGEVER === "1" &&
+    d.ALCEVER === "1" &&
+    d.MJEVER === "1" &&
+    d.IEMFLAG === "1" && // must have tried illicit non-marijuana drugs
+    d.DEPRESSIONINDEX === "0" &&
+    d.TOBFLAG === "1" &&
+    selectedDrugs.every(drug => d[drug] === "1")
+  );
+
+  const arrests = subset.filter(d => d.CRIMEHIST === "1").length;
+  return Math.round((arrests / Math.max(subset.length, 1)) * 100);
+}
+
+// document.getElementById("calc-drug-risk").addEventListener("click", () => {
+//   const checked = [...document.querySelectorAll("#drug-form input:checked")];
+//   const selectedDrugs = checked.map(input => input.value);
+
+//   if (selectedDrugs.length === 0) return alert("Select at least one drug.");
+
+//   const risks = calculateHardDrugRisk(globalData, selectedDrugs);
+
+//   // Reuse your jar drawing function (or copy from earlier ones)
+//   setupDrugJars(); // define this like your `setupAlcoholJars`
+  
+//   ["female", "male"].forEach(gender => {
+//     const { bar, label, scale } = jarElements[`${gender}-drug`];
+//     const target = risks[gender];
+
+//     bar.transition()
+//       .duration(1500)
+//       .attr("y", 250 - scale(target))
+//       .attr("height", scale(target));
+
+//     let percent = 0;
+//     const interval = setInterval(() => {
+//       if (percent >= target) {
+//         clearInterval(interval);
+//         label.text(`${target}%`);
+//       } else {
+//         percent++;
+//         label.text(`${percent}%`);
+//       }
+//     }, 1500 / Math.max(target, 1));
+//   });
+
+//   // setTimeout(() => {
+//   //   document.getElementById("drug-risk-bars").style.display = "flex";
+//   //   document.getElementById("drug-followup-wrapper").style.display = "block";
+//   //   document.getElementById("drug-followup").innerText = `Their risk jumped again after trying ${selectedDrugs.length > 1 ? "multiple drugs" : "one drug"}.`;
+//   // }, 1000);
+//   setTimeout(() => {
+//     const riskBars = document.getElementById("drug-risk-bars");
+//     riskBars.style.display = "flex";
+  
+//     // Smooth scroll to the risk bars
+//     riskBars.scrollIntoView({
+//       behavior: "smooth",
+//       block: "center"
+//     });
+  
+//     document.getElementById("drug-followup-wrapper").style.display = "block";
+//     document.getElementById("drug-followup").innerText =
+//       `Their risk jumped again after trying ${selectedDrugs.length > 1 ? "multiple drugs" : "one drug"}.`;
+//   }, 1000);
+  
+// });
+
+document.getElementById("calc-drug-risk").addEventListener("click", () => {
+  const checked = [...document.querySelectorAll("#drug-form input:checked")];
+  const selectedDrugs = checked.map(input => input.value);
+
+  if (selectedDrugs.length === 0) return alert("Select at least one drug.");
+
+  const risks = calculateHardDrugRisk(globalData, selectedDrugs);
+  setupDrugJars(); // draw empty jars
+
+  const riskBars = document.getElementById("drug-risk-bars");
+  riskBars.style.display = "flex";
+
+  // Smooth scroll first
+  riskBars.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // After scrolling, animate jars
+  setTimeout(() => {
+    ["female", "male"].forEach(gender => {
+      const { bar, label, scale } = jarElements[`${gender}-drug`];
+      const target = risks[gender];
+
+      bar.transition()
+        .duration(1500)
+        .attr("y", 250 - scale(target))
+        .attr("height", scale(target));
+
+      let percent = 0;
+      const interval = setInterval(() => {
+        if (percent >= target) {
+          clearInterval(interval);
+          label.text(`${target}%`);
+        } else {
+          percent++;
+          label.text(`${percent}%`);
+        }
+      }, 1500 / Math.max(target, 1));
+    });
+
+    // Show follow-up text
+    const followup = document.getElementById("drug-followup-wrapper");
+    followup.style.display = "block";
+    document.getElementById("drug-followup").innerText =
+      `Their risk jumped again after trying ${selectedDrugs.length > 1 ? "multiple drugs" : "one drug"}.`;
+  }, 1000); // Delay for scroll
+});
+
+function setupDrugJars() {
+  const container = document.getElementById("drug-risk-bars");
+  container.innerHTML = "";
+
+  ["female", "male"].forEach(gender => {
+    const color = gender === "female" ? "hotpink" : "steelblue";
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+    const clipId = `clip-${gender}-drug`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", 250)
+      .attr("width", jarWidth)
+      .attr("height", 0)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text("0%")
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+    const icon = document.createElement("div");
+    icon.innerHTML = gender === "female"
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="hotpink" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 
+            0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 
+            .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 
+            0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 
+            9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 
+            0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
+        </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="steelblue" class="bi bi-person-standing" viewBox="0 0 16 16">
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 
+            6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 
+            0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 
+            0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 
+            0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 
+            0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0"/>
+        </svg>`;
+
+    jarDiv.appendChild(icon);
+    container.appendChild(jarDiv);
+
+    jarElements[`${gender}-drug`] = { bar, label, scale };
+  });
+}
 
 // ////////  Heat Maps /////////
 // const xAxisLabels = {
