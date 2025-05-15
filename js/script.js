@@ -529,8 +529,8 @@ function setupCigaretteJars() {
   });
 }
 
-document.getElementById("calc-cigarette-risk")?.addEventListener("click", () => {
-  document.getElementById("calc-cigarette-risk").style.display = "none"; // Hides button on click
+document.getElementById("calc-cigarette-risk").addEventListener("click", () => {
+  document.getElementById("calc-cigarette-risk").style.display = "none";
   document.getElementById("cigarette-risk-bars").style.display = "flex";
   setupCigaretteJars();
 
@@ -557,128 +557,198 @@ document.getElementById("calc-cigarette-risk")?.addEventListener("click", () => 
     }, 1500 / Math.max(target, 1));
   });
 
+  // Reveal paragraph + "Continue" after animation
   setTimeout(() => {
     document.getElementById("cigarette-risk-bars").scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
   }, 100);
+  
+  setTimeout(() => {
+    const wrapper = document.getElementById("cigarette-followup-wrapper");
+    wrapper.style.display = "block";
+    setTimeout(() => {
+      wrapper.style.opacity = 1;
+    }, 50);
+  }, 1800);
+  
+
+  // Optional: hide the button after click
+  document.getElementById("cigarette-button-container").style.display = "none";
 });
+
 
 document.getElementById("continue-to-cigarettes").addEventListener("click", () => {
   document.getElementById("cigarette-scene").style.display = "block";
   document.getElementById("cigarette-image").style.display = "block";  // <-- show the image
+  document.getElementById("cigarette-button-container").style.display = "block";
   document.getElementById("cigarette-scene").scrollIntoView({ behavior: "smooth", block: "center" });
 });
-  // document.getElementById("calc-risk").addEventListener("click", loadAndRender);
-  
-  // document.getElementById("start-life-btn").addEventListener("click", () => {
-  //   document.getElementById("tobacco-image").style.display = "block";
-  //   const scene = document.getElementById("tobacco-scene");
-  //   scene.style.display = "block";
-  //   scene.scrollIntoView({ behavior: "smooth", block: "center" });
-  // });
-  // document.getElementById("start-life-btn").addEventListener("click", () => {
-  //   document.getElementById("tobacco-scene").style.display = "block";
-  //   document.getElementById("tobacco-button-container").style.display = "block";
-  // });
 
-  // document.getElementById("calc-tobacco-risk").addEventListener("click", () => {
-  //   document.getElementById("tobacco-risk-bars").style.display = "flex";
-  //   setupTobaccoJars();
-  
-  //   const risks = calculateTobaccoRisk(globalData);
-  
-  //   ["female", "male"].forEach(gender => {
-  //     const { bar, label, scale } = jarElements[`${gender}-tobacco`];
-  //     const target = risks[gender];
-  
-  //     bar.transition()
-  //       .duration(1500)
-  //       .attr("y", 250 - scale(target))
-  //       .attr("height", scale(target));
-  
-  //     let percent = 0;
-  //     const interval = setInterval(() => {
-  //       if (percent >= target) {
-  //         clearInterval(interval);
-  //         label.text(`${target}%`);
-  //       } else {
-  //         percent++;
-  //         label.text(`${percent}%`);
-  //       }
-  //     }, 1500 / Math.max(target, 1));
-  //   });
-  
-  //   setTimeout(() => {
-  //     document.getElementById("tobacco-risk-bars").scrollIntoView({
-  //       behavior: "smooth",
-  //       block: "center"
-  //     });
-  //   }, 100);
-  // });
-  
+document.getElementById("continue-to-alcohol").addEventListener("click", () => {
+  const alcoholScene = document.getElementById("alcohol-scene");
+  alcoholScene.style.display = "block";
+
+  // You can choose whether to show the image initially or after risk is calculated
+  document.getElementById("alcohol-image").style.display = "block";
+
+  alcoholScene.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
 
 
 
 
+function setupAlcoholJars() {
+  const container = document.getElementById("alcohol-risk-bars");
+  container.innerHTML = ""; // clear any previous jars
+
+  ["female", "male"].forEach(gender => {
+    const color = gender === "female" ? "hotpink" : "steelblue";
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+    const clipId = `clip-${gender}-alcohol`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", 250)
+      .attr("width", jarWidth)
+      .attr("height", 0)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text("0%")
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+    const icon = document.createElement("div");
+    icon.innerHTML = gender === "female"
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="hotpink" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 
+            0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 
+            .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 
+            0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 
+            9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 
+            0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
+        </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="4rem" height="4rem" fill="steelblue" class="bi bi-person-standing" viewBox="0 0 16 16">
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 
+            6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 
+            0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 
+            0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 
+            0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 
+            0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0"/>
+        </svg>`;
+    jarDiv.appendChild(icon);
+    container.appendChild(jarDiv);
+
+    jarElements[`${gender}-alcohol`] = { bar, label, scale };
+  });
+}
+
+function calculateAlcoholRisk(data) {
+  const alcoholUsers = data.filter(d =>
+    d.TOBFLAG === "1" &&
+    d.CIGEVER === "1" &&
+    d.ALCEVER === "1" &&
+    d.MJEVER === "2" &&
+    d.IEMFLAG === "0" &&
+    d.DEPRESSIONINDEX === "0"
+  );
+
+  const female = alcoholUsers.filter(d => d.FEMALE === "1");
+  const male = alcoholUsers.filter(d => d.FEMALE === "0");
+
+  const femaleRisk = female.filter(d => d.CRIMEHIST === "1").length / female.length * 100;
+  const maleRisk = male.filter(d => d.CRIMEHIST === "1").length / male.length * 100;
+
+  return {
+    female: Math.round(femaleRisk),
+    male: Math.round(maleRisk)
+  };
+}
+
+
+
+document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
+  document.getElementById("calc-alcohol-risk").style.display = "none";
+  document.getElementById("alcohol-risk-bars").style.display = "flex";
+  setupAlcoholJars();
+
+  const risks = calculateAlcoholRisk(globalData);
+
+  ["female", "male"].forEach(gender => {
+    const { bar, label, scale } = jarElements[`${gender}-alcohol`];
+    const target = risks[gender];
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", 250 - scale(target))
+      .attr("height", scale(target));
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= target) {
+        clearInterval(interval);
+        label.text(`${target}%`);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / Math.max(target, 1));
+  });
+
+  setTimeout(() => {
+    document.getElementById("alcohol-risk-bars").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 100);
+});
 
 
 
 
-
-
-
-
-
-  // document.getElementById("take-tobacco").addEventListener("click", () => {
-  //   const risks = calculateTobaccoRisk(globalData);
-  //   showTobaccoResult(risks, "By choosing to use tobacco, Karen and Bob's arrest risk jumps by 1%, a choice which technically doubles the arrest risk for women, though that risk still remains slim.");
-  //   // Scroll to the tobacco result container
-  //   setTimeout(() => {
-  //       const container = document.getElementById("tobacco-result");
-  //       if (container) {
-  //           container.scrollIntoView({
-  //               behavior: "smooth",
-  //               block: "center"
-  //           });
-  //       }
-  //   }, 300); // slight delay to ensure rendering happens before scroll
-  
-  //   // Reset both buttons
-  //   document.getElementById("take-tobacco").classList.remove("dimmed");
-  //   document.getElementById("skip-tobacco").classList.remove("dimmed");
-  
-  //   // Dim the *unselected* one
-  //   document.getElementById("skip-tobacco").classList.add("dimmed");
-  // });
-  
-  // document.getElementById("skip-tobacco").addEventListener("click", () => {
-  //   const risks = calculateArrestRisk(globalData);
-  //   showTobaccoResult(risks, "By saying no to tobacco, they keep their risk levels where they were...");
-  //   // Scroll to the tobacco result container
-  //   setTimeout(() => {
-  //       const container = document.getElementById("tobacco-result");
-  //       if (container) {
-  //       container.scrollIntoView({
-  //           behavior: "smooth",
-  //           block: "center"
-  //       });
-  //       }
-  //   }, 300); // slight delay to ensure rendering happens before scroll
-  
-  //   // Reset both buttons
-  //   document.getElementById("take-tobacco").classList.remove("dimmed");
-  //   document.getElementById("skip-tobacco").classList.remove("dimmed");
-  
-  //   // Dim the *unselected* one
-  //   document.getElementById("take-tobacco").classList.add("dimmed");
-  // });
-
-  // const margin = { top: 120, right: 100, bottom: 160, left: 100 },
-//     width = 900 - margin.left - margin.right,
-//     height = 600 - margin.top - margin.bottom + 100;
 
 // ////////  Heat Maps /////////
 // const xAxisLabels = {
