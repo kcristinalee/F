@@ -22,16 +22,22 @@ TSV_FILES = [
 
 # 2. Variables to extract (as-is, no recoding)
 SELECTED_COLUMNS = [
-    "CIGEVER",        # Ever smoked a cigarette
-    "TOBFLAG",        # Ever used tabacco
-    "ALCEVER",        # Ever drank alcohol
-    "MJEVER",         # Ever used marijuana
-    "IEMFLAG",        # Illicit drugs (excluding MJ)
-    "DEPRESSIONINDEX",# Depression index (0 = none, 9 = high)
-    "ANYTXMDE",       # Any treatment for MDE (not meds)
-    "MDETXRX",        # Treatment or Rx for MDE
-    "CRIMEHIST",      # Ever arrested/charged
-    "FEMALE",         # Gender
+    "CIGEVER",
+    "TOBFLAG",
+    "ALCEVER",
+    "MJEVER",
+    "IEMFLAG",
+    "DEPRESSIONINDEX",
+    "ANYTXMDE",
+    "MDETXRX",
+    "CRIMEHIST",
+    "FEMALE",
+    "COCEVER",
+    "CRKEVER",
+    "HEREVER",
+    "ECSTASY",
+    "LSD",
+    "MTHFLAG"
 ]
 
 # 3. Load, select, and combine

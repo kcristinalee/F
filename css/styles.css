@@ -317,3 +317,15 @@ h3 {
   align-items: center;
   gap: 0.2rem;
 }
+
+.jar-wrapper {
+  overflow: visible !important;
+}
+
+.jar-wrapper svg {
+  display: block;
+}
+
+.jar-wrapper div {
+  margin-top: 1rem; /* Give breathing room to the icon */
+}
