@@ -263,6 +263,9 @@ function calculateArrestRisk(data) {
         }, 100);
       }, 300);
     });
+
+
+    
   }
   
   function calculateTobaccoRisk(data) {
@@ -365,6 +368,11 @@ function calculateArrestRisk(data) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  d3.tsv("data/heatmap.tsv").then(data => {
+        console.log("Heat map data loaded:", data);
+        createHeatmap(data);
+    });
+
   document.getElementById("calc-risk")?.addEventListener("click", loadAndRender);
 
   document.getElementById("start-life-btn")?.addEventListener("click", () => {
@@ -710,6 +718,8 @@ function calculateAlcoholRisk(data) {
 
 
 
+
+
 document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
   document.getElementById("calc-alcohol-risk").style.display = "none";
   document.getElementById("alcohol-risk-bars").style.display = "flex";
@@ -745,6 +755,162 @@ document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
     });
   }, 100);
 });
+
+
+function createHeatmap(data) {
+  const cleaned = data.filter(d => {
+  const alc = +d.ALCDAYS;
+  const dep = +d.DSTDEPRS;
+
+  return (
+    (alc >= 0 && alc <= 30) || alc === 91 || alc === 93
+  ) && (
+    dep >= 1 && dep <= 5
+  );
+});
+  console.log(`Cleaned: ${cleaned}`);
+  function binAlcohol(days) {
+  if (days === 91 || days === 93) return "0 days";
+
+  if (days <= 5) return "1-5";
+  if (days <= 10) return "6-0";
+  if (days <= 15) return "11-15";
+  if (days <= 20) return "16-20";
+  if (days <= 25) return "21-25";
+  return "26-30";
+}
+
+
+const counts = d3.rollups(
+  cleaned,
+  v => v.length,
+  d => binAlcohol(+d.ALCDAYS),
+  d => +d.DSTDEPRS
+);
+
+// Flatten to array of objects
+const flattened = counts.flatMap(([bin, levels]) =>
+  levels.map(([depLevel, count]) => ({
+    bin,
+    depLevel,
+    count
+  }))
+);
+const bins = [...new Set(flattened.map(d => d.bin))].sort();
+const levels = [1, 2, 3, 4, 5];
+
+const xScale = d3.scaleBand().domain(bins).range([0, width]).padding(0.05);
+const yScale = d3.scaleBand().domain(levels).range([0, height]).padding(0.05);
+const colorScale = d3.scaleSequential(d3.interpolateReds)
+  .domain([0, d3.max(flattened, d => d.count)]);
+
+svg.selectAll("rect")
+  .data(flattened)
+  .enter().append("rect")
+    .attr("x", d => xScale(d.bin))
+    .attr("y", d => yScale(d.depLevel))
+    .attr("width", xScale.bandwidth())
+    .attr("height", yScale.bandwidth())
+    .attr("fill", d => colorScale(d.count))
+    .append("title")
+    .text(d => `Bin: ${d.bin}, Depression: ${d.depLevel}, Count: ${d.count}`);
+//     data.forEach(function (d) {
+//         d.x = +d.ASDSOVRL;
+//         d.y = +d.NOBOOKY2;
+//     });
+
+//     const margin = { top: 40, right: 20, bottom: 60, left: 60 };
+//     const width = 800 - margin.left - margin.right;
+//     const height = 400 - margin.top - margin.bottom;
+
+    
+//     const svg = d3.select("#scatter-plot").html("")
+//         .append("svg")
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom)
+//         .append("g")
+//         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//     //
+//     const tooltip = d3.select("body").append("div")
+//     .attr("class", "tooltip");
+
+
+//     const xScale = d3.scaleBand()
+//         .domain(data.map(d => d.x))
+//         .range([0, width])
+//         .padding(0.4);
+
+//     const yScale = d3.scaleLinear()
+//         .domain([0, d3.max(data, d => d.y)])
+//         .nice()
+//         .range([height, 0]);
+
+//     const colorScale = d3.scaleOrdinal()
+//        .domain(data.map(d => d.x))
+//        .range(d3.schemeCategory10);
+
+//     svg.selectAll(".bar")
+//         .data(data)
+//         .enter().append("rect")
+//         .attr("class", "bar")
+//         .attr("x", d => xScale(d.x))
+//         .attr("y", d => yScale(d.y))
+//         .attr("width", xScale.bandwidth())
+//         .attr("height", d => height - yScale(d.y))
+//         .attr("fill", d=>colorScale(d.x)).on("mouseover", function (event, d) {
+//             tooltip.transition().duration(200).style("opacity", 0.9);
+//             tooltip.html(`Severity: ${d.x}<br>Avg Arrests: ${d.y.toFixed(2)}`)
+//               .style("left", (event.pageX + 10) + "px")
+//               .style("top", (event.pageY - 28) + "px");
+//             d3.select(this).attr("fill", "orange");
+//           })
+//           .on("mouseout", function (event, d) {
+//             tooltip.transition().duration(500).style("opacity", 0);
+//             d3.select(this).attr("fill", colorScale(d.x));
+//           });
+
+//     svg.append("g")
+//         .attr("transform", "translate(0," + height + ")")
+//         .call(d3.axisBottom(xScale));
+
+//     svg.append("g")
+//         .call(d3.axisLeft(yScale));
+
+//     svg.append("text")
+//         .attr("text-anchor", "middle")
+//         .attr("x", width / 2)
+//         .attr("y", height + margin.bottom - 10)
+//         .text("Severity of Depression Interference (1 = None, 5 = Severe)");
+
+//     svg.append("text")
+//         .attr("text-anchor", "middle")
+//         .attr("transform", "rotate(-90)")
+//         .attr("x", -height / 2)
+//         .attr("y", -margin.left + 20)
+//         .text("Average Number of Arrests (Past 12 Months)");
+
+//     svg.append("text")
+//         .attr("x", width / 2)
+//         .attr("y", -10)
+//         .attr("text-anchor", "middle")
+//         .style("font-size", "22px")
+//         .text("Arrest Frequency by Depression Interference Severity");
+
+// }
+
+// function toggleStats(substance) {
+//     const statsDiv = document.getElementById(`${substance}-stats`);
+//     const button = document.querySelector(`#spiral-${substance}-controls button`);
+
+//     if (statsDiv.style.display === "none") {
+//         statsDiv.style.display = "block";
+//         button.textContent = "Hide Stats";
+//     } else {
+//         statsDiv.style.display = "none";
+//         button.textContent = "Show Stats";
+//     }
+}
 
 
 
