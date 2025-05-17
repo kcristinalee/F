@@ -30,7 +30,7 @@ tsv_files = [
 # DSTDEPRS - HOW OFTEN FELT DEPRESSED IN WORST MONTH (66.7%)
 
 
-columns_to_keep = ['GENDER_R', 'ALCDAYS', 'MJDAY30A', 'DSTDEPRS', 'CG30EST', 'COCUS30A', 'HER30USE']
+columns_to_keep = ['GENDER_R', 'ALCDAYS', 'MJDAY30A', 'DSTDEPRS', 'CIG30USE', 'COCUS30A', 'HER30USE']
 
 # Load and filter each file
 dataframes = []

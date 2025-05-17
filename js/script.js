@@ -757,18 +757,25 @@ document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
 });
 
 
-function createHeatmap(data) {
-  const cleaned = data.filter(d => {
-    const alc = +d.ALCDAYS;
-    const dep = +d.DSTDEPRS;
 
-    return (
-      ((alc >= 0 && alc <= 30) || alc === 91 || alc === 93) &&
-      (dep >= 1 && dep <= 5)
-    );
+
+function createHeatmap(data) {
+  const selectedColumn = d3.select("#dataSelect").property("value");
+  const selectedGender = d3.select("#genderSelect").property("value");
+
+  const cleaned = data.filter(d => {
+    const use = +d[selectedColumn];
+    const dep = +d.DSTDEPRS;
+    const gender = d.GENDER_R;
+
+    const validUse =
+      ((use >= 0 && use <= 30) || use === 91 || use === 93);
+    const validDep = dep >= 1 && dep <= 5;
+
+    return validUse && validDep && gender===selectedGender;
   });
 
-  function binAlcohol(days) {
+  function binUsage(days) {
     if (days === 91 || days === 93) return "0 days";
     if (days <= 5) return "1–5";
     if (days <= 10) return "6–10";
@@ -778,7 +785,7 @@ function createHeatmap(data) {
     return "26–30";
   }
 
-  const depressionLevels = [1, 2, 3, 4, 5]; // 1 = most depressed, 5 = least
+  const depressionLevels = [1, 2, 3, 4, 5]; // 1 = most depressed
 
   const grouped = d3.rollups(
     cleaned,
@@ -786,16 +793,16 @@ function createHeatmap(data) {
       const total = v.length;
       const levelCounts = d3.rollup(
         v,
-        v2 => v2.length / total,
+        v2 => v2.length,
         d => +d.DSTDEPRS
       );
-      const result = { bin: binAlcohol(+v[0].ALCDAYS) };
+      const result = { bin: binUsage(+v[0][selectedColumn]) };
       depressionLevels.forEach(level => {
-        result[level] = levelCounts.get(level) || 0;
+        result[level] = (levelCounts.get(level) || 0) / total;
       });
       return result;
     },
-    d => binAlcohol(+d.ALCDAYS)
+    d => binUsage(+d[selectedColumn])
   );
 
   const areaData = grouped.map(([bin, data]) => ({ ...data, bin }));
@@ -803,14 +810,15 @@ function createHeatmap(data) {
   const binOrder = ["0 days", "1–5", "6–10", "11–15", "16–20", "21–25", "26–30"];
   areaData.sort((a, b) => binOrder.indexOf(a.bin) - binOrder.indexOf(b.bin));
 
-  // Stack using reversed depression levels so most depressed (1) is at bottom
   const stack = d3.stack()
     .keys(depressionLevels.map(d => d.toString()).reverse());
 
   const stackedSeries = stack(areaData);
 
-  const svg = d3.select("#stacked_area"),
-        margin = { top: 40, right: 30, bottom: 50, left: 50 },
+  const svg = d3.select("#stacked_area");
+  svg.selectAll("*").remove(); // Clear old content
+
+  const margin = { top: 50, right: 30, bottom: 50, left: 50 },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -828,7 +836,7 @@ function createHeatmap(data) {
 
   const color = d3.scaleOrdinal()
     .domain(depressionLevels.map(d => d.toString()))
-    .range(d3.schemeRdYlBu[5].reverse()); // Level 1 is red, Level 5 is blue
+    .range(["#d73027", "#fc8d59", "#fee090", "#e0f3f8", "#91bfdb"]); // Red to blue, consistent
 
   const area = d3.area()
     .x(d => x(d.data.bin))
@@ -849,18 +857,32 @@ function createHeatmap(data) {
 
   g.append("g")
     .call(d3.axisLeft(y).ticks(5, "%"));
+  //
+  g.append("text")
+  .attr("text-anchor", "middle")
+  .attr("x", width / 2)
+  .attr("y", height + margin.bottom - 10)  // slightly below the axis
+  .style("font-size", "14px")
+  .text("Usage Categories");  // Change text as needed
+  g.append("text")
+  .attr("text-anchor", "middle")
+  .attr("transform", `rotate(-90)`)
+  .attr("x", -height / 2)
+  .attr("y", -margin.left + 15)  // slightly left of the axis
+  .style("font-size", "14px")
+  .text("Proportion of Depression Levels");  // Change text as needed
 
-  // Legend
   const legend = svg.append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${width + margin.left -73},${margin.top})`);
-    const depressionDescriptions = {
-  1: "All of the time",
-  2: "Most of the time",
-  3: "Some of the time",
-  4: "A little of the time",
-  5: "None of the time"
-};
+    .attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
+
+  const depressionDescriptions = {
+    1: "All of the time",
+    2: "Most of the time",
+    3: "Some of the time",
+    4: "A little of the time",
+    5: "None of the time"
+  };
 
   depressionLevels.forEach((level, i) => {
     legend.append("rect")
@@ -878,144 +900,34 @@ function createHeatmap(data) {
       .style("font-size", "12px");
   });
 
+  const titleMap = {
+    ALCDAYS: "Depression Level Distribution by Alcohol Use (Stacked Area)",
+    MJDAY30A: "Depression Level Distribution by Marijuana Use (Stacked Area)",
+    CIG30USE: "Depression Level Distribution by Cigarette Use (Stacked Area)", 
+    COCUS30A: "Depression Level Distribution by Coccaine Use (Stacked Area)",
+    HER30USE: "Depression Level Distribution by Heroin Use (Stacked Area)"
+  };
+
   svg.append("text")
     .attr("x", (width + margin.left + margin.right) / 2)
     .attr("y", 20)
     .attr("text-anchor", "middle")
     .style("font-size", "18px")
-    .text("Depression Level Distribution by Alcohol Use (Stacked Area)");
-
-
-// const counts = d3.rollups(
-//   cleaned,
-//   v => v.length,
-//   d => binAlcohol(+d.ALCDAYS),
-//   d => +d.DSTDEPRS
-// );
-
-// // Flatten to array of objects
-// const flattened = counts.flatMap(([bin, levels]) =>
-//   levels.map(([depLevel, count]) => ({
-//     bin,
-//     depLevel,
-//     count
-//   }))
-// );
-// const bins = [...new Set(flattened.map(d => d.bin))].sort();
-// const levels = [1, 2, 3, 4, 5];
-
-// const xScale = d3.scaleBand().domain(bins).range([0, width]).padding(0.05);
-// const yScale = d3.scaleBand().domain(levels).range([0, height]).padding(0.05);
-// const colorScale = d3.scaleSequential(d3.interpolateReds)
-//   .domain([0, d3.max(flattened, d => d.count)]);
-
-// svg.selectAll("rect")
-//   .data(flattened)
-//   .enter().append("rect")
-//     .attr("x", d => xScale(d.bin))
-//     .attr("y", d => yScale(d.depLevel))
-//     .attr("width", xScale.bandwidth())
-//     .attr("height", yScale.bandwidth())
-//     .attr("fill", d => colorScale(d.count))
-//     .append("title")
-//     .text(d => `Bin: ${d.bin}, Depression: ${d.depLevel}, Count: ${d.count}`);
-//     data.forEach(function (d) {
-//         d.x = +d.ASDSOVRL;
-//         d.y = +d.NOBOOKY2;
-//     });
-
-//     const margin = { top: 40, right: 20, bottom: 60, left: 60 };
-//     const width = 800 - margin.left - margin.right;
-//     const height = 400 - margin.top - margin.bottom;
-
-    
-//     const svg = d3.select("#scatter-plot").html("")
-//         .append("svg")
-//         .attr("width", width + margin.left + margin.right)
-//         .attr("height", height + margin.top + margin.bottom)
-//         .append("g")
-//         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-//     //
-//     const tooltip = d3.select("body").append("div")
-//     .attr("class", "tooltip");
-
-
-//     const xScale = d3.scaleBand()
-//         .domain(data.map(d => d.x))
-//         .range([0, width])
-//         .padding(0.4);
-
-//     const yScale = d3.scaleLinear()
-//         .domain([0, d3.max(data, d => d.y)])
-//         .nice()
-//         .range([height, 0]);
-
-//     const colorScale = d3.scaleOrdinal()
-//        .domain(data.map(d => d.x))
-//        .range(d3.schemeCategory10);
-
-//     svg.selectAll(".bar")
-//         .data(data)
-//         .enter().append("rect")
-//         .attr("class", "bar")
-//         .attr("x", d => xScale(d.x))
-//         .attr("y", d => yScale(d.y))
-//         .attr("width", xScale.bandwidth())
-//         .attr("height", d => height - yScale(d.y))
-//         .attr("fill", d=>colorScale(d.x)).on("mouseover", function (event, d) {
-//             tooltip.transition().duration(200).style("opacity", 0.9);
-//             tooltip.html(`Severity: ${d.x}<br>Avg Arrests: ${d.y.toFixed(2)}`)
-//               .style("left", (event.pageX + 10) + "px")
-//               .style("top", (event.pageY - 28) + "px");
-//             d3.select(this).attr("fill", "orange");
-//           })
-//           .on("mouseout", function (event, d) {
-//             tooltip.transition().duration(500).style("opacity", 0);
-//             d3.select(this).attr("fill", colorScale(d.x));
-//           });
-
-//     svg.append("g")
-//         .attr("transform", "translate(0," + height + ")")
-//         .call(d3.axisBottom(xScale));
-
-//     svg.append("g")
-//         .call(d3.axisLeft(yScale));
-
-//     svg.append("text")
-//         .attr("text-anchor", "middle")
-//         .attr("x", width / 2)
-//         .attr("y", height + margin.bottom - 10)
-//         .text("Severity of Depression Interference (1 = None, 5 = Severe)");
-
-//     svg.append("text")
-//         .attr("text-anchor", "middle")
-//         .attr("transform", "rotate(-90)")
-//         .attr("x", -height / 2)
-//         .attr("y", -margin.left + 20)
-//         .text("Average Number of Arrests (Past 12 Months)");
-
-//     svg.append("text")
-//         .attr("x", width / 2)
-//         .attr("y", -10)
-//         .attr("text-anchor", "middle")
-//         .style("font-size", "22px")
-//         .text("Arrest Frequency by Depression Interference Severity");
-
-// }
-
-// function toggleStats(substance) {
-//     const statsDiv = document.getElementById(`${substance}-stats`);
-//     const button = document.querySelector(`#spiral-${substance}-controls button`);
-
-//     if (statsDiv.style.display === "none") {
-//         statsDiv.style.display = "block";
-//         button.textContent = "Hide Stats";
-//     } else {
-//         statsDiv.style.display = "none";
-//         button.textContent = "Show Stats";
-//     }
+    .text(titleMap[selectedColumn]);
 }
+
+// Set up dropdown handler (one-time only)
+d3.select("#dataSelect").on("change", () => {
+  d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
+});
+
+d3.select("#genderSelect").on("change", () => {
+  d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
+});
+
+
+// Initial load
+d3.tsv( "data/heatmap.tsv"  ).then(data => createHeatmap(data));
 
 
 document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
