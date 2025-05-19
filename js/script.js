@@ -856,14 +856,18 @@ function createHeatmap(data) {
     .call(d3.axisBottom(x));
 
   g.append("g")
-    .call(d3.axisLeft(y).ticks(5, "%"));
+  .call(d3.axisLeft(y).ticks(5, "%"))
+  .selectAll("text")
+  .attr("dx", "0.5 em");
+  
   //
   g.append("text")
   .attr("text-anchor", "middle")
   .attr("x", width / 2)
   .attr("y", height + margin.bottom - 10)  // slightly below the axis
   .style("font-size", "14px")
-  .text("Usage Categories");  // Change text as needed
+  .text("Number of Days");  // Change text as needed
+  
   g.append("text")
   .attr("text-anchor", "middle")
   .attr("transform", `rotate(-90)`)
