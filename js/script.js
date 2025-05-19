@@ -780,7 +780,7 @@ function createHeatmap(data) {
     .attr("x", width / 2)
     .attr("y", height + margin.bottom - 10)
     .style("font-size", "14px")
-    .text("Number of Days");
+    .text("Number of Days that a person used this substance in the last 30 days");
 
   g.append("text")
     .attr("text-anchor", "middle")
@@ -795,11 +795,11 @@ function createHeatmap(data) {
     .attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
 
   const depressionDescriptions = {
-    1: "All of the time",
-    2: "Most of the time",
-    3: "Some of the time",
-    4: "A little of the time",
-    5: "None of the time"
+    1: "Depressed all of the time",
+    2: "Depressed most of the time",
+    3: "Depressed some of the time",
+    4: "Depressed a little of the time",
+    5: "Depressed none of the time"
   };
 
   depressionLevels.forEach((level, i) => {
