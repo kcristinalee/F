@@ -349,9 +349,9 @@ function showTobaccoResult(risks, message) {
 
 document.addEventListener("DOMContentLoaded", () => {
   d3.tsv("data/heatmap.tsv").then(data => {
-        console.log("Heat map data loaded:", data);
-        createHeatmap(data);
-    });
+    console.log("Heat map data loaded:", data);
+    createHeatmap(data);
+  });
 
   document.getElementById("calc-risk")?.addEventListener("click", loadAndRender);
 
@@ -672,7 +672,7 @@ function createHeatmap(data) {
       ((use >= 0 && use <= 30) || use === 91 || use === 93);
     const validDep = dep >= 1 && dep <= 5;
 
-    return validUse && validDep && gender===selectedGender;
+    return validUse && validDep && gender === selectedGender;
   });
 
   function binUsage(days) {
@@ -719,8 +719,8 @@ function createHeatmap(data) {
   svg.selectAll("*").remove(); // Clear old content
 
   const margin = { top: 50, right: 30, bottom: 50, left: 50 },
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom;
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
 
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -756,25 +756,25 @@ function createHeatmap(data) {
     .call(d3.axisBottom(x));
 
   g.append("g")
-  .call(d3.axisLeft(y).ticks(5, "%"))
-  .selectAll("text")
-  .attr("dx", "0.5 em");
-  
+    .call(d3.axisLeft(y).ticks(5, "%"))
+    .selectAll("text")
+    .attr("dx", "0.5 em");
+
   //
   g.append("text")
-  .attr("text-anchor", "middle")
-  .attr("x", width / 2)
-  .attr("y", height + margin.bottom - 10)  // slightly below the axis
-  .style("font-size", "14px")
-  .text("Number of Days");  // Change text as needed
-  
+    .attr("text-anchor", "middle")
+    .attr("x", width / 2)
+    .attr("y", height + margin.bottom - 10)  // slightly below the axis
+    .style("font-size", "14px")
+    .text("Number of Days");  // Change text as needed
+
   g.append("text")
-  .attr("text-anchor", "middle")
-  .attr("transform", `rotate(-90)`)
-  .attr("x", -height / 2)
-  .attr("y", -margin.left + 15)  // slightly left of the axis
-  .style("font-size", "14px")
-  .text("Proportion of Depression Levels");  // Change text as needed
+    .attr("text-anchor", "middle")
+    .attr("transform", `rotate(-90)`)
+    .attr("x", -height / 2)
+    .attr("y", -margin.left + 15)  // slightly left of the axis
+    .style("font-size", "14px")
+    .text("Proportion of Depression Levels");  // Change text as needed
 
   const legend = svg.append("g")
     .attr("class", "legend")
@@ -807,7 +807,7 @@ function createHeatmap(data) {
   const titleMap = {
     ALCDAYS: "Depression Level Distribution by Alcohol Use (Stacked Area)",
     MJDAY30A: "Depression Level Distribution by Marijuana Use (Stacked Area)",
-    CIG30USE: "Depression Level Distribution by Cigarette Use (Stacked Area)", 
+    CIG30USE: "Depression Level Distribution by Cigarette Use (Stacked Area)",
     COCUS30A: "Depression Level Distribution by Coccaine Use (Stacked Area)",
     HER30USE: "Depression Level Distribution by Heroin Use (Stacked Area)"
   };
@@ -831,7 +831,7 @@ d3.select("#genderSelect").on("change", () => {
 
 
 // Initial load
-d3.tsv( "data/heatmap.tsv"  ).then(data => createHeatmap(data));
+d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
 
 
 document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
@@ -1609,10 +1609,10 @@ function setupDepressionJars() {
 document.getElementById("calc-depression-risk").addEventListener("click", () => {
   // Hide the stacked container initially
   document.getElementById('stacked_container').style.display = 'none';
-  
+
   // Show the risk bars
   document.getElementById("depression-risk-bars").style.display = "flex";
-  
+
   // Scroll to the risk bars
   setTimeout(() => {
     document.getElementById("depression-risk-bars").scrollIntoView({
@@ -1640,9 +1640,26 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
       .on("end", () => {
         animationsComplete++;
         if (animationsComplete === totalAnimations) {
+          
+          
           // When both animations complete, show the stacked chart
-          showStackedChart();
+          //showStackedChart();
+
+
+          // Optional: fade in
+          setTimeout(() => {
+            const desc = document.getElementById("alcohol-chain-description");
+            desc.style.display = "block";
+    desc.style.opacity = 1;
+
+    const treeBtn = document.getElementById("tree-button-wrapper");
+  treeBtn.style.display = "block";
+  treeBtn.style.opacity = 1;
+            // postSection.style.opacity = 1;
+            // postSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 50);
         }
+
       });
 
     let percent = 0;
@@ -1661,11 +1678,11 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
 function showStackedChart() {
   // Show the stacked container
   document.getElementById('stacked_container').style.display = 'block';
-  
+
   // Create the heatmap visualization
   d3.tsv("data/heatmap.tsv").then(data => {
     createHeatmap(data);
-    
+
     // Smooth scroll to the chart
     setTimeout(() => {
       document.getElementById('stacked_container').scrollIntoView({
@@ -1687,6 +1704,742 @@ function showStackedChart() {
   }, 1600);
 }
 
+document.getElementById("show-tree-graph").addEventListener("click", () => {
+  document.getElementById("tree-button-wrapper").style.display = "none";
+
+  const treeContainer = document.getElementById("tree-graph-container");
+  treeContainer.style.display = "block";
+
+  // Optionally scroll into view
+  setTimeout(() => {
+    treeContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+
+  // Draw tree if needed
+  if (typeof setupTreeGraph === "function" && window.treeData) {
+    setupTreeGraph(window.treeData);
+  }
+
+  // ✅ Show the next paragraph after a short delay
+  setTimeout(() => {
+    const postTreeText = document.getElementById("post-tree-question");
+    postTreeText.style.display = "block";
+    postTreeText.style.opacity = 1;
+
+    const iconButton = document.getElementById("icon-continue-wrapper");
+  iconButton.style.display = "block";
+  iconButton.style.opacity = 1;
+  }, 1000); // or 1800ms if you want to delay until after tree animation
+});
+
+document.getElementById("continue-to-icons").addEventListener("click", () => {
+  document.getElementById("icon-continue-wrapper").style.display = "none";
+
+  const iconSection = document.getElementById("icon-grid-section");
+  iconSection.style.display = "block";
+
+  setTimeout(() => {
+    iconSection.style.opacity = 1;
+    iconSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // ✅ Show paragraph and continue button after icons are visible
+    setTimeout(() => {
+      const desc = document.getElementById("post-icon-description");
+      desc.style.display = "block";
+      desc.style.opacity = 1;
+
+      const btn = document.getElementById("jars-continue-wrapper");
+      btn.style.display = "block";
+      btn.style.opacity = 1;
+    }, 1000);
+  }, 100);
+});
+
+document.getElementById("continue-to-jars").addEventListener("click", () => {
+  document.getElementById("jars-continue-wrapper").style.display = "none";
+
+  const jarsSection = document.getElementById("jars-section");
+  jarsSection.style.display = "block";
+
+  setTimeout(() => {
+    jarsSection.style.opacity = 1;
+    jarsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Optional: trigger jar setup/animation here
+    // setupJarsAlcohol2();
+    // animateAlcoholJars2();
+    // setupJarsTobacco2();
+    // animateTobaccoJars2();
+    // setupJarsCigarettes2();
+    // animateCigarettesJars2();
+
+    // ✅ After short delay, show the next continue button
+    setTimeout(() => {
+      const stackedBtn = document.getElementById("stacked-continue-wrapper");
+      stackedBtn.style.display = "block";
+      stackedBtn.style.opacity = 1;
+    }, 1000);
+  }, 100);
+});
+
+document.getElementById("continue-to-stacked").addEventListener("click", () => {
+  document.getElementById("stacked-continue-wrapper").style.display = "none";
+
+  const stacked = document.getElementById("stacked_container");
+  stacked.style.display = "block";
+
+  setTimeout(() => {
+    stacked.style.opacity = 1;
+    stacked.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    showStackedChart();
+  }, 100);
+});
+
+const jarElementsAlcohol = {};
+const jarElementsTobacco = {};
+const jarElementsCigarettes = {};
+
+
+// This was calculated in prepare_likely.py
+const alcoholData = [
+  { usage: "Yes", percentDepressed: 20.6 },
+  { usage: "No", percentDepressed: 15.2 }
+];
+
+const TobaccoData = [
+  { usage: "Yes", percentDepressed: 20.2 },
+  { usage: "No", percentDepressed: 0.0 }
+];
+
+const CigarettesData = [
+  { usage: "Yes", percentDepressed: 21.9 },
+  { usage: "No", percentDepressed: 18.7 }
+];
+
+d3.tsv("data/likely.tsv").then(data => {
+  const total = data.length;
+
+  const count = (filterFn) => data.filter(filterFn).length;
+
+  const pAlcohol = count(d => d.ALCEVER === "1") / total;
+  const pNoAlcohol = count(d => d.ALCEVER === "2") / total;
+
+  const pTobGivenAlc = count(d => d.ALCEVER === "1" && d.TOBFLAG === "1") / count(d => d.ALCEVER === "1");
+  const pNotTobGivenAlc = 1 - pTobGivenAlc;
+
+  const pTobGivenNoAlc = count(d => d.ALCEVER === "2" && d.TOBFLAG === "1") / count(d => d.ALCEVER === "2");
+  const pNotTobGivenNoAlc = 1 - pTobGivenNoAlc;
+
+  const pATC = count(d => d.ALCEVER === "1" && d.TOBFLAG === "1" && d.CG05 === "1") / total;
+  const pAnT_C = count(d => d.ALCEVER === "1" && d.TOBFLAG === "0" && d.CG05 === "1") / total;
+  const p_nATC = count(d => d.ALCEVER === "2" && d.TOBFLAG === "1" && d.CG05 === "1") / total;
+  const p_nAnT_C = count(d => d.ALCEVER === "2" && d.TOBFLAG === "0" && d.CG05 === "1") / total;
+
+  console.log({
+    pAlcohol,
+    pNoAlcohol,
+    pTobGivenAlc,
+    pNotTobGivenAlc,
+    pTobGivenNoAlc,
+    pNotTobGivenNoAlc,
+    pATC,
+    pAnT_C,
+    p_nATC,
+    p_nAnT_C
+  });
+
+  setupTreeGraph({
+    pAlcohol,
+    pNoAlcohol,
+    pTobGivenAlc,
+    pNotTobGivenAlc,
+    pTobGivenNoAlc,
+    pNotTobGivenNoAlc,
+    pATC,
+    pAnT_C,
+    p_nATC,
+    p_nAnT_C
+  });
+});
+
+function setupTreeGraph({
+  pAlcohol,
+  pNoAlcohol,
+  pTobGivenAlc,
+  pNotTobGivenAlc,
+  pTobGivenNoAlc,
+  pNotTobGivenNoAlc,
+  pATC,
+  pAnT_C,
+  p_nATC,
+  p_nAnT_C
+}) {
+  const treeData = {
+    name: "Start",
+    children: [
+      {
+        name: `Alcohol → ${pAlcohol.toFixed(2)}`,
+        children: [
+          {
+            name: `Tobacco → ${pTobGivenAlc.toFixed(2)}`,
+            children: [
+              {
+                name: `Cigarette → ${(pATC / (pAlcohol * pTobGivenAlc)).toFixed(2)}`
+              },
+              {
+                name: `No Cigarette → ${(1 - pATC / (pAlcohol * pTobGivenAlc)).toFixed(2)}`
+              }
+            ]
+          },
+          {
+            name: `No Tobacco → ${pNotTobGivenAlc.toFixed(2)}`,
+            children: [
+              {
+                name: `Cigarette → ${(pAnT_C / (pAlcohol * pNotTobGivenAlc)).toFixed(2)}`
+              },
+              {
+                name: `No Cigarette → ${(1 - pAnT_C / (pAlcohol * pNotTobGivenAlc)).toFixed(2)}`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: `No Alcohol → ${pNoAlcohol.toFixed(2)}`,
+        children: [
+          {
+            name: `Tobacco → ${pTobGivenNoAlc.toFixed(2)}`,
+            children: [
+              {
+                name: `Cigarette → ${(p_nATC / (pNoAlcohol * pTobGivenNoAlc)).toFixed(2)}`
+              },
+              {
+                name: `No Cigarette → ${(1 - p_nATC / (pNoAlcohol * pTobGivenNoAlc)).toFixed(2)}`
+              }
+            ]
+          },
+          {
+            name: `No Tobacco → ${pNotTobGivenNoAlc.toFixed(2)}`,
+            children: [
+              {
+                name: `Cigarette → ${(p_nAnT_C / (pNoAlcohol * pNotTobGivenNoAlc)).toFixed(2)}`
+              },
+              {
+                name: `No Cigarette → ${(1 - p_nAnT_C / (pNoAlcohol * pNotTobGivenNoAlc)).toFixed(2)}`
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  const width = 1400;
+  const height = 1000;
+
+  const treeLayout = d3.tree().size([height, width - 300]);
+  const root = d3.hierarchy(treeData);
+  treeLayout(root);
+
+  const svg = d3.select("#tree-graph-container")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(80,0)");
+
+  svg.selectAll("line")
+    .data(root.links())
+    .enter()
+    .append("line")
+    .attr("x1", d => d.source.y)
+    .attr("y1", d => d.source.x)
+    .attr("x2", d => d.target.y)
+    .attr("y2", d => d.target.x)
+    .attr("stroke", "#aaa");
+
+  svg.selectAll("circle")
+    .data(root.descendants())
+    .enter()
+    .append("circle")
+    .attr("cx", d => d.y)
+    .attr("cy", d => d.x)
+    .attr("r", 15)
+    .attr("fill", d => {
+      if (d.data.name.includes("No")) return "green";
+      return "red";  
+    });
+
+  svg.selectAll("text")
+    .data(root.descendants())
+    .enter()
+    .append("text")
+    .attr("x", d => d.y + 30)        
+    .attr("y", d => d.x)
+    .attr("dy", "0.35em")            
+    .style("text-anchor", "start")   
+    .style("font-size", "20px")
+    .text(d => d.data.name);
+
+}
+
+function setupJarsAlcohol() {
+  const container = document.getElementById("alcohol-risk-bars2");
+
+  container.innerHTML = ""; 
+
+  alcoholData.forEach(d => {
+    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; // red for "Yes", green for "No"
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+
+    const clipId = `clip-${d.usage}`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const fillHeight = 0;
+    const fillY = 50 + jarHeight - fillHeight;
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", fillY)
+      .attr("width", jarWidth)
+      .attr("height", fillHeight)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text(`0%`)
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+    const usageLabel = document.createElement("div");
+    usageLabel.textContent = d.usage === "Yes" ? "Alcohol Users" : "Non-Users";
+    usageLabel.style.marginTop = "0.5rem";
+    usageLabel.style.fontWeight = "bold";
+    usageLabel.style.color = color;
+
+    container.appendChild(jarDiv);
+    jarDiv.appendChild(usageLabel);
+
+    jarElementsAlcohol[d.usage] = { bar, label, scale, jarHeight };
+  });
+}
+
+function animateAlcoholJars() {
+  alcoholData.forEach(d => {
+    const { bar, label, scale, jarHeight } = jarElementsAlcohol[d.usage];
+    const targetPercent = d.percentDepressed;
+
+    const fillHeight = scale(targetPercent);
+    const fillY = 50 + jarHeight - fillHeight;
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", fillY)
+      .attr("height", fillHeight);
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= targetPercent) {
+        clearInterval(interval);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / targetPercent);
+  });
+}
+
+function setupJarsTobacco() {
+  const container = document.getElementById("tobacco-risk-bars2");
+  container.innerHTML = ""; 
+
+  TobaccoData.forEach(d => {
+    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; 
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+
+    const clipId = `clip-tobacco-${d.usage}`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const fillHeight = 0;
+    const fillY = 50 + jarHeight - fillHeight;
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", fillY)
+      .attr("width", jarWidth)
+      .attr("height", fillHeight)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text(`0%`)
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+    const usageLabel = document.createElement("div");
+    usageLabel.textContent = d.usage === "Yes" ? "Tobacco Users" : "Non-Users";
+    usageLabel.style.marginTop = "0.5rem";
+    usageLabel.style.fontWeight = "bold";
+    usageLabel.style.color = color;
+
+    container.appendChild(jarDiv);
+    jarDiv.appendChild(usageLabel);
+
+    jarElementsTobacco[d.usage] = { bar, label, scale, jarHeight };
+  });
+}
+
+function animateTobaccoJars() {
+  TobaccoData.forEach(d => {
+    const { bar, label, scale, jarHeight } = jarElementsTobacco[d.usage];
+    const targetPercent = d.percentDepressed;
+
+    const fillHeight = scale(targetPercent);
+    const fillY = 50 + jarHeight - fillHeight;
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", fillY)
+      .attr("height", fillHeight);
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= targetPercent) {
+        clearInterval(interval);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / targetPercent);
+  });
+}
+
+function setupJarsCigarettes() {
+  const container = document.getElementById("cigarettes-risk-bars2");
+  container.innerHTML = "";
+
+  CigarettesData.forEach(d => {
+    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; 
+
+    const jarDiv = document.createElement("div");
+    jarDiv.classList.add("jar-wrapper");
+    jarDiv.style.display = "flex";
+    jarDiv.style.flexDirection = "column";
+    jarDiv.style.alignItems = "center";
+    jarDiv.style.margin = "0 2rem";
+
+    const svg = d3.select(jarDiv)
+      .append("svg")
+      .attr("width", 100)
+      .attr("height", 300);
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([0, 200]);
+    const jarWidth = 60;
+    const jarHeight = 200;
+    const x = 20;
+
+    const clipId = `clip-cigarettes-${d.usage}`;
+
+    svg.append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10);
+
+    svg.append("rect")
+      .attr("x", x)
+      .attr("y", 50)
+      .attr("width", jarWidth)
+      .attr("height", jarHeight)
+      .attr("rx", 10)
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2);
+
+    const fillHeight = 0;
+    const fillY = 50 + jarHeight - fillHeight;
+
+    const bar = svg.append("rect")
+      .attr("x", x)
+      .attr("y", fillY)
+      .attr("width", jarWidth)
+      .attr("height", fillHeight)
+      .attr("fill", color)
+      .attr("clip-path", `url(#${clipId})`);
+
+    const label = svg.append("text")
+      .attr("x", x + jarWidth / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .text(`0%`)
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("fill", color);
+
+    const usageLabel = document.createElement("div");
+    usageLabel.textContent = d.usage === "Yes" ? "Cigarette Users" : "Non-Users";
+    usageLabel.style.marginTop = "0.5rem";
+    usageLabel.style.fontWeight = "bold";
+    usageLabel.style.color = color;
+
+    container.appendChild(jarDiv);
+    jarDiv.appendChild(usageLabel);
+
+    jarElementsCigarettes[d.usage] = { bar, label, scale, jarHeight };
+  });
+}
+
+function animateCigarettesJars() {
+  CigarettesData.forEach(d => {
+    const { bar, label, scale, jarHeight } = jarElementsCigarettes[d.usage];
+    const targetPercent = d.percentDepressed;
+
+    const fillHeight = scale(targetPercent);
+    const fillY = 50 + jarHeight - fillHeight;
+
+    bar.transition()
+      .duration(1500)
+      .attr("y", fillY)
+      .attr("height", fillHeight);
+
+    let percent = 0;
+    const interval = setInterval(() => {
+      if (percent >= targetPercent) {
+        clearInterval(interval);
+      } else {
+        percent++;
+        label.text(`${percent}%`);
+      }
+    }, 1500 / targetPercent);
+  });
+}
+
+
+
+fetch('alcoholPeople.json')
+  .then(response => response.json())
+  .then(data => {
+    const container = document.getElementById('alcohol-icon-grid');
+
+    // Step 1: Count people by category (gender + consumed)
+    const counts = {
+      'Male-true': 0,
+      'Male-false': 0,
+      'Female-true': 0,
+      'Female-false': 0,
+    };
+
+    data.forEach(person => {
+      const key = `${person.gender}-${person.consumed}`;
+      if (counts[key] !== undefined) {
+        counts[key]++;
+      }
+    });
+
+    // Step 2: For each category, calculate how many icons to show (1 icon = 100 people)
+    Object.entries(counts).forEach(([key, count]) => {
+      const iconCount = Math.ceil(count / 100);
+      const [gender, consumedStr] = key.split('-');
+      const consumed = consumedStr === 'true';
+
+      for (let i = 0; i < iconCount; i++) {
+        const icon = document.createElement('div');
+        icon.classList.add('icon');
+
+        if (gender === 'Male') {
+          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
+          icon.textContent = consumed ? '♂️' : '♂';
+        } else if (gender === 'Female') {
+          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
+          icon.textContent = consumed ? '♀️' : '♀';
+        }
+
+        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'consumed' : "didn't consume"}`;
+
+        container.appendChild(icon);
+      }
+    });
+  });
+
+fetch('tobaccoPeople.json')
+  .then(response => response.json())
+  .then(data => {
+    const container = document.getElementById('tobacco-icon-grid');
+
+    // Step 1: Count people by category (gender + consumed)
+    const counts = {
+      'Male-true': 0,
+      'Male-false': 0,
+      'Female-true': 0,
+      'Female-false': 0,
+    };
+
+    data.forEach(person => {
+      const key = `${person.gender}-${person.consumed}`;
+      if (counts[key] !== undefined) {
+        counts[key]++;
+      }
+    });
+
+    // Step 2: For each category, calculate how many icons to show (1 icon = 100 people)
+    Object.entries(counts).forEach(([key, count]) => {
+      const iconCount = Math.ceil(count / 100);
+      const [gender, consumedStr] = key.split('-');
+      const consumed = consumedStr === 'true';
+
+      for (let i = 0; i < iconCount; i++) {
+        const icon = document.createElement('div');
+        icon.classList.add('icon');
+
+        if (gender === 'Male') {
+          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
+          icon.textContent = consumed ? '♂️' : '♂';
+        } else if (gender === 'Female') {
+          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
+          icon.textContent = consumed ? '♀️' : '♀';
+        }
+
+        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'consumed' : "didn't consume"}`;
+
+        container.appendChild(icon);
+      }
+    });
+  });
+
+fetch('cigPeople.json')
+  .then(response => response.json())
+  .then(data => {
+    const container = document.getElementById('cigarette-icon-grid'); 
+
+    const counts = {
+      'Male-true': 0,
+      'Male-false': 0,
+      'Female-true': 0,
+      'Female-false': 0,
+    };
+
+    data.forEach(person => {
+      const key = `${person.gender}-${person.consumed}`;
+      if (counts[key] !== undefined) {
+        counts[key]++;
+      }
+    });
+
+    Object.entries(counts).forEach(([key, count]) => {
+      const iconCount = Math.ceil(count / 100);
+      const [gender, consumedStr] = key.split('-');
+      const consumed = consumedStr === 'true';
+
+      for (let i = 0; i < iconCount; i++) {
+        const icon = document.createElement('div');
+        icon.classList.add('icon');
+
+        // Set color and icon text
+        if (gender === 'Male') {
+          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
+          icon.textContent = consumed ? '♂️' : '♂';
+        } else if (gender === 'Female') {
+          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
+          icon.textContent = consumed ? '♀️' : '♀';
+        }
+
+        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'smoked' : 'did not smoke'}`;
+
+        container.appendChild(icon);
+
+        setupJarsAlcohol();
+        animateAlcoholJars();
+        setupJarsTobacco();
+        animateTobaccoJars();
+        setupJarsCigarettes();
+        animateCigarettesJars();
+      }
+    });
+  });
+
+
 window.addEventListener('load', init);
 
-//window.addEventListener('load', init);

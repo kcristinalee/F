@@ -164,3 +164,58 @@ h3 {
 #calc-drug-risk {
   margin-top: 2rem;
 }
+
+.jar-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 1rem;
+}
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 600px;
+    gap: 5px;
+    margin-bottom: 40px;
+  }
+
+  .icon {
+    font-size: 30px;
+  }
+
+  .male {
+    color: steelblue;
+  }
+
+  .female {
+    color: hotpink;
+  }
+
+  .gray {
+    color: lightgray;
+  }
+
+.icon-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 40px; /* Adds 40px space on left and right */
+}
+
+
+.icon-container {
+  flex: 1;
+  text-align: center; /* Optional: centers the title and grid */
+}
+
+.grid {
+  margin-top: 10px;
+  /* Your existing styles for the grid */
+}
+.description {
+  font-size: 20px;
+  color: #555;
+  margin-top: 8px;
+  padding: 0 40px;
+}
