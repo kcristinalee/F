@@ -23,7 +23,7 @@ merged_df = pd.concat(dataframes, ignore_index=True)
 
 output_path = 'data/likely.tsv'
 merged_df.to_csv(output_path, sep='\t', index=False, quoting=csv.QUOTE_NONE)
-print(f"✅ Merged and saved to {output_path}")
+print(f"Merged and saved to {output_path}")
 
 df = pd.read_csv(output_path, sep='\t')
 
@@ -32,7 +32,7 @@ df = df[df['DEPRESSIONINDEX'].between(0, 9)]
 df = df[df['ALCEVER'].isin([1, 2])]
 df = df[df['TOBFLAG'].isin([0, 1])]
 df = df[df['CG05'].isin([1, 2])]
-df = df[df['IRSEX'].isin([1, 2])]  # Male=1, Female=2
+df = df[df['IRSEX'].isin([1, 2])]
 
 df['Depressed'] = df['DEPRESSIONINDEX'] >= 5
 
@@ -61,10 +61,8 @@ final_df['Percent_Depressed'] = (final_df['Depressed'] * 100).round(1)
 final_df.drop(columns='Depressed', inplace=True)
 
 final_df.to_csv("depression_by_substance.csv", index=False)
-print("✅ Final summary saved to depression_by_substance.csv")
+print("Final summary saved to depression_by_substance.csv")
 
-
-######### for grids
 
 df = pd.read_csv("data/likely.tsv", sep="\t")
 
@@ -74,17 +72,17 @@ alcohol_gender_df['consumed'] = alcohol_gender_df['ALCEVER'] == 1
 icon_data = alcohol_gender_df[['gender', 'consumed']]
 
 icon_data.to_json("alcoholPeople.json", orient="records", lines=False)
-print("✅ Exported alcoholPeople.json for icon visualization")
+print("Exported alcoholPeople.json for icon visualization")
 
 tobacco_gender_df = df[['TOBFLAG', 'IRSEX']].copy()
-tobacco_gender_df = tobacco_gender_df[df['TOBFLAG'].isin([0, 1])]  # Optional: exclude invalids like -9
+tobacco_gender_df = tobacco_gender_df[df['TOBFLAG'].isin([0, 1])]
 
 tobacco_gender_df['gender'] = tobacco_gender_df['IRSEX'].map({1: 'Male', 2: 'Female'})
 tobacco_gender_df['consumed'] = tobacco_gender_df['TOBFLAG'] == 1
 
 icon_data1 = tobacco_gender_df[['gender', 'consumed']]
 icon_data1.to_json("tobaccoPeople.json", orient="records", lines=False)
-print("✅ Exported tabacooPeople.json for icon visualization")
+print("Exported tabacooPeople.json for icon visualization")
 
 cig_gender_df = df[['CG05', 'IRSEX']].copy()
 cig_gender_df['gender'] = cig_gender_df['IRSEX'].map({1: 'Male', 2: 'Female'})
@@ -93,7 +91,7 @@ cig_gender_df['consumed'] = cig_gender_df['CG05'] == 1
 icon_data2 = cig_gender_df[['gender', 'consumed']]
 
 icon_data2.to_json("cigPeople.json", orient="records", lines=False)
-print("✅ Exported cigPeople.json for icon visualization")
+print("Exported cigPeople.json for icon visualization")
 
 df = pd.read_csv("data/likely.tsv", sep="\t")
 

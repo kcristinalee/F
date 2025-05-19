@@ -11,7 +11,6 @@ prepare_choose_life_data.py
 
 import pandas as pd
 
-# 1. File paths
 TSV_FILES = [
     "data/split_part_1.tsv",
     "data/split_part_2.tsv",
@@ -20,7 +19,6 @@ TSV_FILES = [
     "data/split_part_5.tsv",
 ]
 
-# 2. Variables to extract (as-is, no recoding)
 SELECTED_COLUMNS = [
     "CIGEVER",
     "TOBFLAG",
@@ -40,7 +38,6 @@ SELECTED_COLUMNS = [
     "MTHFLAG"
 ]
 
-# 3. Load, select, and combine
 frames = []
 for path in TSV_FILES:
     print(f"• Reading {path}")
@@ -48,15 +45,13 @@ for path in TSV_FILES:
         path,
         sep="\t",
         usecols=lambda col: col in SELECTED_COLUMNS,
-        dtype="object"  # Keep original values as-is
+        dtype="object"
     )
     frames.append(df)
 
-# 4. Concatenate all chunks
 merged = pd.concat(frames, ignore_index=True)
 
-# 5. Save to new file
 OUT_PATH = "data/choose_life_raw.tsv"
 merged.to_csv(OUT_PATH, sep="\t", index=False, encoding="utf-8", quoting=3)
 
-print(f"✅ Saved selected variables to {OUT_PATH}")
+print(f"Saved selected variables to {OUT_PATH}")
