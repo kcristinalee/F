@@ -1,4 +1,5 @@
 let globalData = null;
+let selectedDrugsForDepression = [];
 
 function getGenderIconHTML(gender) {
   return gender === "female"
@@ -954,9 +955,10 @@ document.getElementById("calc-drug-risk").addEventListener("click", () => {
 
   if (selectedDrugs.length === 0) return alert("Select at least one drug.");
 
-  document.getElementById("calc-drug-risk").style.display = "none";
+  selectedDrugsForDepression = selectedDrugs;
 
   const risks = calculateHardDrugRisk(globalData, selectedDrugs);
+
   setupDrugJars();
 
   const riskBars = document.getElementById("drug-risk-bars");
@@ -986,15 +988,16 @@ document.getElementById("calc-drug-risk").addEventListener("click", () => {
     });
 
     const followup = document.getElementById("drug-followup-wrapper");
-    const followupText = document.getElementById("drug-followup");
-    followupText.innerText = `Their risk jumped again after trying ${selectedDrugs.length > 1 ? "multiple drugs" : "one drug"}.`;
     followup.style.display = "block";
+    document.getElementById("drug-followup").innerText =
+      `Their risk jumped again after trying ${selectedDrugs.length > 1 ? "multiple drugs" : "one drug"}.`;
 
     setTimeout(() => {
       followup.style.opacity = 1;
     }, 50);
   }, 1600);
 });
+
 
 function setupDrugJars() {
   const container = document.getElementById("drug-risk-bars");
@@ -1125,14 +1128,15 @@ document.getElementById("continue-to-depression").addEventListener("click", () =
   });
 });
 
-function calculateDepressionRisk(data) {
+function calculateDepressionRisk(data, selectedDrugs = []) {
   const depressed = data.filter(d =>
     Number(d.DEPRESSIONINDEX) >= 7 &&
     d.CIGEVER === "1" &&
     d.ALCEVER === "1" &&
     d.MJEVER === "1" &&
     d.IEMFLAG === "1" &&
-    d.TOBFLAG === "1"
+    d.TOBFLAG === "1" &&
+    selectedDrugs.every(drug => d[drug] === "1")
   );
 
   const female = depressed.filter(d => d.FEMALE === "1");
@@ -1157,7 +1161,7 @@ document.getElementById("continue-to-depression").addEventListener("click", () =
   scene.scrollIntoView({ behavior: "smooth", block: "center" });
 
   setupDepressionJars();
-  const risks = calculateDepressionRisk(globalData);
+  const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
 
   ["female", "male"].forEach(gender => {
     const { bar, label, scale } = jarElements[`${gender}-depression`];
@@ -1180,13 +1184,6 @@ document.getElementById("continue-to-depression").addEventListener("click", () =
     }, 1500 / Math.max(target, 1));
   });
 
-  // setTimeout(() => {
-  //   const wrapper = document.getElementById("depression-followup-wrapper");
-  //   wrapper.style.display = "block";
-  //   setTimeout(() => {
-  //     wrapper.style.opacity = 1;
-  //   }, 50);
-  // }, 1600);
 });
 
 
@@ -1274,27 +1271,6 @@ document.getElementById("continue-to-depression").addEventListener("click", () =
 });
 
 
-function calculateDepressionRisk(data) {
-  const depressed = data.filter(d =>
-    Number(d.DEPRESSIONINDEX) >= 7 &&
-    d.CIGEVER === "1" &&
-    d.ALCEVER === "1" &&
-    d.MJEVER === "1" &&
-    d.IEMFLAG === "1" &&
-    d.TOBFLAG === "1"
-  );
-
-  const female = depressed.filter(d => d.FEMALE === "1");
-  const male = depressed.filter(d => d.FEMALE === "0");
-
-  const femaleRisk = female.filter(d => d.CRIMEHIST === "1").length / Math.max(female.length, 1) * 100;
-  const maleRisk = male.filter(d => d.CRIMEHIST === "1").length / Math.max(male.length, 1) * 100;
-
-  return {
-    female: Math.round(femaleRisk),
-    male: Math.round(maleRisk)
-  };
-}
 
 function setupDepressionJars() {
   const container = document.getElementById("depression-risk-bars");
@@ -1367,7 +1343,6 @@ function setupDepressionJars() {
   });
 }
 document.getElementById("calc-depression-risk").addEventListener("click", () => {
-  document.getElementById("calc-depression-risk").style.display = "none";
   document.getElementById("depression-risk-bars").style.display = "flex";
 
   setTimeout(() => {
@@ -1378,7 +1353,7 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
   }, 100);
 
   setupDepressionJars();
-  const risks = calculateDepressionRisk(globalData);
+  const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
 
   ["female", "male"].forEach(gender => {
     const { bar, label, scale } = jarElements[`${gender}-depression`];
