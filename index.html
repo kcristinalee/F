@@ -17,9 +17,9 @@
   <h1 id="header" style="font-size: 60px;">Pain, Pills, and Prison Time</h1>
 
   <h2 id="subheading" style="margin-top: 0.5rem; font-weight: normal; color: #666;">
-  Small Choices, Big Consequences: Arrest Risk by Lifestyle
-</h2>
-  
+    Small Choices, Big Consequences: Arrest Risk by Lifestyle
+  </h2>
+
   <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding: 2rem;">
     <div class="figure-column">
       <svg xmlns="http://www.w3.org/2000/svg" width="25rem" height="25rem" fill="hotpink"
@@ -114,13 +114,13 @@
   </div>
 
   <div id="tobacco-followup-wrapper"
-  style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
-  <p id="tobacco-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
-    Only a 1% increase small change, though this small change for a single try shifted their arrest risk — now let’s
-    see what happens if they try cigarettes.
-  </p>
-  <button id="continue-to-cigarettes" class="btn btn-primary btn-lg">Continue</button>
-</div>
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
+    <p id="tobacco-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
+      Only a 1% increase small change, though this small change for a single try shifted their arrest risk — now let’s
+      see what happens if they try cigarettes.
+    </p>
+    <button id="continue-to-cigarettes" class="btn btn-primary btn-lg">Continue</button>
+  </div>
 
   <div id="cigarette-scene" style="display: none; text-align: center; margin-top: 2rem;">
     <img id="cigarette-image" src="images/cig-img.jpeg" alt="Cigarette Packet"
@@ -230,15 +230,20 @@
       <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
     </div>
 
-    <p id="end-of-story" style="display: none; max-width: 1000px; margin: 2rem auto; padding: 1rem; font-size: 22px; line-height: 2; text-align: center;">
-      Karen and Bob’s story shows how a few small choices can quietly compound over time, increasing both arrest risk and mental health struggles. But their path isn't unique — many others take similar steps. Let’s now zoom out and explore the bigger picture: what patterns do we see in substance use across the population, and how do these choices typically unfold?
+    <p id="end-of-story"
+      style="display: none; max-width: 1000px; margin: 2rem auto; padding: 1rem; font-size: 22px; line-height: 2; text-align: center;">
+      Karen and Bob’s story shows how a few small choices can quietly compound over time, increasing both arrest risk
+      and mental health struggles. But their path isn't unique — many others take similar steps. Let’s now zoom out and
+      explore the bigger picture: what patterns do we see in substance use across the population, and how do these
+      choices typically unfold?
     </p>
     <div id="end-of-story-continue-wrapper" style="display: none; text-align: center; margin-top: 2rem;">
       <button id="continue-to-chain" class="btn btn-primary btn-lg">Continue</button>
     </div>
     <p id="alcohol-chain-description" class="description"
       style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
-      Substances like alcohol, tobacco, and cigarettes are often interconnected — trying one can increase the likelihood of trying another. 
+      Substances like alcohol, tobacco, and cigarettes are often interconnected — trying one can increase the likelihood
+      of trying another.
       Let’s explore how often these behaviors overlap and what patterns tend to emerge.
     </p>
 
@@ -275,52 +280,58 @@
           <div id="cigarette-icon-grid" class="grid"></div>
         </div>
       </div>
-          <div id="icon-legend" style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; margin: 1.5rem auto; justify-content: center; font-size: 18px;">
-  <!-- Male who consumed -->
-  <div style="display: flex; align-items: center; gap: 0.5rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="steelblue" class="bi bi-gender-male" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 
+      <div id="icon-legend"
+        style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; margin: 1.5rem auto; justify-content: center; font-size: 18px;">
+        <!-- Male who consumed -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="steelblue" class="bi bi-gender-male"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 
         0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
-        8 4 4 0 0 0 0-8"/>
-    </svg>
-    <span>Male (Consumed)</span>
-  </div>
+        8 4 4 0 0 0 0-8" />
+          </svg>
+          <span>Male (Consumed)</span>
+        </div>
 
-  <!-- Male who didn't consume -->
-  <div style="display: flex; align-items: center; gap: 0.5rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="lightgray" class="bi bi-gender-male" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 
+        <!-- Male who didn't consume -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="lightgray" class="bi bi-gender-male"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 
         0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
-        8 4 4 0 0 0 0-8"/>
-    </svg>
-    <span>Male (Did not consume)</span>
-  </div>
+        8 4 4 0 0 0 0-8" />
+          </svg>
+          <span>Male (Did not consume)</span>
+        </div>
 
-  <!-- Female who consumed -->
-  <div style="display: flex; align-items: center; gap: 0.5rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="hotpink" class="bi bi-gender-female" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
+        <!-- Female who consumed -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="hotpink" class="bi bi-gender-female"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
         1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 
-        0-1h2V9.975A5 5 0 0 1 3 5"/>
-    </svg>
-    <span>Female (Consumed)</span>
-  </div>
+        0-1h2V9.975A5 5 0 0 1 3 5" />
+          </svg>
+          <span>Female (Consumed)</span>
+        </div>
 
-  <!-- Female who didn't consume -->
-  <div style="display: flex; align-items: center; gap: 0.5rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="lightgray" class="bi bi-gender-female" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
+        <!-- Female who didn't consume -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="lightgray"
+            class="bi bi-gender-female" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
         1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 
-        0-1h2V9.975A5 5 0 0 1 3 5"/>
-    </svg>
-    <span>Female (Did not consume)</span>
-  </div>
-</div>
+        0-1h2V9.975A5 5 0 0 1 3 5" />
+          </svg>
+          <span>Female (Did not consume)</span>
+        </div>
+      </div>
     </div>
 
     <p id="post-icon-description" class="description"
       style="display: none; opacity: 0; transition: opacity 1s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
-      Now, among all the individuals who have used these substances, let’s take a look at how likely they are to experience depression.
+      Now, among all the individuals who have used these substances, let’s take a look at how likely they are to
+      experience depression.
     </p>
 
     <div id="jars-continue-wrapper"
@@ -368,22 +379,52 @@
 
       <svg id="stacked_area" width="1300" height="500"></svg>
 
-       <p id="source" class="description"
-      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 28px; line-height: 2;">
-      Acknowledgement: 
+      <p id="source" class="description"
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 28px; line-height: 2;">
+        Acknowledgement:
 
-    </p>
+      </p>
 
       <p id="sources" class="description"
-      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
-      This data visualization uses the “Gender, Mental Illness, and Crime in the United States, 2004” dataset from ICPSR, based on the National Survey on Drug Use and Health (NSDUH). It includes responses from over 55,000 individuals and more than 3,000 variables covering substance use, mental health, criminal history, demographics, and access to treatment.
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
+        This data visualization uses the “Gender, Mental Illness, and Crime in the United States, 2004” dataset from
+        ICPSR, based on the National Survey on Drug Use and Health (NSDUH). It includes responses from over 55,000
+        individuals and more than 3,000 variables covering substance use, mental health, criminal history, demographics,
+        and access to treatment.
 
-    </p>
+      </p>
+
+      <p id="workcited" class="description"
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 28px; line-height: 2;">
+        Images Work Cited:
+
+      </p>
+
+      <p id="workciteds" class="description"
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
+        Aubrey, A. (2025, January 13). Is one drink a day OK? here’s what to consider. NPR.
+        https://www.npr.org/sections/shots-health-news/2025/01/13/nx-s1-5251649/cancer-alcohol-wine-beer-surgeon-general
+        <br>
+
+        Drug addict man with a syringe and drugs. addiction. iStock. (n.d.).
+        https://www.istockphoto.com/photo/drug-addict-man-with-a-syringe-and-drugs-addiction-gm1432553909-474761978 <br>
+
+        Fishman, L. (2024, November 19). Can smoking marijuana increase stroke risk?. NewYork-Presbyterian.
+        https://healthmatters.nyp.org/can-smoking-marijuana-increase-stroke-risk/ <br>
+
+        NBCUniversal News Group. (2018, October 31). Sadness or depression? how to know when to seek treatment.
+        NBCNews.com. https://www.nbcnews.com/better/health/am-i-depressed-or-just-sad-how-know-when-seek-ncna925701 <br>
+
+        Secours, B. (2024, November 8). The dangerous side effects of chewing tobacco. Bon Secours Blog.
+        https://blog.bonsecours.com/healthy/side-effects-of-chewing-tobacco/ 
+
+      </p>
+
+
+
     </div>
 
 </body>
 <script src="js/script.js"></script>
 
 </html>
-
-

@@ -9,16 +9,16 @@ TSV_FILES = [
 ]
 
 KEEP1 = [
-    "ASDSOVRL",   # Intensity of depression
-    "NOBOOKY2",    # Times arrested and booked in the past 12 months
+    "ASDSOVRL",   
+    "NOBOOKY2",    
     #"GENDER_R"     # Gender (0 = Female, 1 = Male)
 ]
 
 KEEP2 = [
-    "IRSEX",       # Gender (1 = Male, 2 = Female)
-    "BOOKED",      # Ever arrested/booked (1 = Yes, 0 = No)
-    "NOBOOKY2",    # Times arrested in past year (0-3)
-    "BKAGASLT"     # Arrested for aggravated assault (1 = Yes, 2 = No)
+    "IRSEX",      
+    "BOOKED",     
+    "NOBOOKY2",    
+    "BKAGASLT"     
 ]
 
 frames1 = []

@@ -5,7 +5,6 @@
 import pandas as pd
 import glob
 
-# List of your 5 file paths
 tsv_files = [
     'data/split_part_1.tsv',
     'data/split_part_2.tsv',
@@ -32,19 +31,16 @@ tsv_files = [
 
 columns_to_keep = ['GENDER_R', 'NOBOOKY2', 'ALCDAYS', 'CHW30USE', 'MJDAY30A', 'WORKDAYS', 'DSTDEPRS']
 
-# Load and filter each file
 dataframes = []
 for file in tsv_files:
     print(f"Loading {file}...")
     df = pd.read_csv(file, sep='\t')
-    df = df[columns_to_keep]  # Now filter cleanly by name
+    df = df[columns_to_keep] 
 
     dataframes.append(df)
 
-# Concatenate all filtered DataFrames
 merged_df = pd.concat(dataframes, ignore_index=True)
 
-# Save to new TSV
 output_path = 'data/merged_clean.tsv'
 merged_df.to_csv(output_path, sep='\t', index=False, encoding='utf-8', quoting=3)  # 3 = csv.QUOTE_NONE
 
