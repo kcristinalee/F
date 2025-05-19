@@ -1,4 +1,6 @@
-# Small Choices, Big Consequences: Arrest Risk by Lifestyle
+# Pain, Pills, and Prison Time
+
+## Small Choices, Big Consequences: Arrest Risk by Lifestyle
 
 **Team Members:** Isabel Flynn, Christina Lee, Kamyavalli Mopidevi
 
