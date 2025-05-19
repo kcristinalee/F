@@ -80,6 +80,9 @@ print("✅ Final summary saved to depression_by_substance.csv")
 
 ######### for grids
 
+df = pd.read_csv("data/likely.tsv", sep="\t")
+
+
 # ===== Export for icon visualization =====
 alcohol_gender_df = df[['ALCEVER', 'IRSEX']].copy()
 alcohol_gender_df['gender'] = alcohol_gender_df['IRSEX'].map({1: 'Male', 2: 'Female'})
@@ -93,14 +96,15 @@ icon_data.to_json("alcoholPeople.json", orient="records", lines=False)
 print("✅ Exported alcoholPeople.json for icon visualization")
 
 # ===== Export for icon visualization =====
+
+# Include all (both consumed and not)
 tobacco_gender_df = df[['TOBFLAG', 'IRSEX']].copy()
+tobacco_gender_df = tobacco_gender_df[df['TOBFLAG'].isin([0, 1])]  # Optional: exclude invalids like -9
+
 tobacco_gender_df['gender'] = tobacco_gender_df['IRSEX'].map({1: 'Male', 2: 'Female'})
 tobacco_gender_df['consumed'] = tobacco_gender_df['TOBFLAG'] == 1
 
-# Final format: gender + consumed
 icon_data1 = tobacco_gender_df[['gender', 'consumed']]
-
-# Export as JSON for frontend
 icon_data1.to_json("tobaccoPeople.json", orient="records", lines=False)
 print("✅ Exported tabacooPeople.json for icon visualization")
 

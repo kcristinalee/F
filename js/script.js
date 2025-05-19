@@ -733,11 +733,11 @@ function createHeatmap(data) {
   svg.selectAll("*").remove();
 
   const margin = { top: 50, right: 200, bottom: 50, left: 50 };
-    width = +svg.attr("width") - margin.left - margin.right,
+  width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom;
 
-    //const width = 1400 - margin.left - margin.right; // Increased from 1200
-    //const height = 500 - margin.top - margin.bottom;
+  //const width = 1400 - margin.left - margin.right; // Increased from 1200
+  //const height = 500 - margin.top - margin.bottom;
 
 
   const g = svg.append("g")
@@ -797,8 +797,8 @@ function createHeatmap(data) {
   const legend = svg.append("g")
     .attr("class", "legend")
     //.attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
-   // .attr("transform", `translate(${width + margin.left - 180},${margin.top - 70})`); // Moved left by 180px
-   .attr("transform", `translate(${width + margin.left + 20}, ${margin.top})`);
+    // .attr("transform", `translate(${width + margin.left - 180},${margin.top - 70})`); // Moved left by 180px
+    .attr("transform", `translate(${width + margin.left + 20}, ${margin.top})`);
 
 
   const depressionDescriptions = {
@@ -2222,14 +2222,21 @@ fetch('alcoholPeople.json')
     };
 
     data.forEach(person => {
-      const key = `${person.gender}-${person.consumed}`;
+      const gender = person.gender.toLowerCase() === 'female' ? 'Female' : 'Male';
+      const consumed = String(person.consumed) === 'true';
+      const key = `${gender}-${consumed}`;
+
       if (counts[key] !== undefined) {
         counts[key]++;
       }
     });
 
+    console.log(counts);
+
+
+
     Object.entries(counts).forEach(([key, count]) => {
-      const iconCount = Math.ceil(count / 100);
+      const iconCount = Math.ceil(count / 150);
       const [gender, consumedStr] = key.split('-');
       const consumed = consumedStr === 'true';
 
@@ -2258,7 +2265,7 @@ fetch('alcoholPeople.json')
             </svg>
           `;
         }
-        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        const peopleRepresented = (i === iconCount - 1) ? count - (150 * i) : 150;
         icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'consumed' : "didn't consume"}`;
 
         container.appendChild(icon);
@@ -2270,6 +2277,7 @@ fetch('tobaccoPeople.json')
   .then(response => response.json())
   .then(data => {
     const container = document.getElementById('tobacco-icon-grid');
+    
     const counts = {
       'Male-true': 0,
       'Male-false': 0,
@@ -2278,14 +2286,17 @@ fetch('tobaccoPeople.json')
     };
 
     data.forEach(person => {
-      const key = `${person.gender}-${person.consumed}`;
+      const gender = person.gender === 'Female' ? 'Female' : 'Male'; // Normalize just in case
+      const consumed = person.consumed === true; // Use boolean directly
+      const key = `${gender}-${consumed}`;
+
       if (counts[key] !== undefined) {
         counts[key]++;
       }
     });
 
     Object.entries(counts).forEach(([key, count]) => {
-      const iconCount = Math.ceil(count / 100);
+      const iconCount = Math.ceil(count / 150);
       const [gender, consumedStr] = key.split('-');
       const consumed = consumedStr === 'true';
 
@@ -2298,8 +2309,8 @@ fetch('tobaccoPeople.json')
             <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
                  fill="${consumed ? 'steelblue' : 'lightgray'}" 
                  class="bi bi-gender-male" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 
-                0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
+              <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 
+                0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
                 8 4 4 0 0 0 0-8"/>
             </svg>
           `;
@@ -2315,13 +2326,14 @@ fetch('tobaccoPeople.json')
           `;
         }
 
-        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        const peopleRepresented = (i === iconCount - 1) ? count - (150 * i) : 150;
         icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'consumed' : "didn't consume"}`;
 
         container.appendChild(icon);
       }
     });
   });
+
 
 fetch('cigPeople.json')
   .then(response => response.json())
@@ -2336,14 +2348,17 @@ fetch('cigPeople.json')
     };
 
     data.forEach(person => {
-      const key = `${person.gender}-${person.consumed}`;
+      const gender = person.gender.toLowerCase() === 'female' ? 'Female' : 'Male';
+      const consumed = String(person.consumed) === 'true';
+      const key = `${gender}-${consumed}`;
+
       if (counts[key] !== undefined) {
         counts[key]++;
       }
     });
 
     Object.entries(counts).forEach(([key, count]) => {
-      const iconCount = Math.ceil(count / 100);
+      const iconCount = Math.ceil(count / 150);
       const [gender, consumedStr] = key.split('-');
       const consumed = consumedStr === 'true';
 
@@ -2373,7 +2388,7 @@ fetch('cigPeople.json')
           `;
         }
 
-        const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
+        const peopleRepresented = (i === iconCount - 1) ? count - (150 * i) : 150;
         icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'smoked' : 'did not smoke'}`;
 
         container.appendChild(icon);
