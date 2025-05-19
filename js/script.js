@@ -778,17 +778,17 @@ function createHeatmap(data) {
   g.append("text")
     .attr("text-anchor", "middle")
     .attr("x", width / 2)
-    .attr("y", height + margin.bottom - 10)  // slightly below the axis
+    .attr("y", height + margin.bottom - 10)
     .style("font-size", "14px")
-    .text("Number of Days");  // Change text as needed
+    .text("Number of Days");
 
   g.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", `rotate(-90)`)
     .attr("x", -height / 2)
-    .attr("y", -margin.left + 15)  // slightly left of the axis
+    .attr("y", -margin.left + 15)
     .style("font-size", "14px")
-    .text("Proportion of Depression Levels");  // Change text as needed
+    .text("Proportion of Depression Levels");
 
   const legend = svg.append("g")
     .attr("class", "legend")
@@ -834,7 +834,6 @@ function createHeatmap(data) {
     .text(titleMap[selectedColumn]);
 }
 
-// Set up dropdown handler (one-time only)
 d3.select("#dataSelect").on("change", () => {
   d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
 });
@@ -843,10 +842,7 @@ d3.select("#genderSelect").on("change", () => {
   d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
 });
 
-
-// Initial load
 d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
-
 
 document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
   document.getElementById("calc-alcohol-risk").style.display = "none";
@@ -1563,13 +1559,6 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
 
         if (animationsComplete === totalAnimations) {
           setTimeout(() => {
-            const desc = document.getElementById("alcohol-chain-description");
-            desc.style.display = "block";
-            desc.style.opacity = 1;
-
-            const treeBtn = document.getElementById("tree-button-wrapper");
-            treeBtn.style.display = "block";
-            treeBtn.style.opacity = 1;
 
             const story = document.getElementById("end-of-story");
             story.style.display = "block";

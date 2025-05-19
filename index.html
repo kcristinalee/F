@@ -99,31 +99,31 @@
     style="display: none; max-width: 800px; margin: 2rem auto;" />
 
   <div id="tobacco-scene" style="display: none; text-align: center; margin-top: 2rem;">
-    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+    <p style="max-width: 1000px; margin: 0 auto; padding: 0rem; font-size: 22px; line-height: 2;">
       Later that year, Karen and Bob tried chewing tobacco, lets see how it changed the numbers.
     </p>
   </div>
   <div id="tobacco-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
 
-  <div id="tobacco-followup-wrapper"
-    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-    <p id="tobacco-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Only a 1% increase small change, though this small change for a single try shifted their arrest risk — now let’s
-      see what happens if they try cigarettes.
-    </p>
-    <button id="continue-to-cigarettes" class="btn btn-primary btn-lg">Continue</button>
-  </div>
-
-  <div id="tobacco-button-container" style="display: none; text-align: center; padding-top: 3rem;">
+  <div id="tobacco-button-container" style="display: none; text-align: center; padding-top: 2rem;">
     <button id="calc-tobacco-risk" style="margin-bottom: 2rem;" class="btn btn-dark btn-lg">Calculate Arrest
       Risk</button>
   </div>
+
+  <div id="tobacco-followup-wrapper"
+  style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
+  <p id="tobacco-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
+    Only a 1% increase small change, though this small change for a single try shifted their arrest risk — now let’s
+    see what happens if they try cigarettes.
+  </p>
+  <button id="continue-to-cigarettes" class="btn btn-primary btn-lg">Continue</button>
+</div>
 
   <div id="cigarette-scene" style="display: none; text-align: center; margin-top: 2rem;">
     <img id="cigarette-image" src="images/cig-img.jpeg" alt="Cigarette Packet"
       style="width: 100%; max-width: 800px; margin: 2rem auto;" />
 
-    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Not long after, Karen and Bob each tried smoking a cigarette — just once. Another small act… but will it have
       consequences?
     </p>
@@ -134,9 +134,9 @@
   </div>
 
   <div id="cigarette-followup-wrapper"
-    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
     <p id="cigarette-followup"
-      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Even one cigarette nudged their risk higher, with a notible spike for men.
     </p>
     <button id="continue-to-alcohol" class="btn btn-primary btn-lg">Continue</button>
@@ -146,7 +146,7 @@
     <img id="alcohol-image" src="images/drinking-img.jpeg" alt="Alcohol Bottle"
       style="width: 100%; max-width: 700px; margin: 2rem auto; display: none;" />
     <p style="font-size: 24px; max-width: 900px; margin: auto; padding: 1rem;">
-      Afterward, they tried alcohol — just a sip at a party. Let’s see how that changed their story.
+      Afterward, they tried alcohol — just a couple drinks at a party. Let’s see how that changed their story.
     </p>
     <div id="alcohol-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
     <div style="text-align: center; margin-top: 2rem;">
@@ -155,8 +155,8 @@
   </div>
 
   <div id="alcohol-followup-wrapper"
-    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-    <p id="alcohol-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
+    <p id="alcohol-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Just one drink nudged their risk a little higher — and they haven’t even touched the harder stuff yet.
     </p>
     <button id="continue-to-marijuana" class="btn btn-primary btn-lg">Continue</button>
@@ -166,20 +166,20 @@
     <img id="marijuana-image" src="images/weed-img.jpg" alt="Marijuana Leaf"
       style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
 
-    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Next, they tried marijuana — just once at a concert. Let’s see how that decision affected their risk.
     </p>
 
     <div id="marijuana-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
 
-    <div id="marijuana-button-container" style="display: none; text-align: center; padding-top: 3rem;">
+    <div id="marijuana-button-container" style="display: none; text-align: center; padding-top: 0rem;">
       <button id="calc-marijuana-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
     </div>
   </div>
   <div id="marijuana-followup-wrapper"
-    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
     <p id="marijuana-followup"
-      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       With each choice stacking on top of the last, Karen and Bob’s arrest risk continues to rise.
     </p>
     <button id="continue-to-harddrugs" class="btn btn-primary btn-lg">Continue</button>
@@ -189,7 +189,7 @@
     <img id="hard-drugs-img" src="images/drug-abuse.webp" alt="drugs"
       style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
 
-    <p>Select any hard drugs Karen and Bob try:</p>
+    <p>Karen and Bob are offered drugs at rave, select which ones they try:</p>
     <form id="drug-form">
       <label><input type="checkbox" value="COCEVER"> Cocaine</label><br>
       <label><input type="checkbox" value="CRKEVER"> Crack</label><br>
@@ -199,11 +199,11 @@
       <label><input type="checkbox" value="MTHFLAG"> Meth</label><br>
     </form>
 
-    <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+    <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 1rem;"></div>
     <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
 
     <div id="drug-followup-wrapper" style="display: none; opacity: 0; padding-top: 2rem; padding-bottom: 1rem;">
-      <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 25px; line-height: 2;"></p>
+      <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 22px; line-height: 2;"></p>
       <div style="text-align: center; padding-top: 2rem;">
         <button id="continue-to-depression" class="btn btn-primary btn-lg">Continue</button>
       </div>
@@ -214,12 +214,12 @@
     <img id="depression-img" src="images/depression.jpg" alt="Depression"
       style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
 
-    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Karen and Bob find themselves falling into severe depression.
     </p>
 
     <div id="depression-followup-wrapper"
-      style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+      style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 0rem;">
     </div>
 
     <div id="depression-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
@@ -227,14 +227,14 @@
       <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
     </div>
 
-    <p id="end-of-story" style="display: none; max-width: 1000px; margin: 2rem auto; padding: 1rem; font-size: 25px; line-height: 2; text-align: center;">
+    <p id="end-of-story" style="display: none; max-width: 1000px; margin: 2rem auto; padding: 1rem; font-size: 22px; line-height: 2; text-align: center;">
       Karen and Bob’s story shows how a few small choices can quietly compound over time, increasing both arrest risk and mental health struggles. But their path isn't unique — many others take similar steps. Let’s now zoom out and explore the bigger picture: what patterns do we see in substance use across the population, and how do these choices typically unfold?
     </p>
     <div id="end-of-story-continue-wrapper" style="display: none; text-align: center; margin-top: 2rem;">
       <button id="continue-to-chain" class="btn btn-primary btn-lg">Continue</button>
     </div>
     <p id="alcohol-chain-description" class="description"
-      style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Substances like alcohol, tobacco, and cigarettes are often interconnected — trying one can increase the likelihood of trying another. 
       Let’s explore how often these behaviors overlap and what patterns tend to emerge.
     </p>
@@ -248,7 +248,7 @@
 
 
     <p id="post-tree-question" class="description"
-      style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Now let’s take a closer look at how common alcohol, tobacco, and cigarette use really is across the population.
     </p>
 
@@ -276,7 +276,7 @@
 
 
     <p id="post-icon-description" class="description"
-      style="display: none; opacity: 0; transition: opacity 1s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      style="display: none; opacity: 0; transition: opacity 1s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
       Now, among all the individuals who have used these substances, let’s take a look at how likely they are to experience depression.
     </p>
 
@@ -297,7 +297,7 @@
 
     <div id="stacked-continue-wrapper"
       style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; padding-top: 2rem;">
-      <p id="stacked_chart" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      <p id="stacked_chart" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 22px; line-height: 2;">
         Finally, let’s see how depression levels shift based on how often people use different substances.
       </p>
       <button id="continue-to-stacked" class="btn btn-primary btn-lg">Continue</button>
