@@ -1523,9 +1523,97 @@ function setupDepressionJars() {
     jarElements[`${gender}-depression`] = { bar, label, scale };
   });
 }
-document.getElementById("calc-depression-risk").addEventListener("click", () => {
-  document.getElementById("depression-risk-bars").style.display = "flex";
+// document.getElementById("calc-depression-risk").addEventListener("click", () => {
+//   document.getElementById("depression-risk-bars").style.display = "flex";
+//   document.getElementById('stacked_container').style.display = 'block';
 
+//   setTimeout(() => {
+//     document.getElementById("depression-risk-bars").scrollIntoView({
+//       behavior: "smooth",
+//       block: "center"
+//     });
+//   }, 100);
+
+//   setupDepressionJars();
+//   const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
+
+
+//   // Track when both animations complete
+//   let animationsComplete = 0;
+//   const totalAnimations = 2; // male and female jars
+
+//   ["female", "male"].forEach(gender => {
+//     const { bar, label, scale } = jarElements[`${gender}-depression`];
+//     const target = risks[gender];
+
+//     bar.transition()
+//       .duration(1500)
+//       .attr("y", 250 - scale(target))
+//       .attr("height", scale(target))
+//       .on("end", () => {
+//         animationsComplete++;
+//         if (animationsComplete === totalAnimations) {
+//           // When both animations complete, show the stacked chart
+//           showStackedChart();
+//         }
+//       });
+
+//     let percent = 0;  
+//     const interval = setInterval(() => {
+//       if (percent >= target) {
+//         clearInterval(interval);
+//         label.text(`${target}%`);
+//       } else {
+//         percent++;
+//         label.text(`${percent}%`);
+//       }
+//     }, 1500 / Math.max(target, 1));
+//   });
+
+//   function showStackedChart() {
+//   // Show the stacked container
+//     document.getElementById('stacked_container').style.display = 'block';
+
+//     d3.tsv("data/heatmap.tsv").then(data => {
+//       createHeatmap(data);
+
+//     // Smooth scroll to the chart
+//     setTimeout(() => {
+//       document.getElementById('stacked_container').scrollIntoView({
+//         behavior: "smooth",
+//         block: "center"
+//       });
+//     }, 100);
+//   });
+
+
+
+
+
+//   // Create the heatmap visualization after the risk bars are shown
+//   // d3.tsv("data/heatmap.tsv").then(data => {
+//   //   createHeatmap(data);
+//   // });
+
+//   setTimeout(() => {
+//     const wrapper = document.getElementById("depression-followup-wrapper");
+//     if (wrapper) {
+//       wrapper.style.display = "block";
+//       setTimeout(() => {
+//         wrapper.style.opacity = 1;
+//       }, 50);
+//     }
+//   }, 1600);
+// } // <--- THIS IS WHERE THE FUNCTION ENDS
+
+document.getElementById("calc-depression-risk").addEventListener("click", () => {
+  // Hide the stacked container initially
+  document.getElementById('stacked_container').style.display = 'none';
+  
+  // Show the risk bars
+  document.getElementById("depression-risk-bars").style.display = "flex";
+  
+  // Scroll to the risk bars
   setTimeout(() => {
     document.getElementById("depression-risk-bars").scrollIntoView({
       behavior: "smooth",
@@ -1533,8 +1621,13 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
     });
   }, 100);
 
+  // Setup and animate the risk jars
   setupDepressionJars();
   const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
+
+  // Track when both animations complete
+  let animationsComplete = 0;
+  const totalAnimations = 2; // male and female jars
 
   ["female", "male"].forEach(gender => {
     const { bar, label, scale } = jarElements[`${gender}-depression`];
@@ -1543,7 +1636,14 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
     bar.transition()
       .duration(1500)
       .attr("y", 250 - scale(target))
-      .attr("height", scale(target));
+      .attr("height", scale(target))
+      .on("end", () => {
+        animationsComplete++;
+        if (animationsComplete === totalAnimations) {
+          // When both animations complete, show the stacked chart
+          showStackedChart();
+        }
+      });
 
     let percent = 0;
     const interval = setInterval(() => {
@@ -1555,16 +1655,38 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
         label.text(`${percent}%`);
       }
     }, 1500 / Math.max(target, 1));
+  }); // <-- This closes the forEach loop
+}); // <-- This closes the event listener
+
+function showStackedChart() {
+  // Show the stacked container
+  document.getElementById('stacked_container').style.display = 'block';
+  
+  // Create the heatmap visualization
+  d3.tsv("data/heatmap.tsv").then(data => {
+    createHeatmap(data);
+    
+    // Smooth scroll to the chart
+    setTimeout(() => {
+      document.getElementById('stacked_container').scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }, 100);
   });
 
+  // Show follow-up content if needed
   setTimeout(() => {
     const wrapper = document.getElementById("depression-followup-wrapper");
-    wrapper.style.display = "block";
-    setTimeout(() => {
-      wrapper.style.opacity = 1;
-    }, 50);
+    if (wrapper) {
+      wrapper.style.display = "block";
+      setTimeout(() => {
+        wrapper.style.opacity = 1;
+      }, 50);
+    }
   }, 1600);
-});
+}
 
 window.addEventListener('load', init);
 
+//window.addEventListener('load', init);
