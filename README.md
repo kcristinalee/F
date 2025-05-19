@@ -4,9 +4,8 @@
 
 **Team Members:** Isabel Flynn, Christina Lee, Kamyavalli Mopidevi
 
-## Project Description
-This visualization explores the connections between gender, mental health, substance use, and criminal justice involvement using the ICPSR 2004 dataset.  It follows the life journey of Bob and Karen to show how different factors effect your 
-risk of being arrested.  Then it explores general trends for this dataset. 
+## Project Description & Acknowledgement
+This visualization explores the connections between gender, mental health, substance use, and criminal justice involvement using the “Gender, Mental Illness, and Crime in the United States, 2004” dataset from ICPSR, based on the National Survey on Drug Use and Health (NSDUH). It follows the life journey of Bob and Karen to show how different factors effect your risk of being arrested.  Then it explores general trends for this dataset. 
 
 ## How to Run the Project
 This is a web-based project. You can run it by opening `index.html` in your browser, 
