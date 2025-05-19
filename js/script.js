@@ -784,7 +784,7 @@ function createHeatmap(data) {
     .attr("x", width / 2)
     .attr("y", height + margin.bottom - 10)
     .style("font-size", "14px")
-    .text("Number of Days that a person used this substance in the last 30 days");
+    .text("Number of Days That A Person Used This Substance In The Last 30 Days");
 
   g.append("text")
     .attr("text-anchor", "middle")
@@ -796,8 +796,6 @@ function createHeatmap(data) {
 
   const legend = svg.append("g")
     .attr("class", "legend")
-    //.attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
-    // .attr("transform", `translate(${width + margin.left - 180},${margin.top - 70})`); // Moved left by 180px
     .attr("transform", `translate(${width + margin.left + 20}, ${margin.top})`);
 
 
