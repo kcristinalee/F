@@ -2208,8 +2208,6 @@ function animateCigarettesJars() {
   });
 }
 
-
-
 fetch('alcoholPeople.json')
   .then(response => response.json())
   .then(data => {
