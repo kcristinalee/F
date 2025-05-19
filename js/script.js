@@ -197,7 +197,7 @@ function animateJars(risks) {
     const { bar, label, scale } = jarElements[gender];
 
     bar.transition()
-      .duration(1500)
+      .duration(600)
       .attr("y", 250 - scale(risks[gender]))
       .attr("height", scale(risks[gender]));
 
@@ -209,7 +209,7 @@ function animateJars(risks) {
         percent++;
         label.text(`${percent}%`);
       }
-    }, 1500 / risks[gender]);
+    }, 600 / risks[gender]);
   });
 }
 
@@ -234,17 +234,32 @@ function loadAndRender() {
     }, 800);
 
     setTimeout(() => {
+      document.getElementById("risk-bars").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }, 100);
+
+    setTimeout(() => {
       const followUp = document.getElementById("follow-up");
       const nextBtn = document.getElementById("next-button-wrapper");
+
       followUp.style.display = "block";
       nextBtn.style.display = "block";
+
+      followUp.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
       setTimeout(() => {
         followUp.style.transition = "opacity 2s ease-in-out";
         nextBtn.style.transition = "opacity 2s ease-in-out";
         followUp.style.opacity = 1;
         nextBtn.style.opacity = 1;
       }, 100);
-    }, 300);
+    }, 3100);
+
   });
 }
 
@@ -658,7 +673,6 @@ function calculateAlcoholRisk(data) {
   };
 }
 
-//Kamyavalli
 function createHeatmap(data) {
   const selectedColumn = d3.select("#dataSelect").property("value");
   const selectedGender = d3.select("#genderSelect").property("value");
@@ -685,7 +699,7 @@ function createHeatmap(data) {
     return "26–30";
   }
 
-  const depressionLevels = [1, 2, 3, 4, 5]; // 1 = most depressed
+  const depressionLevels = [1, 2, 3, 4, 5];
 
   const grouped = d3.rollups(
     cleaned,
@@ -716,7 +730,7 @@ function createHeatmap(data) {
   const stackedSeries = stack(areaData);
 
   const svg = d3.select("#stacked_area");
-  svg.selectAll("*").remove(); // Clear old content
+  svg.selectAll("*").remove();
 
   const margin = { top: 50, right: 30, bottom: 50, left: 50 },
     width = +svg.attr("width") - margin.left - margin.right,
@@ -736,7 +750,7 @@ function createHeatmap(data) {
 
   const color = d3.scaleOrdinal()
     .domain(depressionLevels.map(d => d.toString()))
-    .range(["#d73027", "#fc8d59", "#fee090", "#e0f3f8", "#91bfdb"]); // Red to blue, consistent
+    .range(["#d73027", "#fc8d59", "#fee090", "#e0f3f8", "#91bfdb"]);
 
   const area = d3.area()
     .x(d => x(d.data.bin))
@@ -1438,8 +1452,6 @@ function setupDepressionJars() {
     jarElements[`${gender}-depression`] = { bar, label, scale };
   });
 }
-
-
 document.getElementById("continue-to-depression").addEventListener("click", () => {
   document.getElementById("depression-scene").style.display = "block";
   document.getElementById("depression-img").style.display = "block";
@@ -1450,8 +1462,6 @@ document.getElementById("continue-to-depression").addEventListener("click", () =
     block: "center"
   });
 });
-
-
 
 function setupDepressionJars() {
   const container = document.getElementById("depression-risk-bars");
@@ -1523,97 +1533,10 @@ function setupDepressionJars() {
     jarElements[`${gender}-depression`] = { bar, label, scale };
   });
 }
-// document.getElementById("calc-depression-risk").addEventListener("click", () => {
-//   document.getElementById("depression-risk-bars").style.display = "flex";
-//   document.getElementById('stacked_container').style.display = 'block';
-
-//   setTimeout(() => {
-//     document.getElementById("depression-risk-bars").scrollIntoView({
-//       behavior: "smooth",
-//       block: "center"
-//     });
-//   }, 100);
-
-//   setupDepressionJars();
-//   const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
-
-
-//   // Track when both animations complete
-//   let animationsComplete = 0;
-//   const totalAnimations = 2; // male and female jars
-
-//   ["female", "male"].forEach(gender => {
-//     const { bar, label, scale } = jarElements[`${gender}-depression`];
-//     const target = risks[gender];
-
-//     bar.transition()
-//       .duration(1500)
-//       .attr("y", 250 - scale(target))
-//       .attr("height", scale(target))
-//       .on("end", () => {
-//         animationsComplete++;
-//         if (animationsComplete === totalAnimations) {
-//           // When both animations complete, show the stacked chart
-//           showStackedChart();
-//         }
-//       });
-
-//     let percent = 0;  
-//     const interval = setInterval(() => {
-//       if (percent >= target) {
-//         clearInterval(interval);
-//         label.text(`${target}%`);
-//       } else {
-//         percent++;
-//         label.text(`${percent}%`);
-//       }
-//     }, 1500 / Math.max(target, 1));
-//   });
-
-//   function showStackedChart() {
-//   // Show the stacked container
-//     document.getElementById('stacked_container').style.display = 'block';
-
-//     d3.tsv("data/heatmap.tsv").then(data => {
-//       createHeatmap(data);
-
-//     // Smooth scroll to the chart
-//     setTimeout(() => {
-//       document.getElementById('stacked_container').scrollIntoView({
-//         behavior: "smooth",
-//         block: "center"
-//       });
-//     }, 100);
-//   });
-
-
-
-
-
-//   // Create the heatmap visualization after the risk bars are shown
-//   // d3.tsv("data/heatmap.tsv").then(data => {
-//   //   createHeatmap(data);
-//   // });
-
-//   setTimeout(() => {
-//     const wrapper = document.getElementById("depression-followup-wrapper");
-//     if (wrapper) {
-//       wrapper.style.display = "block";
-//       setTimeout(() => {
-//         wrapper.style.opacity = 1;
-//       }, 50);
-//     }
-//   }, 1600);
-// } // <--- THIS IS WHERE THE FUNCTION ENDS
-
 document.getElementById("calc-depression-risk").addEventListener("click", () => {
-  // Hide the stacked container initially
   document.getElementById('stacked_container').style.display = 'none';
-
-  // Show the risk bars
   document.getElementById("depression-risk-bars").style.display = "flex";
 
-  // Scroll to the risk bars
   setTimeout(() => {
     document.getElementById("depression-risk-bars").scrollIntoView({
       behavior: "smooth",
@@ -1621,13 +1544,11 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
     });
   }, 100);
 
-  // Setup and animate the risk jars
   setupDepressionJars();
   const risks = calculateDepressionRisk(globalData, selectedDrugsForDepression);
 
-  // Track when both animations complete
   let animationsComplete = 0;
-  const totalAnimations = 2; // male and female jars
+  const totalAnimations = 2;
 
   ["female", "male"].forEach(gender => {
     const { bar, label, scale } = jarElements[`${gender}-depression`];
@@ -1639,24 +1560,24 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
       .attr("height", scale(target))
       .on("end", () => {
         animationsComplete++;
+
         if (animationsComplete === totalAnimations) {
-          
-          
-          // When both animations complete, show the stacked chart
-          //showStackedChart();
-
-
-          // Optional: fade in
           setTimeout(() => {
             const desc = document.getElementById("alcohol-chain-description");
             desc.style.display = "block";
-    desc.style.opacity = 1;
+            desc.style.opacity = 1;
 
-    const treeBtn = document.getElementById("tree-button-wrapper");
-  treeBtn.style.display = "block";
-  treeBtn.style.opacity = 1;
-            // postSection.style.opacity = 1;
-            // postSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            const treeBtn = document.getElementById("tree-button-wrapper");
+            treeBtn.style.display = "block";
+            treeBtn.style.opacity = 1;
+
+            const story = document.getElementById("end-of-story");
+            story.style.display = "block";
+            story.style.opacity = 0;
+            setTimeout(() => {
+              story.style.opacity = 1;
+              document.getElementById("end-of-story-continue-wrapper").style.display = "block";
+            }, 50);
           }, 50);
         }
 
@@ -1672,18 +1593,15 @@ document.getElementById("calc-depression-risk").addEventListener("click", () => 
         label.text(`${percent}%`);
       }
     }, 1500 / Math.max(target, 1));
-  }); // <-- This closes the forEach loop
-}); // <-- This closes the event listener
+  });
+});
 
 function showStackedChart() {
-  // Show the stacked container
   document.getElementById('stacked_container').style.display = 'block';
 
-  // Create the heatmap visualization
   d3.tsv("data/heatmap.tsv").then(data => {
     createHeatmap(data);
 
-    // Smooth scroll to the chart
     setTimeout(() => {
       document.getElementById('stacked_container').scrollIntoView({
         behavior: "smooth",
@@ -1692,7 +1610,6 @@ function showStackedChart() {
     }, 100);
   });
 
-  // Show follow-up content if needed
   setTimeout(() => {
     const wrapper = document.getElementById("depression-followup-wrapper");
     if (wrapper) {
@@ -1704,32 +1621,44 @@ function showStackedChart() {
   }, 1600);
 }
 
+document.getElementById("continue-to-chain").addEventListener("click", () => {
+  document.getElementById("end-of-story-continue-wrapper").style.display = "none";
+
+  const desc = document.getElementById("alcohol-chain-description");
+  const treeBtn = document.getElementById("tree-button-wrapper");
+
+  desc.style.display = "block";
+  setTimeout(() => {
+    desc.style.opacity = 1;
+    treeBtn.style.display = "block";
+    treeBtn.style.opacity = 1;
+    treeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 50);
+});
+
 document.getElementById("show-tree-graph").addEventListener("click", () => {
   document.getElementById("tree-button-wrapper").style.display = "none";
 
   const treeContainer = document.getElementById("tree-graph-container");
   treeContainer.style.display = "block";
 
-  // Optionally scroll into view
   setTimeout(() => {
     treeContainer.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 100);
 
-  // Draw tree if needed
   if (typeof setupTreeGraph === "function" && window.treeData) {
     setupTreeGraph(window.treeData);
   }
 
-  // ✅ Show the next paragraph after a short delay
   setTimeout(() => {
     const postTreeText = document.getElementById("post-tree-question");
     postTreeText.style.display = "block";
     postTreeText.style.opacity = 1;
 
     const iconButton = document.getElementById("icon-continue-wrapper");
-  iconButton.style.display = "block";
-  iconButton.style.opacity = 1;
-  }, 1000); // or 1800ms if you want to delay until after tree animation
+    iconButton.style.display = "block";
+    iconButton.style.opacity = 1;
+  }, 1000);
 });
 
 document.getElementById("continue-to-icons").addEventListener("click", () => {
@@ -1742,7 +1671,6 @@ document.getElementById("continue-to-icons").addEventListener("click", () => {
     iconSection.style.opacity = 1;
     iconSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // ✅ Show paragraph and continue button after icons are visible
     setTimeout(() => {
       const desc = document.getElementById("post-icon-description");
       desc.style.display = "block";
@@ -1765,15 +1693,6 @@ document.getElementById("continue-to-jars").addEventListener("click", () => {
     jarsSection.style.opacity = 1;
     jarsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // Optional: trigger jar setup/animation here
-    // setupJarsAlcohol2();
-    // animateAlcoholJars2();
-    // setupJarsTobacco2();
-    // animateTobaccoJars2();
-    // setupJarsCigarettes2();
-    // animateCigarettesJars2();
-
-    // ✅ After short delay, show the next continue button
     setTimeout(() => {
       const stackedBtn = document.getElementById("stacked-continue-wrapper");
       stackedBtn.style.display = "block";
@@ -1783,7 +1702,8 @@ document.getElementById("continue-to-jars").addEventListener("click", () => {
 });
 
 document.getElementById("continue-to-stacked").addEventListener("click", () => {
-  document.getElementById("stacked-continue-wrapper").style.display = "none";
+  document.getElementById("stacked_container").style.display = "block";
+  document.getElementById("continue-to-stacked").style.display = "none";
 
   const stacked = document.getElementById("stacked_container");
   stacked.style.display = "block";
@@ -1801,7 +1721,6 @@ const jarElementsTobacco = {};
 const jarElementsCigarettes = {};
 
 
-// This was calculated in prepare_likely.py
 const alcoholData = [
   { usage: "Yes", percentDepressed: 20.6 },
   { usage: "No", percentDepressed: 15.2 }
@@ -1935,8 +1854,8 @@ function setupTreeGraph({
     ]
   };
 
-  const width = 1400;
-  const height = 1000;
+  const width = 900;
+  const height = 600;
 
   const treeLayout = d3.tree().size([height, width - 300]);
   const root = d3.hierarchy(treeData);
@@ -1947,7 +1866,7 @@ function setupTreeGraph({
     .attr("width", width)
     .attr("height", height)
     .append("g")
-    .attr("transform", "translate(80,0)");
+    .attr("transform", "translate(40,0)")
 
   svg.selectAll("line")
     .data(root.links())
@@ -1967,18 +1886,18 @@ function setupTreeGraph({
     .attr("cy", d => d.x)
     .attr("r", 15)
     .attr("fill", d => {
-      if (d.data.name.includes("No")) return "green";
-      return "red";  
+      if (d.data.name.includes("No")) return "#6aa84f";
+      return "#d73027";
     });
 
   svg.selectAll("text")
     .data(root.descendants())
     .enter()
     .append("text")
-    .attr("x", d => d.y + 30)        
+    .attr("x", d => d.y + 30)
     .attr("y", d => d.x)
-    .attr("dy", "0.35em")            
-    .style("text-anchor", "start")   
+    .attr("dy", "0.35em")
+    .style("text-anchor", "start")
     .style("font-size", "20px")
     .text(d => d.data.name);
 
@@ -1987,10 +1906,10 @@ function setupTreeGraph({
 function setupJarsAlcohol() {
   const container = document.getElementById("alcohol-risk-bars2");
 
-  container.innerHTML = ""; 
+  container.innerHTML = "";
 
   alcoholData.forEach(d => {
-    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; // red for "Yes", green for "No"
+    const color = d.usage === "Yes" ? "#d73027" : "#6aa84f";
 
     const jarDiv = document.createElement("div");
     jarDiv.classList.add("jar-wrapper");
@@ -2090,11 +2009,10 @@ function animateAlcoholJars() {
 
 function setupJarsTobacco() {
   const container = document.getElementById("tobacco-risk-bars2");
-  container.innerHTML = ""; 
+  container.innerHTML = "";
 
   TobaccoData.forEach(d => {
-    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; 
-
+    const color = d.usage === "Yes" ? "#d73027" : "#6aa84f";
     const jarDiv = document.createElement("div");
     jarDiv.classList.add("jar-wrapper");
     jarDiv.style.display = "flex";
@@ -2196,7 +2114,7 @@ function setupJarsCigarettes() {
   container.innerHTML = "";
 
   CigarettesData.forEach(d => {
-    const color = d.usage === "Yes" ? "#e63946" : "#2a9d8f"; 
+    const color = d.usage === "Yes" ? "#d73027" : "#6aa84f";
 
     const jarDiv = document.createElement("div");
     jarDiv.classList.add("jar-wrapper");
@@ -2300,8 +2218,6 @@ fetch('alcoholPeople.json')
   .then(response => response.json())
   .then(data => {
     const container = document.getElementById('alcohol-icon-grid');
-
-    // Step 1: Count people by category (gender + consumed)
     const counts = {
       'Male-true': 0,
       'Male-false': 0,
@@ -2316,7 +2232,6 @@ fetch('alcoholPeople.json')
       }
     });
 
-    // Step 2: For each category, calculate how many icons to show (1 icon = 100 people)
     Object.entries(counts).forEach(([key, count]) => {
       const iconCount = Math.ceil(count / 100);
       const [gender, consumedStr] = key.split('-');
@@ -2327,13 +2242,26 @@ fetch('alcoholPeople.json')
         icon.classList.add('icon');
 
         if (gender === 'Male') {
-          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
-          icon.textContent = consumed ? '♂️' : '♂';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'steelblue' : 'lightgray'}" 
+                 class="bi bi-gender-male" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 
+                0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
+                8 4 4 0 0 0 0-8"/>
+            </svg>
+          `;
         } else if (gender === 'Female') {
-          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
-          icon.textContent = consumed ? '♀️' : '♀';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'hotpink' : 'lightgray'}" 
+                 class="bi bi-gender-female" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
+                1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 
+                0-1h2V9.975A5 5 0 0 1 3 5"/>
+            </svg>
+          `;
         }
-
         const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
         icon.title = `${peopleRepresented} ${gender}s who ${consumed ? 'consumed' : "didn't consume"}`;
 
@@ -2346,8 +2274,6 @@ fetch('tobaccoPeople.json')
   .then(response => response.json())
   .then(data => {
     const container = document.getElementById('tobacco-icon-grid');
-
-    // Step 1: Count people by category (gender + consumed)
     const counts = {
       'Male-true': 0,
       'Male-false': 0,
@@ -2362,7 +2288,6 @@ fetch('tobaccoPeople.json')
       }
     });
 
-    // Step 2: For each category, calculate how many icons to show (1 icon = 100 people)
     Object.entries(counts).forEach(([key, count]) => {
       const iconCount = Math.ceil(count / 100);
       const [gender, consumedStr] = key.split('-');
@@ -2373,11 +2298,25 @@ fetch('tobaccoPeople.json')
         icon.classList.add('icon');
 
         if (gender === 'Male') {
-          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
-          icon.textContent = consumed ? '♂️' : '♂';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'steelblue' : 'lightgray'}" 
+                 class="bi bi-gender-male" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 
+                0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
+                8 4 4 0 0 0 0-8"/>
+            </svg>
+          `;
         } else if (gender === 'Female') {
-          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
-          icon.textContent = consumed ? '♀️' : '♀';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'hotpink' : 'lightgray'}" 
+                 class="bi bi-gender-female" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
+                1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 
+                0-1h2V9.975A5 5 0 0 1 3 5"/>
+            </svg>
+          `;
         }
 
         const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;
@@ -2391,7 +2330,7 @@ fetch('tobaccoPeople.json')
 fetch('cigPeople.json')
   .then(response => response.json())
   .then(data => {
-    const container = document.getElementById('cigarette-icon-grid'); 
+    const container = document.getElementById('cigarette-icon-grid');
 
     const counts = {
       'Male-true': 0,
@@ -2416,13 +2355,26 @@ fetch('cigPeople.json')
         const icon = document.createElement('div');
         icon.classList.add('icon');
 
-        // Set color and icon text
         if (gender === 'Male') {
-          icon.classList.add(consumed ? 'male-blue' : 'male-gray');
-          icon.textContent = consumed ? '♂️' : '♂';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'steelblue' : 'lightgray'}" 
+                 class="bi bi-gender-male" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 
+                0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 
+                8 4 4 0 0 0 0-8"/>
+            </svg>
+          `;
         } else if (gender === 'Female') {
-          icon.classList.add(consumed ? 'female-pink' : 'female-gray');
-          icon.textContent = consumed ? '♀️' : '♀';
+          icon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.5rem" height="2.5rem" 
+                 fill="${consumed ? 'hotpink' : 'lightgray'}" 
+                 class="bi bi-gender-female" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 
+                1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 
+                0-1h2V9.975A5 5 0 0 1 3 5"/>
+            </svg>
+          `;
         }
 
         const peopleRepresented = (i === iconCount - 1) ? count - (100 * i) : 100;

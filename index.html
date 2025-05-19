@@ -79,7 +79,7 @@
       </div>
     </div>
   </div>
-  <div style="text-align: center; padding-top: 3rem;">
+  <div style="text-align: center; padding-top: 1rem;">
     <button id="calc-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
   </div>
   <br>
@@ -124,7 +124,7 @@
       style="width: 100%; max-width: 800px; margin: 2rem auto;" />
 
     <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Not long after, Karen and Bob each tried smoking a cigarette — just once. Another small act… but would it have
+      Not long after, Karen and Bob each tried smoking a cigarette — just once. Another small act… but will it have
       consequences?
     </p>
     <div id="cigarette-button-container" style="display: none; text-align: center; padding-top: 3rem;">
@@ -157,7 +157,7 @@
   <div id="alcohol-followup-wrapper"
     style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
     <p id="alcohol-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Just one drink nudged their risk even higher — and they haven’t even touched the harder stuff yet.
+      Just one drink nudged their risk a little higher — and they haven’t even touched the harder stuff yet.
     </p>
     <button id="continue-to-marijuana" class="btn btn-primary btn-lg">Continue</button>
   </div>
@@ -199,9 +199,6 @@
       <label><input type="checkbox" value="MTHFLAG"> Meth</label><br>
     </form>
 
-
-
-
     <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
     <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
 
@@ -223,10 +220,6 @@
 
     <div id="depression-followup-wrapper"
       style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-      <!-- <p id="depression-followup"
-        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-        Their depression has dropped their risk of arrest considerably.
-      </p> -->
     </div>
 
     <div id="depression-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
@@ -234,12 +227,17 @@
       <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
     </div>
 
+    <p id="end-of-story" style="display: none; max-width: 1000px; margin: 2rem auto; padding: 1rem; font-size: 25px; line-height: 2; text-align: center;">
+      Karen and Bob’s story shows how a few small choices can quietly compound over time, increasing both arrest risk and mental health struggles. But their path isn't unique — many others take similar steps. Let’s now zoom out and explore the bigger picture: what patterns do we see in substance use across the population, and how do these choices typically unfold?
+    </p>
+    <div id="end-of-story-continue-wrapper" style="display: none; text-align: center; margin-top: 2rem;">
+      <button id="continue-to-chain" class="btn btn-primary btn-lg">Continue</button>
+    </div>
     <p id="alcohol-chain-description" class="description"
       style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Taking one sip of alcohol leads to chewing tobacco which leads to smoking a cigar.
-      Let's see how likely one is to engage in each subsequent behavior given the first.
+      Substances like alcohol, tobacco, and cigarettes are often interconnected — trying one can increase the likelihood of trying another. 
+      Let’s explore how often these behaviors overlap and what patterns tend to emerge.
     </p>
-
 
     <div id="tree-button-wrapper"
       style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; padding-top: 1rem;">
@@ -249,20 +247,15 @@
     <div id="tree-graph-container" style="display: none;"></div>
 
 
-
-
     <p id="post-tree-question" class="description"
       style="display: none; opacity: 0; transition: opacity 2s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      You might be wondering: sure, alcohol, tobacco, and cigarettes are linked to a higher risk of
-      depression, but how many people actually use them?
+      Now let’s take a closer look at how common alcohol, tobacco, and cigarette use really is across the population.
     </p>
 
     <div id="icon-continue-wrapper"
       style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; padding-top: 2rem;">
       <button id="continue-to-icons" class="btn btn-primary btn-lg">Continue</button>
     </div>
-
-
 
     <div id="icon-grid-section" style="display: none; opacity: 0; transition: opacity 1s ease;">
       <div class="icon-row">
@@ -284,7 +277,7 @@
 
     <p id="post-icon-description" class="description"
       style="display: none; opacity: 0; transition: opacity 1s ease; max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Now out of all these individuals who have consumed, take a look at their likelihood of being depressed.
+      Now, among all the individuals who have used these substances, let’s take a look at how likely they are to experience depression.
     </p>
 
     <div id="jars-continue-wrapper"
@@ -304,34 +297,13 @@
 
     <div id="stacked-continue-wrapper"
       style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; padding-top: 2rem;">
+      <p id="stacked_chart" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+        Finally, let’s see how depression levels shift based on how often people use different substances.
+      </p>
       <button id="continue-to-stacked" class="btn btn-primary btn-lg">Continue</button>
     </div>
 
     <div id="stacked_container" style="display: none; margin-top: 2rem;">
-      <p id="stacked_chart" style="text-align: center; font-size:32px">Stacked Area Chart</p>
-      <p id="stacked_chart" style="margin-left: 12px; font-size: 19px;">This visualization helps us see <b>how
-          depression level shifts </b>as substance
-        use increases, and <b>how those pattern differ between men and women.</b></p>
-      <p id="stacked_chart" style="margin-left: 12px;font-size: 19px;">Each <b>"stacked layer" (colored band)</b> shows
-        the percentage of people in that usage bin who fall into that <b>depression level.</b></p>
-      <pre id="stacked_chart" style="font-family: Arial; font-size: 19px;">
-        Number of days: 21-25, 
-        Stacked Area Color Ranges:
-
-          Blue (Not depressed): from 0% to 20% → 20% of people felt no depression.
-
-          Light Blue (A little of the time): from 20% to 58% → 38% felt a little depressed.
-
-          Yellow (Some of the time): from 58% to 82% → 24% felt moderately depressed.
-
-          Orange (Most of the time): from 82% to 95% → 13% felt often depressed.
-
-          Red (All of the time): from 95% to 100% → 5% were severely depressed.
-
-          This tells you that as alcohol use increases, fewer people report being mentally well (blue area shrinks), 
-          and more people report feeling depressed (yellow, orange, and red areas grow). It’s 
-          a strong visual cue that higher alcohol use is correlated with more depression symptoms.
-      </pre>
       <div style="margin-bottom: 1rem; margin-left:3rem; font-size: 19px;">
         <label for="dataSelect">Select Substance:</label>
         <select id="dataSelect">
@@ -353,13 +325,6 @@
 
       <svg id="stacked_area" width="1200" height="500"></svg>
     </div>
-
-
-
-
-
-
-
 
 </body>
 <script src="js/script.js"></script>
