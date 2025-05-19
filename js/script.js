@@ -732,9 +732,13 @@ function createHeatmap(data) {
   const svg = d3.select("#stacked_area");
   svg.selectAll("*").remove();
 
-  const margin = { top: 50, right: 30, bottom: 50, left: 50 },
+  const margin = { top: 50, right: 200, bottom: 50, left: 50 };
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom;
+
+    //const width = 1400 - margin.left - margin.right; // Increased from 1200
+    //const height = 500 - margin.top - margin.bottom;
+
 
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -792,21 +796,24 @@ function createHeatmap(data) {
 
   const legend = svg.append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
+    //.attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
+   // .attr("transform", `translate(${width + margin.left - 180},${margin.top - 70})`); // Moved left by 180px
+   .attr("transform", `translate(${width + margin.left + 20}, ${margin.top})`);
+
 
   const depressionDescriptions = {
-    1: "Depressed all of the time",
-    2: "Depressed most of the time",
-    3: "Depressed some of the time",
-    4: "Depressed a little of the time",
-    5: "Depressed none of the time"
+    1: "Always depressed",
+    2: "Mostly depressed",
+    3: "Sometimes depressed",
+    4: "Rarely depressed",
+    5: "Not depressed"
   };
 
   depressionLevels.forEach((level, i) => {
     legend.append("rect")
       .attr("x", 0)
       .attr("y", i * 20)
-      .attr("width", 12)
+      .attr("width", 10)
       .attr("height", 12)
       .attr("fill", color(level.toString()));
 
