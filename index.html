@@ -24,7 +24,6 @@
         <path
           d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z" />
       </svg>
-      <!-- <div class="path-line"></div> -->
     </div>
 
     <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding-top: 5rem;">
@@ -155,359 +154,83 @@
   </div>
 
   <div id="alcohol-followup-wrapper"
-  style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-  <p id="alcohol-followup"
-    style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-    Just one drink nudged their risk even higher — and they haven’t even touched the harder stuff yet.
-  </p>
-  <button id="continue-to-marijuana" class="btn btn-primary btn-lg">Continue</button>
-</div>
-
-<div id="marijuana-scene" style="display: none; text-align: center; margin-top: 2rem;">
-  <img id="marijuana-image" src="images/weed-img.jpg" alt="Marijuana Leaf"
-    style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
-
-  <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-    Next, they tried marijuana — just once at a concert. Let’s see how that decision affected their risk.
-  </p>
-
-  <div id="marijuana-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-
-  <div id="marijuana-button-container" style="display: none; text-align: center; padding-top: 3rem;">
-    <button id="calc-marijuana-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+    <p id="alcohol-followup" style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      Just one drink nudged their risk even higher — and they haven’t even touched the harder stuff yet.
+    </p>
+    <button id="continue-to-marijuana" class="btn btn-primary btn-lg">Continue</button>
   </div>
-</div>
-<div id="marijuana-followup-wrapper"
-  style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-  <p id="marijuana-followup"
-    style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-    With each choice stacking on top of the last, Karen and Bob’s arrest risk continues to rise.
-  </p>
-  <button id="continue-to-harddrugs" class="btn btn-primary btn-lg">Continue</button>
-</div>
 
-<div id="drug-scene" style="display: none; text-align: center;">
-  <p>Select any hard drugs Karen and Bob try:</p>
-  <form id="drug-form">
-    <label><input type="checkbox" value="COCEVER"> Cocaine</label><br>
-    <label><input type="checkbox" value="CRKEVER"> Crack</label><br>
-    <label><input type="checkbox" value="HEREVER"> Heroin</label><br>
-    <label><input type="checkbox" value="ECSTASY"> Ecstasy</label><br>
-    <label><input type="checkbox" value="LSD"> LSD</label><br>
-    <label><input type="checkbox" value="MTHFLAG"> Meth</label><br>
-  </form>
-  <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+  <div id="marijuana-scene" style="display: none; text-align: center; margin-top: 2rem;">
+    <img id="marijuana-image" src="images/weed-img.jpg" alt="Marijuana Leaf"
+      style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
 
-  <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-  <div id="drug-followup-wrapper" style="display: none; opacity: 0; padding-top: 2rem;">
-    <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 25px; line-height: 2;"></p>
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      Next, they tried marijuana — just once at a concert. Let’s see how that decision affected their risk.
+    </p>
+
+    <div id="marijuana-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+
+    <div id="marijuana-button-container" style="display: none; text-align: center; padding-top: 3rem;">
+      <button id="calc-marijuana-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+    </div>
   </div>
-</div>
+  <div id="marijuana-followup-wrapper"
+    style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+    <p id="marijuana-followup"
+      style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      With each choice stacking on top of the last, Karen and Bob’s arrest risk continues to rise.
+    </p>
+    <button id="continue-to-harddrugs" class="btn btn-primary btn-lg">Continue</button>
+  </div>
+
+  <div id="drug-scene" style="display: none; text-align: center;">
+    <img id="hard-drugs-img" src="images/drug-abuse.webp" alt="drugs"
+      style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
+
+    <p>Select any hard drugs Karen and Bob try:</p>
+    <form id="drug-form">
+      <label><input type="checkbox" value="COCEVER"> Cocaine</label><br>
+      <label><input type="checkbox" value="CRKEVER"> Crack</label><br>
+      <label><input type="checkbox" value="HEREVER"> Heroin</label><br>
+      <label><input type="checkbox" value="ECSTASY"> Ecstasy</label><br>
+      <label><input type="checkbox" value="LSD"> LSD</label><br>
+      <label><input type="checkbox" value="MTHFLAG"> Meth</label><br>
+    </form>
 
 
+    <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+    <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+
+    <div id="drug-followup-wrapper" style="display: none; opacity: 0; padding-top: 2rem; padding-bottom: 1rem;">
+      <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 25px; line-height: 2;"></p>
+      <div style="text-align: center; padding-top: 2rem;">
+        <button id="continue-to-depression" class="btn btn-primary btn-lg">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="depression-scene" style="display: none; text-align: center; margin-top: 2rem;">
+    <img id="depression-img" src="images/depression.jpg" alt="Depression"
+      style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
+
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      Karen and Bob find themselves falling into severe depression.
+    </p>
+
+    <div id="depression-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+    <div id="depression-button-container" style="display: none; text-align: center; padding-top: 3rem;">
+      <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+    </div>
+
+    <div id="depression-followup-wrapper"
+      style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+      <p id="depression-followup"
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+        Their depression has dropped their risk of arrest considerably.
+      </p>
+    </div>
 </body>
 <script src="js/script.js"></script>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-<p id="article-format">Understanding the intricate interplay between gender, mental illness, substance use, and criminal
-  behavior is
-  essential to addressing broader issues of public health and social justice. Our project aims to visualize these
-  relationships using the "Gender, Mental Illness, and Crime in the United States, 2004" dataset from ICPSR, which draws
-  from the extensive National Survey on Drug Use and Health (NSDUH). With over 55,000 participants and thousands of
-  variables, this dataset offers a unique opportunity to uncover patterns in how mental health conditions and substance
-  use differ across genders and correlate with criminal behavior, including arrests and charges. Through targeted
-  visualizations, we seek to illuminate how these complex factors intersect, ultimately shedding light on systemic
-  disparities and informing data-driven discussions around criminal justice and public health policy.</p>
-
-<h4><em>Exploratory Data Analysis</em></h4>
-<p id="article-format">
-  We performed an exploratory data analysis because not only is the data set extremely big, it is essential to clean and
-  preprocess the dataset to ensure accuracy and consistency in the visualization. Many of the original values in the
-  dataset used special codes such as 91 (indicating "0 days") and 93–99 (representing various forms of missing or
-  invalid data), which needed to be recoded or filtered out. For example, values like 91 were converted to 0, while 93
-  and above were treated as null to avoid skewing the analysis. This cleaning process helped reduce noise in the data
-  and allowed for meaningful comparisons across different demographic and behavioral segments. By transforming raw
-  survey responses into a structured format, the analysis became more robust and insights into patterns of depression in
-  relation to substance use and arrests became more apparent.
-
-</p>
-<br>
-<br><br>
-<h1 class="spiral-title">Exploring Gender Differences in Alcohol and Marijuana Use</h1>
-<p id="article-format">We wanted to explore the relationship between gender and marijuana and alcohol use to identify
-  behavioral patterns before diving into how substance use might correlate with criminal justice involvement. This
-  graph visualizes the number of days people reported using alcohol or marijuana in the past 30 days, split by gender.
-  We excluded responses where the number of days was zero in order to focus specifically on individuals who do use
-  these substances.
-  <br><br>The graph displays the number of days individuals reported using alcohol or marijuana within a 30-day
-  period, separated by gender. We chose a spiral format to make differences in frequency visually intuitive, and to
-  make patterns like occasional versus daily use stand out clearly. To support deeper exploration, we added tooltips
-  that appear when hovering over each section. These show the exact number of respondents for a given substance,
-  gender, and usage level, offering more detailed insight beyond what’s visible at a glance.
-</p>
-<br>
-
-<div class="spiral-legend-wrapper">
-  <div class="spiral-legend">
-    <span class="legend-entry">
-      <span class="legend-color male"></span>
-      Male
-    </span>
-    <span class="legend-entry">
-      <span class="legend-color female"></span>
-      Female
-    </span>
-  </div>
-</div>
-<div class="spiral-wrapper">
-  <div class="spiral-section">
-    <h2>Alcohol</h2>
-    <div id="spiral-alcohol"></div>
-    <div id="spiral-alcohol-controls" class="spiral-controls">
-      <button onclick="toggleStats('alcohol')">Show Stats</button>
-      <div id="alcohol-stats" class="spiral-stats hidden"></div>
-    </div>
-  </div>
-
-  <div class="spiral-section">
-    <h2>Marijuana</h2>
-    <div id="spiral-mj"></div>
-    <div id="spiral-mj-controls" class="spiral-controls">
-      <button onclick="toggleStats('mj')">Show Stats</button>
-      <div id="mj-stats" class="spiral-stats hidden"></div>
-    </div>
-  </div>
-</div>
-<h4>Key Findings</h4>
-<p id="article-format">
-  As you hover over the graph, you’ll notice that the most common number of drinking days for women is 1,
-  while for men it’s 2 days, double the amount for women. This gap is small but meaningful. On average, men reported
-  drinking 8.4 days per month, while women reported 5.6 days, showing a clear difference in regularity between
-  genders.
-  <br><br>For marijuana, a much different pattern emerges. Among men, the most common response is 30 days, suggesting
-  daily use and potential dependency. In contrast, women are most likely to report just 1 day of use, similar to the
-  trend seen with alcohol. However, the average number of days men used marijuana was 14.2, compared to 11.0 for
-  women, which is higher than their respective alcohol averages. This suggests that among those who use marijuana, it
-  is often used more intensely than alcohol, particularly by men.
-  <br><br>Even though marijuana users report higher average usage, alcohol still appears to be more socially
-  normalized across the broader population. Looking at how many people actually consumed each substance in the past 30
-  days highlights this clearly: 6,837 men and 6,217 women reported drinking alcohol, while only 2,624 men and 1,825
-  women reported using marijuana. So while marijuana users may use it more frequently, alcohol is used by far more
-  people overall. This suggests that marijuana may still carry social stigma, despite its legalization in many states.
-  It’s also possible that marijuana use is underreported more than alcohol, due to lingering legal or cultural
-  concerns. The spiral graphs help visualize not only the frequency of use, but also how patterns differ by gender and
-  by substance.
-</p>
-
-
-<br><br><br><br>
-
-<h1>Depression Analysis</h1>
-<p id="article-format">
-  This bar graph illustrates the relationship between adults' overall severity of major depressive episode (MDE)
-  interference in daily life ASDSOVRL and the average number of times they were arrested and booked in the past 12
-  months (NOBOOKY2).
-  The x-axis categorizes individuals by their reported depression interference levels, ranging from 1 (no
-  interference)
-  to 5 (severe interference), while the y-axis shows the corresponding average number of arrests.
-</p>
-<div class="d-flex justify-content-center mb-5">
-  <div id="scatter-plot"></div>
-</div>
-<h4>Key Findings</h4>
-<p id="article-format">
-  From the graph, we observe that individuals with minimal or no depression interference (level 1)
-  reported the highest average number of arrests. Interestingly, as the severity of depression interference increases,
-  the average number of arrests decreases, with the lowest arrest rate seen at the highest interference level (level
-  5).
-
-  <br><br>This trend suggests that individuals experiencing more severe mental health challenges may have less
-  involvement with the criminal justice system, possibly due to reduced mobility, support from health services, or
-  other social factors that limit engagement in arrest-related behavior.
-
-  <br><br>This data highlights a counterintuitive but important insight: less visible mental
-  health struggles might coincide with more externalized behaviors like arrest, while those facing more
-  intense internal struggles may be more withdrawn or supervised.
-</p>
-
-<br><br><br>
-
-
-  <h1>Arrests vs Consumed Alcohol (Depression Frequency)</h1>
-  <p id="article-format">We wanted to see the correlation between depression frequency and various behavioral and social
-    factors, such as
-    substance use, work absenteeism, and criminal justice involvement, with a focus on gender differences.
-    We decided to implement a heatmap for this data visualization because it effectively displays the relationship
-    between the three variables at once. We created two side-by-side heatmaps (one for males and one for females) to
-    explore these relationships. The y-axis of each heatmap represents the number of times an individual was arrested
-    and booked in the past 12 months, while the x-axis (selectable via dropdown) allows users to examine different
-    variables: number of days alcohol was consumed, chewing tobacco was used, marijuana was consumed, or work was missed
-    within the past 30 days. The values on the x-axis were grouped into ranges to simplify the visualization and enhance
-    interpretability. The color of each cell indicates the average depression frequency for individuals in that group,
-    where blue reflects lower depression frequency and red reflects higher depression frequency. This visualization is
-    important because it helps uncover patterns in mental health outcomes across gender and behavioral dimensions,
-    allowing researchers and policymakers to identify high-risk populations and inform targeted interventions.
-    <br><br>
-
-  <div style="text-align: center; margin-top: 20px;">
-    <label for="dropdownId" style="font-size: 18px; margin-right: 8px;">X-Axis:</label>
-    <select id="dropdownId" style="font-size: 16px; padding: 4px 8px;">
-      <option value="alcoholDays">Alcohol Days</option>
-      <option value="chewDays">Chew Days</option>
-      <option value="marijuanaDays">Marijuana Days</option>
-      <option value="workDaysMissed">Work Days Missed</option>
-    </select>
-  </div>
-
-  <div class="chart-row">
-    <div>
-      <h4>Male</h4>
-      <div id="male-heatmap" class="donut-chart"></div>
-    </div>
-    <div>
-      <h4>Female</h4>
-      <div id="female-heatmap" class="donut-chart"></div>
-    </div>
-  </div>
-  <h4>Key Findings</h4>
-
-  <p id="article-format">From looking at our heatmaps, we noticed a trend that through all the variables (alcohol,
-    tobacco, marijuana, and
-    work days missed), the color scheme in the Depression Frequency seemed to be more shades of red in the bottom left
-    corner and blue in the top right corner. This means that people were more likely to be depressed even if they did
-    not consume any alcohol, tobacco, marijuana, or didn’t miss any days of work in the past 30 days, and that this
-    causation of depression is more likely due to being arrested in the past 12 months.
-  </p>
-  </p>
-
-
-  <br><br><br>
-
-
-
-
-  <div id="tooltip100"
-    style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 5px; border-radius: 5px;">
-  </div>
-
-  <div id="tooltip1"
-    style="position: absolute; opacity: 0; background: #fff; padding: 8px; border: 1px solid #ccc; border-radius: 4px; pointer-events: none; font-size: 12px;">
-  </div>
-  <br><br>
-  <h1>Impact of Substance Use on Probation, Parole, and Arrest Rates</h1>
-  <p id="article-format">
-    This bar graph animates through different harder drugs to show the relationship between reported use and involvement
-    in the criminal justice system. For each drug, it compares the percentage of people who said they have ever used it
-    to those who have not, highlighting how many in each group have been arrested, placed on probation, or parole.
-    <br><br>To help focus attention on one substance at a time, the graph shows two bars per drug (one for users and one
-    for non-users) rather than displaying all six substances side-by-side at once. This allows viewers to see the stark
-    contrast within each pair without getting overwhelmed by visual clutter. The y-axis represents the percentage of
-    justice-involved individuals (either been arrested, placed on probation, or parole) with the axis going up to 100%,
-    while the x-axis simply distinguishes between “Used” and “Never Used.” The animation cycles through each substance
-    automatically every few seconds, with the corresponding drug name displayed clearly at the top, reinforcing which
-    substance is being analyzed.
-    <br>
-    <br>
-  </p>
-  <div id="vis-moving" class="text-center"></div>
-  <div id="tooltip"></div>
-
-  <h4>Key Findings</h4>
-  <p id="article-format">
-    Across all six substances (PCP, Ecstasy, Heroin, Cocaine, Crack, and LSD), the same pattern emerges:
-    individuals who reported using the substance at least once were significantly more likely to have had criminal
-    justice involvement.
-    <br><br>For example, only 15.0% of those who never used PCP had been arrested, on probation, or parole, compared to
-    54.2% of users. The same disparity appears with heroin (15.3% vs. 62.1%), crack (14.4% vs. 62.7%), and cocaine
-    (11.7% vs. 46.1%). Even for drugs that are sometimes perceived as less "serious," like LSD and ecstasy, the
-    differences are still stark: LSD users were nearly four times as likely (48.8%) to have justice involvement than
-    non-users (12.7%), and ecstasy users showed a 43.2% rate compared to just 13.9% among non-users.
-    <br><br>This visualization helps illustrate that the strongest predictor of justice involvement among these groups
-    isn’t necessarily which drug was used, but whether any of them were used at all. While this doesn’t imply direct
-    causation, it points to how drug use often overlaps with other life circumstances that increase the likelihood of
-    interacting with the justice system.
-  </p>
-
-<br><br><br>
-  <h1 class="donut-title">Criminal Behavior and Gender</h1>
-  <p id="article-format">
-    To explore potential behavioral differences by gender, we created donut charts that visualize the proportion of
-    people
-    who engaged in certain criminal activities within the past year, including theft, drug dealing, physical assault,
-    and
-    receiving treatment in jail. These charts allow for side-by-side comparison of male and female responses,
-    highlighting
-    gender disparities in criminal behavior.
-  </p>
-
-  <div class="chart-row">
-    <div>
-      <h4>Male</h4>
-      <div id="male-smoked" class="donut-chart"></div>
-    </div>
-    <div>
-      <h4>Female</h4>
-      <div id="female-smoked" class="donut-chart"></div>
-    </div>
-  </div>
-  <br><br><br>
-
-  <h1>Male vs Female Arrests</h1>
-  <p id="article-format">
-    The graph displays the distribution of arrests by gender—male and female—across
-    three categories: all arrests, violent crimes (such as aggravated assault), and drug-related crimes.
-    It visualizes the proportion of males and females who were arrested within each crime category,
-    making it easier to compare gender differences in arrest patterns.
-  </p>
-  <div class="d-flex justify-content-center mb-5">
-    <div id="graph-about-arrest"></div>
-  </div>
-  <h4>Key Findings</h4>
-  <p id="article-format">
-    From the graph, we observe that males consistently account for a higher percentage of arrests
-    in all three categories. Specifically, males represent 69.1% of total arrests and drug-related arrests,
-    while females make up 30.9% in both. In violent crimes, males still lead at 65.8%,
-    but females show a relatively higher share at 34.2% compared to the other categories.
-
-    <br><br>The trend shows a consistent gender disparity in arrest rates, with males being
-    arrested more often than females across all crime types. However, the data highlights a
-    noteworthy point: while males dominate in all categories, the gender gap is narrower in violent crimes.
-    This indicates that, proportionally, females are more represented in violent crime arrests than in drug-related or
-    overall arrests. It suggests possible differences in the types of offenses
-    committed by each gender or variations in how different crimes are policed and recorded.
-  </p>
- -->
-<!-- <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="25rem" height="25rem" fill="hotpink" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
-    <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
-  </svg>
-
-  <svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-  </svg>
-  <svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-  </svg>
-  <svg xmlns="http://www.w3.org/2000/svg" width="25rem" height="25rem" fill="blue" class="bi bi-person-standing" viewBox="0 0 16 16">
-    <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0"/>
-  </svg>
-</div> -->

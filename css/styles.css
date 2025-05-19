@@ -1,6 +1,4 @@
-html {
-  background-color: #e5e1e1fb;
-}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -23,112 +21,6 @@ h1, h2, h3, h4 {
   font-weight: bold;
   margin-top: 0rem;
 }
-/* 
-#tooltip {
-  position: absolute;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 5px 8px;
-  font-size: 12px;
-  border-radius: 5px;
-  pointer-events: none;
-  display: none;
-  color: black;
-}
-
-#alcohol-stats {
-  display: none;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-#mj-stats {
-  display: none;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.spiral-title {
-  text-align: center;
-  margin: 2rem 0;
-}
-
-.spiral-section {
-  text-align: center;
-  max-width: 400px;
-}
-
-.spiral-controls {
-  margin-top: -60px;
-}
-
-.spiral-controls button {
-  padding: 2px 8px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 0.3rem;
-  border-color: gray;
-}
-
-.spiral-stats {
-  font-size: 14px;
-  margin-top: 5px;
-  text-align: center;
-}
-
-.hidden {
-  display: none;
-}
-
-.spiral-section svg {
-  display: block;
-  margin: 0 auto;
-}
-
-.spiral-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 10rem;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-  align-items: flex-start;
-}
-
-.spiral-legend-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  order: 1;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.spiral-legend {
-  font-size: 14px;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-
-.legend-entry {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.legend-color {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #ccc;
-}
-
-.legend-color.male {
-  background-color: steelblue;
-}
-
-.legend-color.female {
-  background-color: palevioletred;
-} */
 
 #article-format {
   max-width: 1000px;
@@ -145,93 +37,16 @@ h1, h2, h3, h4 {
   font-size: 25px;
   line-height: 2;
 }
-/* 
-#graph-about-arrest{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-size: 16px;
-  line-height: 2;
-
-}
-
-
-#histogram-about-depressedWorstMonth-vs-reportedDepression{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-size: 16px;
-  line-height: 2;
-}
-
-.donut-wrapper {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;        
-}
-
-.donut-section {
-  width: 48%;
-  text-align: center;
-} */
 
 h3 {
-  margin-bottom: 10px; /* Adds space between the title and chart */
+  margin-bottom: 10px;
 }
 
 #authors {
   text-align: center;
   font-style: italic;
 }
-/* 
-#tooltip100 {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  pointer-events: none;
-  visibility: hidden;
-  z-index: 10;
-}
 
-.chart-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.donut-chart {
-  margin: 0 20px;
-}
-
-.tooltip {
-  position: absolute;
-  text-align: center;
-  padding: 6px;
-  font-size: 12px;
-  background: lightsteelblue;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.figure-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.path-line {
-  width: 4px;
-  height: 10rem;
-  background-color: black;
-  margin-top: 0rem;
-}
-*/
 #risk-bars {
   margin-left: 37.75rem;
   display: block;
@@ -327,5 +142,21 @@ h3 {
 }
 
 .jar-wrapper div {
-  margin-top: 1rem; /* Give breathing room to the icon */
+  margin-top: 1rem;
+}
+
+#drug-scene{
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 24px;
+  line-height: 2;
+}
+
+#drug-form {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 23px;
+  line-height: 1.5;
 }
