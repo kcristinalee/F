@@ -348,6 +348,11 @@ function showTobaccoResult(risks, message) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  d3.tsv("data/heatmap.tsv").then(data => {
+        console.log("Heat map data loaded:", data);
+        createHeatmap(data);
+    });
+
   document.getElementById("calc-risk")?.addEventListener("click", loadAndRender);
 
   document.getElementById("start-life-btn")?.addEventListener("click", () => {
@@ -652,6 +657,182 @@ function calculateAlcoholRisk(data) {
     male: Math.round(maleRisk)
   };
 }
+
+//Kamyavalli
+function createHeatmap(data) {
+  const selectedColumn = d3.select("#dataSelect").property("value");
+  const selectedGender = d3.select("#genderSelect").property("value");
+
+  const cleaned = data.filter(d => {
+    const use = +d[selectedColumn];
+    const dep = +d.DSTDEPRS;
+    const gender = d.GENDER_R;
+
+    const validUse =
+      ((use >= 0 && use <= 30) || use === 91 || use === 93);
+    const validDep = dep >= 1 && dep <= 5;
+
+    return validUse && validDep && gender===selectedGender;
+  });
+
+  function binUsage(days) {
+    if (days === 91 || days === 93) return "0 days";
+    if (days <= 5) return "1–5";
+    if (days <= 10) return "6–10";
+    if (days <= 15) return "11–15";
+    if (days <= 20) return "16–20";
+    if (days <= 25) return "21–25";
+    return "26–30";
+  }
+
+  const depressionLevels = [1, 2, 3, 4, 5]; // 1 = most depressed
+
+  const grouped = d3.rollups(
+    cleaned,
+    v => {
+      const total = v.length;
+      const levelCounts = d3.rollup(
+        v,
+        v2 => v2.length,
+        d => +d.DSTDEPRS
+      );
+      const result = { bin: binUsage(+v[0][selectedColumn]) };
+      depressionLevels.forEach(level => {
+        result[level] = (levelCounts.get(level) || 0) / total;
+      });
+      return result;
+    },
+    d => binUsage(+d[selectedColumn])
+  );
+
+  const areaData = grouped.map(([bin, data]) => ({ ...data, bin }));
+
+  const binOrder = ["0 days", "1–5", "6–10", "11–15", "16–20", "21–25", "26–30"];
+  areaData.sort((a, b) => binOrder.indexOf(a.bin) - binOrder.indexOf(b.bin));
+
+  const stack = d3.stack()
+    .keys(depressionLevels.map(d => d.toString()).reverse());
+
+  const stackedSeries = stack(areaData);
+
+  const svg = d3.select("#stacked_area");
+  svg.selectAll("*").remove(); // Clear old content
+
+  const margin = { top: 50, right: 30, bottom: 50, left: 50 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const x = d3.scalePoint()
+    .domain(binOrder)
+    .range([0, width])
+    .padding(0.5);
+
+  const y = d3.scaleLinear()
+    .domain([0, 1])
+    .range([height, 0]);
+
+  const color = d3.scaleOrdinal()
+    .domain(depressionLevels.map(d => d.toString()))
+    .range(["#d73027", "#fc8d59", "#fee090", "#e0f3f8", "#91bfdb"]); // Red to blue, consistent
+
+  const area = d3.area()
+    .x(d => x(d.data.bin))
+    .y0(d => y(d[0]))
+    .y1(d => y(d[1]));
+
+  g.selectAll("path")
+    .data(stackedSeries)
+    .enter().append("path")
+    .attr("fill", d => color(d.key))
+    .attr("d", area)
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5);
+
+  g.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x));
+
+  g.append("g")
+  .call(d3.axisLeft(y).ticks(5, "%"))
+  .selectAll("text")
+  .attr("dx", "0.5 em");
+  
+  //
+  g.append("text")
+  .attr("text-anchor", "middle")
+  .attr("x", width / 2)
+  .attr("y", height + margin.bottom - 10)  // slightly below the axis
+  .style("font-size", "14px")
+  .text("Number of Days");  // Change text as needed
+  
+  g.append("text")
+  .attr("text-anchor", "middle")
+  .attr("transform", `rotate(-90)`)
+  .attr("x", -height / 2)
+  .attr("y", -margin.left + 15)  // slightly left of the axis
+  .style("font-size", "14px")
+  .text("Proportion of Depression Levels");  // Change text as needed
+
+  const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width + margin.left - 73},${margin.top})`);
+
+  const depressionDescriptions = {
+    1: "All of the time",
+    2: "Most of the time",
+    3: "Some of the time",
+    4: "A little of the time",
+    5: "None of the time"
+  };
+
+  depressionLevels.forEach((level, i) => {
+    legend.append("rect")
+      .attr("x", 0)
+      .attr("y", i * 20)
+      .attr("width", 12)
+      .attr("height", 12)
+      .attr("fill", color(level.toString()));
+
+    legend.append("text")
+      .attr("x", 18)
+      .attr("y", i * 20 + 10)
+      .text(depressionDescriptions[level])
+      .attr("alignment-baseline", "middle")
+      .style("font-size", "12px");
+  });
+
+  const titleMap = {
+    ALCDAYS: "Depression Level Distribution by Alcohol Use (Stacked Area)",
+    MJDAY30A: "Depression Level Distribution by Marijuana Use (Stacked Area)",
+    CIG30USE: "Depression Level Distribution by Cigarette Use (Stacked Area)", 
+    COCUS30A: "Depression Level Distribution by Coccaine Use (Stacked Area)",
+    HER30USE: "Depression Level Distribution by Heroin Use (Stacked Area)"
+  };
+
+  svg.append("text")
+    .attr("x", (width + margin.left + margin.right) / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "18px")
+    .text(titleMap[selectedColumn]);
+}
+
+// Set up dropdown handler (one-time only)
+d3.select("#dataSelect").on("change", () => {
+  d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
+});
+
+d3.select("#genderSelect").on("change", () => {
+  d3.tsv("data/heatmap.tsv").then(data => createHeatmap(data));
+});
+
+
+// Initial load
+d3.tsv( "data/heatmap.tsv"  ).then(data => createHeatmap(data));
+
 
 document.getElementById("calc-alcohol-risk").addEventListener("click", () => {
   document.getElementById("calc-alcohol-risk").style.display = "none";
