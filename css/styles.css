@@ -174,13 +174,15 @@ h3 {
 .grid {
   display: flex;
   flex-wrap: wrap;
-  width: 600px;
-  gap: 5px;
+  width: 350px;
+  gap: 1px;
   margin-bottom: 40px;
+  margin-left: 3.7rem;
 }
 
-.icon {
-  font-size: 30px;
+.icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .male {
