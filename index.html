@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -198,40 +199,7 @@
       <label><input type="checkbox" value="MTHFLAG"> Meth</label><br>
     </form>
 
-
-    <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-    <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
-
-    <div id="drug-followup-wrapper" style="display: none; opacity: 0; padding-top: 2rem; padding-bottom: 1rem;">
-      <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 25px; line-height: 2;"></p>
-      <div style="text-align: center; padding-top: 2rem;">
-        <button id="continue-to-depression" class="btn btn-primary btn-lg">Continue</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="depression-scene" style="display: none; text-align: center; margin-top: 2rem;">
-    <img id="depression-img" src="images/depression.jpg" alt="Depression"
-      style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
-
-    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-      Karen and Bob find themselves falling into severe depression.
-    </p>
-
-    <div id="depression-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
-    <div id="depression-button-container" style="display: none; text-align: center; padding-top: 3rem;">
-      <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
-    </div>
-
-    <div id="depression-followup-wrapper"
-      style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
-      <!-- <p id="depression-followup"
-        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
-        Their depression has dropped their risk of arrest considerably.
-      </p> -->
-    </div>
-
-    <p id="stacked_chart" style="text-align: center; font-size:32px">Stacked Area Chart</p>
+<p id="stacked_chart" style="text-align: center; font-size:32px">Stacked Area Chart</p>
 
 <p id="stacked_chart" style="margin-left: 12px;">This visualization helps us see <b>how depression level shifts </b>as substance
 use increases, and <b>how those pattern differ between men and women.</b></p>
@@ -272,8 +240,39 @@ use increases, and <b>how those pattern differ between men and women.</b></p>
 
 <svg id="stacked_area" width="1200" height="500"></svg>
 
-</body>
 
+    <div id="drug-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+    <button id="calc-drug-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+
+    <div id="drug-followup-wrapper" style="display: none; opacity: 0; padding-top: 2rem; padding-bottom: 1rem;">
+      <p id="drug-followup" style="max-width: 1000px; margin: 0 auto; font-size: 25px; line-height: 2;"></p>
+      <div style="text-align: center; padding-top: 2rem;">
+        <button id="continue-to-depression" class="btn btn-primary btn-lg">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="depression-scene" style="display: none; text-align: center; margin-top: 2rem;">
+    <img id="depression-img" src="images/depression.jpg" alt="Depression"
+      style="width: 100%; max-width: 800px; margin: 2rem auto; display: none;" />
+
+    <p style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+      Karen and Bob find themselves falling into severe depression.
+    </p>
+
+    <div id="depression-risk-bars" style="display: none; justify-content: center; gap: 2rem; margin-top: 2rem;"></div>
+    <div id="depression-button-container" style="display: none; text-align: center; padding-top: 3rem;">
+      <button id="calc-depression-risk" class="btn btn-dark btn-lg">Calculate Arrest Risk</button>
+    </div>
+
+    <div id="depression-followup-wrapper"
+      style="display: none; opacity: 0; transition: opacity 2s ease-in-out; text-align: center; padding-top: 2rem;">
+      <!-- <p id="depression-followup"
+        style="max-width: 1000px; margin: 0 auto; padding: 1rem; font-size: 25px; line-height: 2;">
+        Their depression has dropped their risk of arrest considerably.
+      </p> -->
+    </div>
+</body>
 <script src="js/script.js"></script>
 
 </html>
